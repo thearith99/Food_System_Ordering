@@ -49,5 +49,13 @@
     "iconify",
     "tanstack",
     "customizer"
+<<<<<<< HEAD
   ]
+=======
+  ],
+  "WillLuke.nextjs.hasPrompted": true,
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
+>>>>>>> 597eeec4a3b4ed74c3b619798304c99e44d754d6
 }

@@ -35,7 +35,11 @@
     "@mui/lab": "5.0.0-alpha.167",
     "@mui/material": "5.15.12",
     "@mui/material-nextjs": "5.15.11",
+<<<<<<< HEAD
     "@prisma/client": "5.10.2",
+=======
+    "@prisma/client": "^5.12.1",
+>>>>>>> 597eeec4a3b4ed74c3b619798304c99e44d754d6
     "@tanstack/match-sorter-utils": "8.11.8",
     "@tanstack/react-table": "8.13.2",
     "apexcharts": "3.47.0",
@@ -57,6 +61,7 @@
     "postcss": "8.4.35",
     "postcss-styled-syntax": "0.6.4",
     "prettier": "3.2.5",
+<<<<<<< HEAD
     "react": "18.2.0",
     "react-apexcharts": "1.4.1",
     "react-colorful": "5.6.1",
@@ -64,6 +69,15 @@
     "react-dom": "18.2.0",
     "react-draft-wysiwyg": "1.15.0",
     "react-dropzone": "14.2.3",
+=======
+    "react": "^18.2.0",
+    "react-apexcharts": "1.4.1",
+    "react-colorful": "5.6.1",
+    "react-datepicker": "6.2.0",
+    "react-dom": "^18.2.0",
+    "react-draft-wysiwyg": "1.15.0",
+    "react-dropzone": "^14.2.3",
+>>>>>>> 597eeec4a3b4ed74c3b619798304c99e44d754d6
     "react-hook-form": "7.51.0",
     "react-perfect-scrollbar": "1.5.8",
     "react-toastify": "10.0.4",
@@ -89,6 +103,10 @@
     "schema": "./src/prisma/schema.prisma"
   },
   "devDependencies": {
+<<<<<<< HEAD
     "prisma": "^5.11.0"
+=======
+    "prisma": "^5.12.0"
+>>>>>>> 597eeec4a3b4ed74c3b619798304c99e44d754d6
   }
 }
