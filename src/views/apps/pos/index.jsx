@@ -122,12 +122,8 @@ export default function LoginPage() {
     <div className='min-h-screen flex layout-bg'>
       <div className='flex flex-col w-1 flex-1 gap-2'>
         <div className='flex flex-row h-full gap-2'>
-<<<<<<< HEAD
           <div className='flex-grow flex flex-col' style={{ width: '55%' }}>
-=======
-          <div className='flex-grow flex flex-col'>
->>>>>>> 597eeec4a3b4ed74c3b619798304c99e44d754d6
-            <div className='flex flex-col w-full gap-2'>
+             <div className='flex flex-col w-full gap-2'>
               <div className='flex-none flex-grow rounded-lg p-3' color='primary'>
                 <div className='flex overflow-x-auto'>
                   {isLoading ? (
@@ -163,11 +159,7 @@ export default function LoginPage() {
                             </div>
                             <div className='font-normal text-xs block truncate items-center font-semibold text-red-400'>
                               <Typography variant='h6' color='primary.main' className='mbe-1'>
-<<<<<<< HEAD
                                 {category.name}
-=======
-                                {category.title}
->>>>>>> 597eeec4a3b4ed74c3b619798304c99e44d754d6
                               </Typography>
                             </div>
                           </div>
@@ -211,11 +203,7 @@ export default function LoginPage() {
             </div>
           </div>
 
-<<<<<<< HEAD
           <div className='flex-grow flex flex-col' style={{ width: '45%' }}>
-=======
-          <div className='flex-grow flex flex-col'>
->>>>>>> 597eeec4a3b4ed74c3b619798304c99e44d754d6
             <div className='flex-grow h-full rounded-lg p-3 md:h-16' color='primary'>
               <div className='bg-gray-900' style={{ maxHeight: '100%', overflowY: 'auto' }}>
                 <table className='table-auto w-full text-white'>
