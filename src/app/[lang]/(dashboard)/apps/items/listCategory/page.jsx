@@ -1,5 +1,5 @@
 // Component Imports
-import UserList from '@views/apps/user/listCategory'
+import CategoryList from '@views/apps/items/listCategory'
 
 const getData = async () => {
   // Vars
@@ -16,7 +16,7 @@ const UserListApp = async () => {
   // Vars
   const data = await getData()
 
-  return <UserList userData={data} />
+  return <CategoryList userData={data} />
 }
 
 export default UserListApp
