@@ -35,7 +35,7 @@
     "@mui/lab": "5.0.0-alpha.167",
     "@mui/material": "5.15.12",
     "@mui/material-nextjs": "5.15.11",
-    "@prisma/client": "5.10.2",
+    "@prisma/client": "^5.13.0",
     "@tanstack/match-sorter-utils": "8.11.8",
     "@tanstack/react-table": "8.13.2",
     "apexcharts": "3.47.0",
@@ -57,7 +57,6 @@
     "postcss": "8.4.35",
     "postcss-styled-syntax": "0.6.4",
     "prettier": "3.2.5",
-    "prisma": "5.10.2",
     "react": "18.2.0",
     "react-apexcharts": "1.4.1",
     "react-colorful": "5.6.1",
@@ -75,7 +74,7 @@
     "stylelint-use-logical-spec": "5.0.1",
     "stylis": "4.3.1",
     "stylis-plugin-rtl": "2.1.1",
-    "tailwindcss": "3.4.1",
+    "sweetalert2": "^11.10.8",
     "tailwindcss-logical": "3.0.1",
     "tsx": "4.7.1",
     "valibot": "0.29.0"
@@ -88,5 +87,9 @@
   },
   "prisma": {
     "schema": "./src/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "prisma": "^5.13.0",
+    "tailwindcss": "^3.4.3"
   }
 }
