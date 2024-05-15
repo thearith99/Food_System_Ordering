@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 // Component Imports
 import Pos from '@views/apps/pos/index.jsx'
 
@@ -22,23 +20,3 @@ const PosListApp = async () => {
 }
 
 export default PosListApp;
-=======
-=======
->>>>>>> d5bf2c63f1a302406e372fa83cf65d2b83112255
-import Card from '@mui/material/Card'
-
-import ProductList from '@views/apps/pos'
-
-const AnotherPage = () => {
-  return (
-    <Card className='overflow-visible'>
-      <ProductList />
-    </Card>
-  )
-}
-
-export default AnotherPage
-<<<<<<< HEAD
->>>>>>> d5bf2c63f1a302406e372fa83cf65d2b83112255
-=======
->>>>>>> d5bf2c63f1a302406e372fa83cf65d2b83112255

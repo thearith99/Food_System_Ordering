@@ -19,7 +19,6 @@ export const POST = async (req, res) => {
   const formData = await req.formData()
   const image = formData.get('image')
   const name = formData.get('name')
-  const parentId = parseInt(formData.get('parentId'))
 
   if (!image) {
     return NextResponse.json({ error: 'No image received.' }, { status: 400 })
@@ -36,7 +35,6 @@ export const POST = async (req, res) => {
     await prisma.category.create({
       data: {
         name: name,
-        parentId: parentId,
         image: imageName
       }
     })

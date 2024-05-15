@@ -92,6 +92,15 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
           Customer
         </MenuItem>
 
+        {/* <SubMenu label={dictionary['navigation'].invoice} icon={<i className='tabler-file-description' />}>
+          <MenuItem href={`/${locale}/apps/invoice/list`}>{dictionary['navigation'].list}</MenuItem>
+          <MenuItem href={`/${locale}/apps/invoice/preview/${id || '4987'}`}>
+            {dictionary['navigation'].preview}
+          </MenuItem>
+          <MenuItem href={`/${locale}/apps/invoice/edit/${id || '4987'}`}>{dictionary['navigation'].edit}</MenuItem>
+          <MenuItem href={`/${locale}/apps/invoice/add`}>{dictionary['navigation'].add}</MenuItem>
+        </SubMenu> */}
+
         <SubMenu label='Items' icon={<i className='tabler-menu-2' />}>
           <MenuItem href={`/${locale}/apps/items/list`}>List Food</MenuItem>
           <MenuItem href={`/${locale}/apps/items/listCategory`}>List Category</MenuItem>
@@ -102,6 +111,16 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
           <MenuItem href={`/${locale}/apps/permissions`}>{dictionary['navigation'].permissions}</MenuItem>
         </SubMenu>
       </Menu>
+
+      {/* <Menu
+          popoutMenuOffset={{ mainAxis: 23 }}
+          menuItemStyles={menuItemStyles(verticalNavOptions, theme, settings)}
+          renderExpandIcon={({ open }) => <RenderExpandIcon open={open} transitionDuration={transitionDuration} />}
+          renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
+          menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
+        >
+          <GenerateVerticalMenu menuData={menuData(dictionary, params)} />
+        </Menu> */}
     </ScrollWrapper>
   )
 }

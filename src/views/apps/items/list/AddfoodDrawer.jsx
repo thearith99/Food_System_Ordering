@@ -51,6 +51,8 @@ const AddUserDrawer = ({ open, handleClose }) => {
         icon: 'success',
         title: 'Success!',
         text: 'Data submitted successfully!'
+      }).then(() => {
+        window.location.reload() // Refresh the page
       })
     } catch (error) {
       // console.error('Error submitting form:', error);

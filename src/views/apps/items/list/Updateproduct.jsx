@@ -60,6 +60,8 @@ const Updateproduct = ({ product }) => {
           icon: 'success',
           title: 'Success!',
           text: 'Product updated successfully!'
+        }).then(() => {
+          window.location.reload() // Refresh the page
         })
       }
     } catch (error) {

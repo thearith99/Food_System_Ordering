@@ -40,6 +40,8 @@ const Deleteproduct = ({ product }) => {
           icon: 'success',
           title: 'Success!',
           text: 'Product deleted successfully!'
+        }).then(() => {
+          window.location.reload() // Refresh the page
         })
       }
     } catch (error) {

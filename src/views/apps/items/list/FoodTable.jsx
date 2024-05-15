@@ -200,7 +200,7 @@ const FoodTable = ({ tableData }) => {
                     <td>
                       <img src={`http://localhost:3000/images/${product.image}.jpg`} alt='' width='50' height='50' />
                     </td>
-                    <td>{product.price}</td>
+                    <td>{product.price} $</td>
                     <td className='flex justify-start pt-4 space-x-1'>
                       <Updateproduct product={product} />
                       <DeleteProduct product={product} />

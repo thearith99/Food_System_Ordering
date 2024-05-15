@@ -18,7 +18,6 @@ import MenuItem from '@mui/material/MenuItem'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   useReactTable,
   getFilteredRowModel,
@@ -102,7 +101,7 @@ const CategoryListTable = ({ tableData }) => {
   const getCategory = async () => {
     try {
       const response = await fetch('/api/categories')
-      const jsonData = await response.json();
+      const jsonData = await response.json()
 
       // console.log('Fetched categories:', jsonData) // Log the fetched data
       setCategories(jsonData)
@@ -233,4 +232,4 @@ const CategoryListTable = ({ tableData }) => {
   )
 }
 
-export default CategoryListTable;
+export default CategoryListTable
