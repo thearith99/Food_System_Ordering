@@ -207,7 +207,7 @@ const CategoryListTable = ({ tableData }) => {
                     <td>{category.id}</td>
                     <td>{category.name}</td>
                     <td>
-                      <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' width='50' height='50' />
+                      <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' class="object-cover h-10 w-10"/>
                     </td>
                     <td className='flex justify-start pt-4 space-x-1'>
                       <UpdateCategory category={category} />
