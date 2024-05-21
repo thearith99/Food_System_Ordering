@@ -20,7 +20,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="z-10 fixed top-20 rounded w-full flex justify-between items-center">
+    <nav className="z-10 fixed top-1 rounded w-full flex justify-between items-center">
       <div className="flex justify-between items-center gap-4">
         <div className="flex gap-4 w-7/10 overflow-x-auto bg-blue-500 p-2 rounded">
           <ul className="flex gap-4 list-none">
