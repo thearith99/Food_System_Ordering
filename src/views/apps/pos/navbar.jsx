@@ -41,11 +41,6 @@ const Navbar = () => {
             ))}
           </ul>
         </div>
-        <div className="w-3/10 bg-green-100 p-2 rounded text-right fixed right-7">
-          <div className="font-bold text-black text-lg">
-            Payment
-          </div>
-        </div>
       </div>
     </nav>
 
