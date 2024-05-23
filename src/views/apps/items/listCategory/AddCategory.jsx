@@ -16,10 +16,7 @@ import CustomTextField from '@core/components/mui/TextField'
 const AddCategory = ({ open, handleClose }) => {
   const [nameCategory, setNameCategory] = useState('')
   const [imageCategory, setImageCategory] = useState('')
-<<<<<<< HEAD
   const [parentId, setParentId] = useState('')
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -33,37 +30,22 @@ const AddCategory = ({ open, handleClose }) => {
 
     formDataObj.append('name', nameCategory)
     formDataObj.append('image', imageCategory)
-<<<<<<< HEAD
     formDataObj.append('parentId', parentId)
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
 
     try {
       await axios.post('/api/categories', formDataObj)
       handleClose()
       setNameCategory('')
       setImageCategory('')
-<<<<<<< HEAD
       setParentId('')
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
       Swal.fire({
         icon: 'success',
         title: 'Success!',
         text: 'Data submitted successfully!'
-<<<<<<< HEAD
       })
     } catch (error) {
       // console.error('Error submitting form:', error);
       setError('Failed to submit data. Please try again.');
-=======
-      }).then(() => {
-        window.location.reload() // Refresh the page
-      })
-    } catch (error) {
-      // console.error('Error submitting form:', error);
-      setError('Failed to submit data. Please try again.')
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
     }
   }
 
@@ -71,10 +53,7 @@ const AddCategory = ({ open, handleClose }) => {
     handleClose()
     setNameCategory('')
     setImageCategory('')
-<<<<<<< HEAD
     setParentId('')
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
   }
 
   return (
@@ -109,12 +88,9 @@ const AddCategory = ({ open, handleClose }) => {
             fullWidth
             onChange={e => setImageCategory(e.target.files[0])}
           />
-<<<<<<< HEAD
           {/* Parent ID Input */}
           <CustomTextField label='Parent ID' fullWidth value={parentId} onChange={e => setParentId(e.target.value)} />
           {/* Error Message */}
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
           {error && (
             <Typography variant='body2' color='error'>
               {error}

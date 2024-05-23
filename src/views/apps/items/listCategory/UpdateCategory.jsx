@@ -58,11 +58,6 @@ const UpdateCategory = ({ category }) => {
           icon: 'success',
           title: 'Success!',
           text: 'Category updated successfully!'
-<<<<<<< HEAD
-=======
-        }).then(() => {
-          window.location.reload() // Refresh the page
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
         })
       }
     } catch (error) {

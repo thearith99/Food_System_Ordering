@@ -18,10 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
-<<<<<<< HEAD
   flexRender,
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
   getCoreRowModel,
   useReactTable,
   getFilteredRowModel,
@@ -105,11 +102,7 @@ const CategoryListTable = ({ tableData }) => {
   const getCategory = async () => {
     try {
       const response = await fetch('/api/categories')
-<<<<<<< HEAD
       const jsonData = await response.json();
-=======
-      const jsonData = await response.json()
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
 
       // console.log('Fetched categories:', jsonData) // Log the fetched data
       setCategories(jsonData)
@@ -175,7 +168,7 @@ const CategoryListTable = ({ tableData }) => {
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search User'
+              placeholder='Search Category'
               className='is-full sm:is-auto'
             />
             <Button
@@ -214,11 +207,7 @@ const CategoryListTable = ({ tableData }) => {
                     <td>{category.id}</td>
                     <td>{category.name}</td>
                     <td>
-<<<<<<< HEAD
                       <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' class="object-cover h-10 w-10"/>
-=======
-                      <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' width='50' height='50' />
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
                     </td>
                     <td className='flex justify-start pt-4 space-x-1'>
                       <UpdateCategory category={category} />
@@ -244,8 +233,4 @@ const CategoryListTable = ({ tableData }) => {
   )
 }
 
-<<<<<<< HEAD
 export default CategoryListTable;
-=======
-export default CategoryListTable
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7

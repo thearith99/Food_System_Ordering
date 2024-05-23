@@ -11,11 +11,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // Component Imports
 import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
-<<<<<<< HEAD
-import UserDropdown from '@components/layout/shared/UserDropdown'
-=======
 import CustomChip from '@core/components/mui/Chip'
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
 
 // import { GenerateVerticalMenu } from '@components/GenerateMenu'
 // Hook Imports
@@ -65,7 +61,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
       {/* Incase you also want to scroll NavHeader to scroll with Vertical Menu, remove NavHeader from above and paste it below this comment */}
       {/* Vertical Menu */}
       <Menu
-        popoutMenuOffset={{ mainAxis: 23 }}
+        popupMenuOffset={{ mainAxis: 23 }}
         menuItemStyles={menuItemStyles(verticalNavOptions, theme, settings)}
         renderExpandIcon={({ open }) => <RenderExpandIcon open={open} transitionDuration={transitionDuration} />}
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
@@ -106,11 +102,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
         </SubMenu> */}
 
         <SubMenu label='Items' icon={<i className='tabler-menu-2' />}>
-<<<<<<< HEAD
-          <MenuItem href={`/${locale}/apps/items/listFood`}>List Food</MenuItem>
-=======
           <MenuItem href={`/${locale}/apps/items/list`}>List Food</MenuItem>
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
           <MenuItem href={`/${locale}/apps/items/listCategory`}>List Category</MenuItem>
         </SubMenu>
 
@@ -129,14 +121,6 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
         >
           <GenerateVerticalMenu menuData={menuData(dictionary, params)} />
         </Menu> */}
-<<<<<<< HEAD
-      <Menu>
-      <div className='flex items-center'>
-        <UserDropdown />
-      </div>
-      </Menu>
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
     </ScrollWrapper>
   )
 }

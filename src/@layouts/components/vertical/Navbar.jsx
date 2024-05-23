@@ -41,11 +41,7 @@ const Navbar = props => {
     <StyledHeader
       theme={theme}
       overrideStyles={overrideStyles}
-<<<<<<< HEAD
       className={classnames(verticalLayoutClasses.header, ' items-center justify-center is-full hidden', {
-=======
-      className={classnames(verticalLayoutClasses.header, 'flex items-center justify-center is-full', {
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
         [verticalLayoutClasses.headerFixed]: headerFixed,
         [verticalLayoutClasses.headerStatic]: headerStatic,
         [verticalLayoutClasses.headerFloating]: headerFloating,
