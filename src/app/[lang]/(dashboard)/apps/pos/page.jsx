@@ -1,22 +1,13 @@
-// Component Imports
-import Pos from '@views/apps/pos/index.jsx'
+import Card from '@mui/material/Card'
 
-const getData = async () => {
-  // Vars
-  const res = await fetch(`${process.env.API_URL}/apps/user-list`)
+import ProductList from '@views/apps/pos'
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch userData')
-  }
-
-  return res.json()
+const AnotherPage = () => {
+  return (
+    <Card className='overflow-visible'>
+      <ProductList />
+    </Card>
+  )
 }
 
-const PosListApp = async () => {
-  // Vars
-  const data = await getData()
-
-  return <Pos userData={data} />
-}
-
-export default PosListApp;
+export default AnotherPage

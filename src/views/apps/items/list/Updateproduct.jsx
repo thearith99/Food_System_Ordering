@@ -13,6 +13,7 @@ import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
+import MenuItem from '@mui/material/MenuItem'
 
 import CustomTextField from '@core/components/mui/TextField'
 
@@ -21,7 +22,22 @@ const Updateproduct = ({ product }) => {
   const [error, setError] = useState('')
   const [data, setData] = useState(null)
   const [imageUrl, setImageUrl] = useState(null)
+  const [categories, setCategories] = useState([])
+  const [category, setCategory] = useState('')
+  useEffect(() => {
+    getCategory()
+  }, [])
 
+  const getCategory = async () => {
+    try {
+      const response = await fetch('/api/categories')
+      const jsonData = await response.json()
+
+      setCategories(jsonData)
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
   useEffect(() => {
     setData(product)
   }, [product])
@@ -52,8 +68,6 @@ const Updateproduct = ({ product }) => {
         body: formDataObj
       })
 
-      // const res = await axios.put('/api/categories', formDataObj)
-
       if (res.status == 200) {
         handleReset()
         Swal.fire({
@@ -83,7 +97,7 @@ const Updateproduct = ({ product }) => {
       >
         <div>
           <div className='flex items-center justify-between plb-5 pli-6'>
-            <Typography variant='h5'>Update Category</Typography>
+            <Typography variant='h5'>Update Product</Typography>
             <IconButton onClick={handleReset}>
               <i className='tabler-x text-textPrimary' />
             </IconButton>
@@ -91,9 +105,9 @@ const Updateproduct = ({ product }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              {/* Category Name Input */}
+              {/* Product Name Input */}
               <CustomTextField
-                label='Category Name'
+                label='Product Name'
                 fullWidth
                 value={data?.name}
                 onChange={e =>
@@ -103,7 +117,7 @@ const Updateproduct = ({ product }) => {
                   })
                 }
               />
-              {/* Category Image Input */}
+              {/* Product Image Input */}
               {imageUrl ? (
                 <img src={imageUrl} width={50} height={50} />
               ) : (
@@ -112,7 +126,7 @@ const Updateproduct = ({ product }) => {
 
               <CustomTextField
                 type='file'
-                label='Category Image'
+                label='Product Image'
                 fullWidth
                 onChange={e => {
                   const selectedImage = e.target.files[0]
@@ -124,9 +138,8 @@ const Updateproduct = ({ product }) => {
                     setImageUrl(URL.createObjectURL(selectedImage))
                 }}
               />
-              {/* Parent ID Input */}
-              <CustomTextField
-                label='Category ID'
+              {/* <CustomTextField
+                label='Category '
                 fullWidth
                 value={data?.categoryId}
                 onChange={e =>
@@ -135,7 +148,28 @@ const Updateproduct = ({ product }) => {
                     categoryId: e.target.value
                   })
                 }
-              />
+              /> */}
+              <CustomTextField
+                label='Category '
+                select
+                fullWidth
+                id='select-category'
+                value={data?.categoryId}
+                onChange={e =>
+                  setData({
+                    ...data,
+                    categoryId: e.target.value
+                  })
+                }
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Select Category</MenuItem>
+                {categories.map(category => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
               <CustomTextField
                 label='price'
                 fullWidth

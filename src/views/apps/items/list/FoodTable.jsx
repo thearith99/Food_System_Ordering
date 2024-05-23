@@ -42,7 +42,7 @@ import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import TableFilters from './TableFilters'
 import AddFoodDrawer from './AddfoodDrawer'
-import Updateproduct from './Updateproduct'
+import UpdateProduct from './Updateproduct'
 import DeleteProduct from './Deleteproduct'
 
 // Util Imports
@@ -93,26 +93,41 @@ const FoodTable = ({ tableData }) => {
   // States
   const [addFoodOpen, setAddFoodOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [products, setproducts] = useState(null)
-
+  const [products, setProducts] = useState(null)
   const [data, setData] = useState(...[tableData])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [filteredProducts, setFilteredProducts] = useState([])
   // Hooks
   const { lang: locale } = useParams()
   useEffect(() => {
     getProduct()
   }, [])
+
+  useEffect(() => {
+    if (products) {
+      filterProducts('')
+    }
+  }, [products])
+
   const getProduct = async () => {
     try {
       const response = await fetch('/api/products')
       const jsonData = await response.json()
-
-      // console.log('Fetched categories:', jsonData) // Log the fetched data
-      setproducts(jsonData)
+      setProducts(jsonData)
     } catch (error) {
       console.error('Error fetching products:', error)
     }
   }
+
+  const filterProducts = category => {
+    if (!category) {
+      setFilteredProducts(products)
+    } else {
+      const filtered = products.filter(product => product.category.name === category)
+      setFilteredProducts(filtered)
+    }
+  }
+
   const table = useReactTable({
     data: data,
     filterFns: {
@@ -139,13 +154,11 @@ const FoodTable = ({ tableData }) => {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
-  //   const categoriesSet = new Set(tableData.map(getProduct.category.name))
-  //   const categories = Array.from(categoriesSet)
-  //   const categories1 = Array.from(categoriesSet)
+
   return (
     <>
       <Card>
-        {/* <TableFilters categories={categories} setData={setData} tableData={tableData} /> */}
+        <TableFilters filterProducts={filterProducts} />
         <CardContent className='flex justify-between flex-col gap-4 items-start sm:flex-row sm:items-center'>
           <div className='flex items-center gap-2'>
             <Typography>Show</Typography>
@@ -161,13 +174,6 @@ const FoodTable = ({ tableData }) => {
             </CustomTextField>
           </div>
           <div className='flex gap-4 flex-col !items-start is-full sm:flex-row sm:is-auto sm:items-center'>
-            <DebouncedInput
-              value={globalFilter ?? ''}
-              className='is-[250px]'
-              onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search Food'
-            />
-
             <Button
               variant='contained'
               startIcon={<i className='tabler-plus' />}
@@ -191,22 +197,35 @@ const FoodTable = ({ tableData }) => {
               </tr>
             </thead>
             <tbody>
-              {products &&
-                products.map((product, index) => (
-                  <tr key={product.id}>
-                    <td>{product.id}</td>
-                    <td>{product.name}</td>
-                    <td>{product.category.name}</td>
-                    <td>
-                      <img src={`http://localhost:3000/images/${product.image}.jpg`} alt='' width='50' height='50' />
-                    </td>
-                    <td>{product.price} $</td>
-                    <td className='flex justify-start pt-4 space-x-1'>
-                      <Updateproduct product={product} />
-                      <DeleteProduct product={product} />
-                    </td>
-                  </tr>
-                ))}
+              {filteredProducts.map((product, index) => (
+                <tr key={product.id}>
+                  <td>{product.id}</td>
+                  <td>{product.name}</td>
+                  <td>{product.category.name}</td>
+                  <td>
+                    <div style={{ width: '50px', height: '50px', overflow: 'hidden', position: 'relative' }}>
+                      <img
+                        src={`http://localhost:3000/images/${product.image}.jpg`}
+                        alt=''
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          position: 'absolute',
+                          top: 0,
+                          left: 0
+                        }}
+                      />
+                    </div>
+                  </td>
+
+                  <td>{product.price} $</td>
+                  <td className='flex justify-start pt-4 space-x-1'>
+                    <UpdateProduct product={product} />
+                    <DeleteProduct product={product} />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

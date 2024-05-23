@@ -22,33 +22,25 @@ export const PUT = async (req, res) => {
   console.log('ID from form data:', id)
 
   try {
-    // Check if the category exists
+    // Check if the product exists
     const existingProduct = await prisma.product.findUnique({
       where: { id: Number(id) }
     })
 
     if (!existingProduct) {
-      return existingProduct.json({ error: 'Product not found.' }, { status: 404 })
+      return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
     }
 
     // Update the image if provided
     let imageName = existingProduct.image
+    // if (image) {
+    //   const buffer = Buffer.from(await image.arrayBuffer())
+    //   imageName = name.replace(/\s/g, '_') // Replace all spaces with underscores
+    //   const imageExt = image.name.split('.').pop()
 
-    if (image) {
-      const buffer = Buffer.from(await image.arrayBuffer())
-
-      // imageName = name.replaceAll("", "_");
-      imageName = name.replace(/\s/g, '_') // Replace all spaces with underscores
-      const imageExt = image.name.split('.').pop()
-
-      // Write the new image file
-      await writeFile(
-        `${process.cwd()}/public/images/${imageName}.${imageExt}`,
-
-        // `${process.cwd()}/public/images/${imageName}.jpg`,
-        buffer
-      )
-    }
+    //   // Write the new image file
+    //   await writeFile(`${process.cwd()}/public/images/${imageName}.${imageExt}`, buffer)
+    // }
 
     // Update other fields
     await prisma.product.update({
@@ -69,10 +61,13 @@ export const PUT = async (req, res) => {
   } catch (error) {
     console.log('Error occurred', error)
 
-    return NextResponse.json({
-      Message: 'Failed to update Product.',
-      status: 500
-    })
+    return NextResponse.json(
+      {
+        Message: 'Failed to update Product. ' + error,
+        status: 500
+      },
+      { status: 500 }
+    )
   }
 }
 
@@ -122,7 +117,7 @@ export const GET = async (req, res) => {
     })
 
     if (!product) {
-      return NextResponse.json({ error: 'Category not found.' }, { status: 404 })
+      return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
     }
 
     return NextResponse.json({

@@ -23,7 +23,22 @@ const AddUserDrawer = ({ open, handleClose }) => {
   const [price, setPrice] = useState('')
   const [description, setDescription] = useState('')
   const [error, setError] = useState(null)
+  const [categories, setCategories] = useState([])
+  const [category, setCategory] = useState('')
+  useEffect(() => {
+    getCategory()
+  }, [])
 
+  const getCategory = async () => {
+    try {
+      const response = await fetch('/api/categories')
+      const jsonData = await response.json()
+
+      setCategories(jsonData)
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
   useEffect(() => {
     setError(null) // Reset error state on component mount
   }, [open]) // Reset error state when the drawer opens or closes
@@ -98,7 +113,22 @@ const AddUserDrawer = ({ open, handleClose }) => {
             onChange={e => setImageProduct(e.target.files[0])}
           />
           <CustomTextField label='Description' type='text' fullWidth onChange={e => setDescription(e.target.value)} />
-          <CustomTextField label='Category ID' type='text' fullWidth onChange={e => setCategoryId(e.target.value)} />
+          {/* <CustomTextField label='Category ID' type='text' fullWidth onChange={e => setCategoryId(e.target.value)} /> */}
+          <CustomTextField
+            select
+            fullWidth
+            id='select-category'
+            value={category.id}
+            onChange={e => setCategoryId(e.target.value)}
+            SelectProps={{ displayEmpty: true }}
+          >
+            <MenuItem value=''>Select Category</MenuItem>
+            {categories.map(category => (
+              <MenuItem key={category.id} value={category.id}>
+                {category.name}
+              </MenuItem>
+            ))}
+          </CustomTextField>
           <CustomTextField label='Price' type='text' fullWidth onChange={e => setPrice(e.target.value)} />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
