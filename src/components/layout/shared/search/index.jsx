@@ -86,7 +86,11 @@ const NavSearch = () => {
           <IconButton className='text-textPrimary'>
             <i className='tabler-search' />
           </IconButton>
+<<<<<<< HEAD
           <div className='whitespace-nowrap text-textDisabled'>Search</div>
+=======
+          <div className='whitespace-nowrap text-textDisabled'>Search ⌘K</div>
+>>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
         </div>
       </ComponentWithUseKBar>
       <KBarPortal>

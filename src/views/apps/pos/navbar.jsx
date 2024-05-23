@@ -1,30 +1,30 @@
-'use client';
+'use client'
 
-import { usePathname, useParams } from 'next/navigation';
-import Link from 'next/link';
+import { usePathname, useParams } from 'next/navigation'
+import Link from 'next/link'
 
-import classNames from 'classnames';
+import classNames from 'classnames'
 
 // Import View Component
 
 const Navbar = () => {
-  const pathname = usePathname();
-  const params = useParams();
-  const { lang: locale, id } = params;
+  const pathname = usePathname()
+  const params = useParams()
+  const { lang: locale, id } = params
 
   const navItems = [
     { name: 'All', path: `/${locale}/apps/pos` },
     { name: 'Soup', path: `/${locale}/apps/pos/soup` },
     { name: 'Fried', path: `/${locale}/services` },
-    { name: 'Grilled', path: `/${locale}/contact` },
-  ];
+    { name: 'Grilled', path: `/${locale}/contact` }
+  ]
 
   return (
-    <nav className="z-10 fixed top-1 rounded w-full flex justify-between items-center">
-      <div className="flex justify-between items-center gap-4">
-        <div className="flex gap-4 w-7/10 overflow-x-auto bg-blue-500 p-2 rounded">
-          <ul className="flex gap-4 list-none">
-            {navItems.map((item) => (
+    <nav className='z-10 fixed top-0 min-w-screen w-full flex bg-blue-500/70 justify-between items-center'>
+      <div className='flex justify-between w-full items-center gap-4'>
+        <div className='flex gap-4 w-7/10 w-full border border-b-slate-500 shadow-md p-2'>
+          <ul className='flex gap-4 list-none'>
+            {navItems.map(item => (
               <li key={item.path}>
                 <Link href={item.path} passHref>
                   <div
@@ -43,8 +43,7 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+  )
+}
 
-  );
-};
-
-export default Navbar;
+export default Navbar

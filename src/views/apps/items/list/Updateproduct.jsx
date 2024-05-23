@@ -16,15 +16,15 @@ import Divider from '@mui/material/Divider'
 
 import CustomTextField from '@core/components/mui/TextField'
 
-const UpdateCategory = ({ category }) => {
+const Updateproduct = ({ product }) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState('')
   const [data, setData] = useState(null)
   const [imageUrl, setImageUrl] = useState(null)
 
   useEffect(() => {
-    setData(category)
-  }, [category])
+    setData(product)
+  }, [product])
 
   const handleReset = () => {
     setOpen(false)
@@ -40,12 +40,14 @@ const UpdateCategory = ({ category }) => {
 
     const formDataObj = new FormData()
 
-    formDataObj.append('name', data.name)
-    formDataObj.append('image', data.image)
-    formDataObj.append('parentId', data.parentId)
+    formDataObj.append('name', data.nameProduct)
+    formDataObj.append('image', data.imageProduct)
+    formDataObj.append('categoryId', data.categoryId)
+    formDataObj.append('price', data.price)
+    formDataObj.append('description', data.description)
 
     try {
-      const res = await fetch(`/api/categories/${data.id}`, {
+      const res = await fetch(`/api/products/${data.id}`, {
         method: 'PUT',
         body: formDataObj
       })
@@ -57,17 +59,14 @@ const UpdateCategory = ({ category }) => {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Category updated successfully!'
-<<<<<<< HEAD
-=======
+          text: 'Product updated successfully!'
         }).then(() => {
           window.location.reload() // Refresh the page
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
         })
       }
     } catch (error) {
-      console.error('Error updating category:', error)
-      setError('Failed to update category. Please try again.')
+      console.error('Error updating Product:', error)
+      setError('Failed to update Product. Please try again.')
     }
   }
 
@@ -91,7 +90,6 @@ const UpdateCategory = ({ category }) => {
           </div>
           <Divider />
           <div>
-            {/* <code>{JSON.stringify(data)}</code> */}
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
               {/* Category Name Input */}
               <CustomTextField
@@ -128,13 +126,35 @@ const UpdateCategory = ({ category }) => {
               />
               {/* Parent ID Input */}
               <CustomTextField
-                label='Parent ID'
+                label='Category ID'
                 fullWidth
-                value={data?.parentId}
+                value={data?.categoryId}
                 onChange={e =>
                   setData({
                     ...data,
-                    parentId: e.target.value
+                    categoryId: e.target.value
+                  })
+                }
+              />
+              <CustomTextField
+                label='price'
+                fullWidth
+                value={data?.price}
+                onChange={e =>
+                  setData({
+                    ...data,
+                    price: e.target.value
+                  })
+                }
+              />
+              <CustomTextField
+                label='description'
+                fullWidth
+                value={data?.description}
+                onChange={e =>
+                  setData({
+                    ...data,
+                    description: e.target.value
                   })
                 }
               />
@@ -161,4 +181,4 @@ const UpdateCategory = ({ category }) => {
   )
 }
 
-export default UpdateCategory
+export default Updateproduct

@@ -14,6 +14,7 @@ const defaultSuggestions = [
     sectionLabel: 'Popular Searches',
     items: [
       {
+<<<<<<< HEAD
         label: 'Dashboards',
         href: '/dashboards/crm',
         icon: 'tabler-layout-dashboard-filled'
@@ -32,6 +33,26 @@ const defaultSuggestions = [
         label: 'Branching',
         href: '/apps/branching',
         icon: 'tabler-git-branch'
+=======
+        label: 'Analytics',
+        href: '/dashboards/analytics',
+        icon: 'tabler-trending-up'
+      },
+      {
+        label: 'CRM',
+        href: '/dashboards/crm',
+        icon: 'tabler-chart-pie-2'
+      },
+      {
+        label: 'eCommerce',
+        href: '/dashboards/ecommerce',
+        icon: 'tabler-shopping-cart'
+      },
+      {
+        label: 'User List',
+        href: '/apps/user/list',
+        icon: 'tabler-file-description'
+>>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
       }
     ]
   },
@@ -39,16 +60,21 @@ const defaultSuggestions = [
     sectionLabel: 'Apps',
     items: [
       {
+<<<<<<< HEAD
         label: 'POS',
         href: '/apps/pos',
         icon: 'tabler-http-post'
       },
       {
         label: 'Customer',
+=======
+        label: 'Customer List',
+>>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
         href: '/apps/customer',
         icon: 'tabler-user-square'
       },
       {
+<<<<<<< HEAD
         label: 'List Food',
         href: '/apps/items/listFood',
         icon: 'tabler-menu-2'
@@ -57,6 +83,21 @@ const defaultSuggestions = [
         label: 'List Category',
         href: '/apps/items/listCategory',
         icon: 'tabler-menu-2'
+=======
+        label: 'Invoice List',
+        href: '/apps/invoice/list',
+        icon: 'tabler-file-info'
+      },
+      {
+        label: 'User List',
+        href: '/apps/user/list',
+        icon: 'tabler-file-invoice'
+      },
+      {
+        label: 'Roles & Permissions',
+        href: '/apps/roles',
+        icon: 'tabler-lock'
+>>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
       }
     ]
   },

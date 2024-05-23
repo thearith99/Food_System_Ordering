@@ -1,25 +1,27 @@
 'use client'
+// React Imports
 import { useState, useEffect } from 'react'
-
 import axios from 'axios'
 import Swal from 'sweetalert2'
-
 // MUI Imports
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
-import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
+import MenuItem from '@mui/material/MenuItem'
+import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
 
+// Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-const AddCategory = ({ open, handleClose }) => {
-  const [nameCategory, setNameCategory] = useState('')
-  const [imageCategory, setImageCategory] = useState('')
-<<<<<<< HEAD
-  const [parentId, setParentId] = useState('')
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
+// Vars
+
+const AddUserDrawer = ({ open, handleClose }) => {
+  const [nameProduct, setNameProduct] = useState('')
+  const [imageProduct, setImageProduct] = useState('')
+  const [categoryId, setCategoryId] = useState('')
+  const [price, setPrice] = useState('')
+  const [description, setDescription] = useState('')
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -31,52 +33,40 @@ const AddCategory = ({ open, handleClose }) => {
 
     const formDataObj = new FormData()
 
-    formDataObj.append('name', nameCategory)
-    formDataObj.append('image', imageCategory)
-<<<<<<< HEAD
-    formDataObj.append('parentId', parentId)
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
+    formDataObj.append('name', nameProduct)
+    formDataObj.append('image', imageProduct)
+    formDataObj.append('categoryId', categoryId)
+    formDataObj.append('price', price)
+    formDataObj.append('description', description)
 
     try {
-      await axios.post('/api/categories', formDataObj)
+      await axios.post('/api/products', formDataObj)
       handleClose()
-      setNameCategory('')
-      setImageCategory('')
-<<<<<<< HEAD
-      setParentId('')
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
+      setNameProduct('')
+      setImageProduct('')
+      setCategoryId('')
+      setDescription('')
+      setPrice('')
       Swal.fire({
         icon: 'success',
         title: 'Success!',
         text: 'Data submitted successfully!'
-<<<<<<< HEAD
-      })
-    } catch (error) {
-      // console.error('Error submitting form:', error);
-      setError('Failed to submit data. Please try again.');
-=======
       }).then(() => {
         window.location.reload() // Refresh the page
       })
     } catch (error) {
       // console.error('Error submitting form:', error);
       setError('Failed to submit data. Please try again.')
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
     }
   }
-
   const handleReset = () => {
     handleClose()
-    setNameCategory('')
-    setImageCategory('')
-<<<<<<< HEAD
-    setParentId('')
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
+    setNameProduct('')
+    setImageProduct('')
+    setCategoryId('')
+    setDescription('')
+    setPrice('')
   }
-
   return (
     <Drawer
       open={open}
@@ -87,7 +77,7 @@ const AddCategory = ({ open, handleClose }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <div className='flex items-center justify-between plb-5 pli-6'>
-        <Typography variant='h5'>Add New Category</Typography>
+        <Typography variant='h5'>Add New Food</Typography>
         <IconButton onClick={handleReset}>
           <i className='tabler-x text-textPrimary' />
         </IconButton>
@@ -95,37 +85,26 @@ const AddCategory = ({ open, handleClose }) => {
       <Divider />
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-          {/* Category Name Input */}
           <CustomTextField
-            label='Category Name'
+            label='Product Name'
             fullWidth
-            value={nameCategory}
-            onChange={e => setNameCategory(e.target.value)}
+            value={nameProduct}
+            onChange={e => setNameProduct(e.target.value)}
           />
-          {/* Category Image Input */}
           <CustomTextField
             type='file'
-            label='Category Image'
+            label='Product Image'
             fullWidth
-            onChange={e => setImageCategory(e.target.files[0])}
+            onChange={e => setImageProduct(e.target.files[0])}
           />
-<<<<<<< HEAD
-          {/* Parent ID Input */}
-          <CustomTextField label='Parent ID' fullWidth value={parentId} onChange={e => setParentId(e.target.value)} />
-          {/* Error Message */}
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
-          {error && (
-            <Typography variant='body2' color='error'>
-              {error}
-            </Typography>
-          )}
-          {/* Submit and Reset Buttons */}
+          <CustomTextField label='Description' type='text' fullWidth onChange={e => setDescription(e.target.value)} />
+          <CustomTextField label='Category ID' type='text' fullWidth onChange={e => setCategoryId(e.target.value)} />
+          <CustomTextField label='Price' type='text' fullWidth onChange={e => setPrice(e.target.value)} />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
               Submit
             </Button>
-            <Button variant='tonal' color='error' type='reset' onClick={handleReset}>
+            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
               Cancel
             </Button>
           </div>
@@ -135,4 +114,4 @@ const AddCategory = ({ open, handleClose }) => {
   )
 }
 
-export default AddCategory
+export default AddUserDrawer

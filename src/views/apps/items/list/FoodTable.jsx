@@ -1,27 +1,31 @@
 'use client'
 
 // React Imports
-import { useEffect, useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 // Next Imports
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
-import { styled } from '@mui/material/styles'
-import TablePagination from '@mui/material/TablePagination'
+
+import CardContent from '@mui/material/CardContent'
 import MenuItem from '@mui/material/MenuItem'
+import Chip from '@mui/material/Chip'
+import Typography from '@mui/material/Typography'
+import Checkbox from '@mui/material/Checkbox'
+import IconButton from '@mui/material/IconButton'
+import TablePagination from '@mui/material/TablePagination'
+import { styled } from '@mui/material/styles'
 
 // Third-party Imports
+import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
-<<<<<<< HEAD
   flexRender,
-=======
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
   getCoreRowModel,
   useReactTable,
   getFilteredRowModel,
@@ -33,15 +37,16 @@ import {
 } from '@tanstack/react-table'
 
 // Component Imports
-import AddCategory from './AddCategory'
-import UpdateCategory from './UpdateCategory'
-import DeleteCategory from './DeleteCategory'
-import TablePaginationComponent from '@components/TablePaginationComponent'
+import OptionMenu from '@core/components/option-menu'
 import CustomTextField from '@core/components/mui/TextField'
-import CustomAvatar from '@core/components/mui/Avatar'
+import TablePaginationComponent from '@components/TablePaginationComponent'
+import TableFilters from './TableFilters'
+import AddFoodDrawer from './AddfoodDrawer'
+import Updateproduct from './Updateproduct'
+import DeleteProduct from './Deleteproduct'
 
 // Util Imports
-import { getInitials } from '@/utils/getInitials'
+import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -84,40 +89,30 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 // Column Definitions
 const columnHelper = createColumnHelper()
 
-const CategoryListTable = ({ tableData }) => {
+const FoodTable = ({ tableData }) => {
   // States
-  const [addCategoryOpen, setAddCategoryOpen] = useState(false)
+  const [addFoodOpen, setAddFoodOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-
-  const [categories, setCategories] = useState(null)
+  const [products, setproducts] = useState(null)
 
   const [data, setData] = useState(...[tableData])
   const [globalFilter, setGlobalFilter] = useState('')
-
   // Hooks
   const { lang: locale } = useParams()
-
-  // useEffect for category
   useEffect(() => {
-    getCategory()
+    getProduct()
   }, [])
-
-  const getCategory = async () => {
+  const getProduct = async () => {
     try {
-      const response = await fetch('/api/categories')
-<<<<<<< HEAD
-      const jsonData = await response.json();
-=======
+      const response = await fetch('/api/products')
       const jsonData = await response.json()
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
 
       // console.log('Fetched categories:', jsonData) // Log the fetched data
-      setCategories(jsonData)
+      setproducts(jsonData)
     } catch (error) {
-      console.error('Error fetching categories:', error)
+      console.error('Error fetching products:', error)
     }
   }
-
   const table = useReactTable({
     data: data,
     filterFns: {
@@ -132,8 +127,7 @@ const CategoryListTable = ({ tableData }) => {
         pageSize: 10
       }
     },
-    enableRowSelection: true, //enable row selection for all rows
-    // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
+    enableRowSelection: true,
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
@@ -145,84 +139,71 @@ const CategoryListTable = ({ tableData }) => {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
-
-  const getAvatar = params => {
-    const { avatar, fullName } = params
-
-    if (avatar) {
-      return <CustomAvatar src={avatar} size={34} />
-    } else {
-      return <CustomAvatar size={34}>{getInitials(fullName)}</CustomAvatar>
-    }
-  }
-
+  //   const categoriesSet = new Set(tableData.map(getProduct.category.name))
+  //   const categories = Array.from(categoriesSet)
+  //   const categories1 = Array.from(categoriesSet)
   return (
     <>
       <Card>
-        <CardHeader title='Categories' className='pbe-4' />
-        <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
-          <CustomTextField
-            select
-            value={table.getState().pagination.pageSize}
-            onChange={e => table.setPageSize(Number(e.target.value))}
-            className='is-[70px]'
-          >
-            <MenuItem value='10'>10</MenuItem>
-            <MenuItem value='25'>25</MenuItem>
-            <MenuItem value='50'>50</MenuItem>
-          </CustomTextField>
-          <div className='flex flex-col sm:flex-row is-full sm:is-auto items-start sm:items-center gap-4'>
+        {/* <TableFilters categories={categories} setData={setData} tableData={tableData} /> */}
+        <CardContent className='flex justify-between flex-col gap-4 items-start sm:flex-row sm:items-center'>
+          <div className='flex items-center gap-2'>
+            <Typography>Show</Typography>
+            <CustomTextField
+              select
+              value={table.getState().pagination.pageSize}
+              onChange={e => table.setPageSize(Number(e.target.value))}
+              className='is-[70px]'
+            >
+              <MenuItem value='10'>10</MenuItem>
+              <MenuItem value='25'>25</MenuItem>
+              <MenuItem value='50'>50</MenuItem>
+            </CustomTextField>
+          </div>
+          <div className='flex gap-4 flex-col !items-start is-full sm:flex-row sm:is-auto sm:items-center'>
             <DebouncedInput
               value={globalFilter ?? ''}
+              className='is-[250px]'
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search User'
-              className='is-full sm:is-auto'
+              placeholder='Search Food'
             />
-            <Button
-              color='secondary'
-              variant='tonal'
-              startIcon={<i className='tabler-upload' />}
-              className='is-full sm:is-auto'
-            >
-              Export
-            </Button>
+
             <Button
               variant='contained'
               startIcon={<i className='tabler-plus' />}
-              onClick={() => setAddCategoryOpen(!addCategoryOpen)}
+              onClick={() => setAddFoodOpen(!addFoodOpen)}
               className='is-full sm:is-auto'
             >
-              Add New Category
+              Add New food
             </Button>
           </div>
-        </div>
+        </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
-            {/* head */}
             <thead>
               <tr>
-                <th>Category ID</th>
+                <th>Product ID</th>
+                <th>Product Name</th>
                 <th>Category Name</th>
                 <th>Image</th>
+                <th>Price</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {categories &&
-                categories.map((category, index) => (
-                  <tr key={category.id}>
-                    <td>{category.id}</td>
-                    <td>{category.name}</td>
+              {products &&
+                products.map((product, index) => (
+                  <tr key={product.id}>
+                    <td>{product.id}</td>
+                    <td>{product.name}</td>
+                    <td>{product.category.name}</td>
                     <td>
-<<<<<<< HEAD
-                      <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' class="object-cover h-10 w-10"/>
-=======
-                      <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' width='50' height='50' />
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
+                      <img src={`http://localhost:3000/images/${product.image}.jpg`} alt='' width='50' height='50' />
                     </td>
+                    <td>{product.price} $</td>
                     <td className='flex justify-start pt-4 space-x-1'>
-                      <UpdateCategory category={category} />
-                      <DeleteCategory category={category} />
+                      <Updateproduct product={product} />
+                      <DeleteProduct product={product} />
                     </td>
                   </tr>
                 ))}
@@ -239,13 +220,9 @@ const CategoryListTable = ({ tableData }) => {
           }}
         />
       </Card>
-      <AddCategory open={addCategoryOpen} handleClose={() => setAddCategoryOpen(!addCategoryOpen)} />
+      <AddFoodDrawer open={addFoodOpen} handleClose={() => setAddFoodOpen(!addFoodOpen)} />
     </>
   )
 }
 
-<<<<<<< HEAD
-export default CategoryListTable;
-=======
-export default CategoryListTable
->>>>>>> 7fc15d58a2ab3c1df7d717c3aa5d2e5e86839dc7
+export default FoodTable
