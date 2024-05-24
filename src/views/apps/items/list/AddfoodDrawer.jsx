@@ -1,8 +1,11 @@
 'use client'
+
 // React Imports
 import { useState, useEffect } from 'react'
+
 import axios from 'axios'
 import Swal from 'sweetalert2'
+
 // MUI Imports
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
@@ -10,6 +13,9 @@ import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import Select from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
@@ -20,6 +26,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
   const [nameProduct, setNameProduct] = useState('')
   const [imageProduct, setImageProduct] = useState('')
   const [categoryId, setCategoryId] = useState('')
+  const [categories, setCategories] = useState([])
   const [price, setPrice] = useState('')
   const [description, setDescription] = useState('')
   const [error, setError] = useState(null)
@@ -28,6 +35,28 @@ const AddUserDrawer = ({ open, handleClose }) => {
     setError(null) // Reset error state on component mount
   }, [open]) // Reset error state when the drawer opens or closes
 
+  useEffect(() => {
+    // Fetch categories from API
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('/api/categories')
+
+        setCategories(response.data)
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      }
+    }
+
+    fetchCategories()
+  }, [])
+
+  const getCategoryIdByName = name => {
+    const category = categories.find(category => category.name === name)
+
+
+return category ? category.id : ''
+  }
+
   const handleSubmit = async e => {
     e.preventDefault()
 
@@ -35,7 +64,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
 
     formDataObj.append('name', nameProduct)
     formDataObj.append('image', imageProduct)
-    formDataObj.append('categoryId', categoryId)
+    formDataObj.append('categoryId', getCategoryIdByName(categoryId))
     formDataObj.append('price', price)
     formDataObj.append('description', description)
 
@@ -59,6 +88,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
       setError('Failed to submit data. Please try again.')
     }
   }
+
   const handleReset = () => {
     handleClose()
     setNameProduct('')
@@ -67,6 +97,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
     setDescription('')
     setPrice('')
   }
+
   return (
     <Drawer
       open={open}
@@ -98,7 +129,21 @@ const AddUserDrawer = ({ open, handleClose }) => {
             onChange={e => setImageProduct(e.target.files[0])}
           />
           <CustomTextField label='Description' type='text' fullWidth onChange={e => setDescription(e.target.value)} />
-          <CustomTextField label='Category ID' type='text' fullWidth onChange={e => setCategoryId(e.target.value)} />
+          <FormControl fullWidth>
+            <InputLabel id='category-label'>Category Name</InputLabel>
+            <Select
+              labelId='category-label'
+              value={categoryId}
+              label='Category'
+              onChange={e => setCategoryId(e.target.value)}
+            >
+              {categories.map(category => (
+                <MenuItem key={category.id} value={category.name}>
+                  {category.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <CustomTextField label='Price' type='text' fullWidth onChange={e => setPrice(e.target.value)} />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>

@@ -41,9 +41,12 @@ import OptionMenu from '@core/components/option-menu'
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import TableFilters from './TableFilters'
-import AddFoodDrawer from './AddfoodDrawer'
-import Updateproduct from './Updateproduct'
-import DeleteProduct from './Deleteproduct'
+import AddFoodDrawer from './AddfoodDrawer';
+
+import Updateproduct from './Updateproduct';
+
+import DeleteProduct from './Deleteproduct';
+
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
@@ -97,22 +100,26 @@ const FoodTable = ({ tableData }) => {
 
   const [data, setData] = useState(...[tableData])
   const [globalFilter, setGlobalFilter] = useState('')
+
   // Hooks
   const { lang: locale } = useParams()
+
   useEffect(() => {
     getProduct()
   }, [])
+
   const getProduct = async () => {
     try {
       const response = await fetch('/api/products')
       const jsonData = await response.json()
 
       // console.log('Fetched categories:', jsonData) // Log the fetched data
-      setproducts(jsonData)
+      setproducts(jsonData);
     } catch (error) {
       console.error('Error fetching products:', error)
     }
   }
+
   const table = useReactTable({
     data: data,
     filterFns: {
@@ -139,6 +146,8 @@ const FoodTable = ({ tableData }) => {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
+
+
   //   const categoriesSet = new Set(tableData.map(getProduct.category.name))
   //   const categories = Array.from(categoriesSet)
   //   const categories1 = Array.from(categoriesSet)

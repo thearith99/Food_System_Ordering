@@ -1,7 +1,7 @@
 {
   "name": "vuexy-mui-next-admin-template",
   "version": "2.0.0",
-  "license": "Commercial",
+  "license": "Commercial",  
   "private": true,
   "scripts": {
     "dev": "next dev",

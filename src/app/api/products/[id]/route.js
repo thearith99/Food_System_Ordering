@@ -19,7 +19,8 @@ export const PUT = async (req, res) => {
   const image = formData.get('image')
   const description = formData.get('description')
   const price = parseFloat(formData.get('price'))
-  console.log('ID from form data:', id)
+
+  console.log('ID from form data:', id);
 
   try {
     // Check if the category exists

@@ -171,14 +171,14 @@ const CategoryListTable = ({ tableData }) => {
               placeholder='Search Category'
               className='is-full sm:is-auto'
             />
-            <Button
+            {/* <Button
               color='secondary'
               variant='tonal'
               startIcon={<i className='tabler-upload' />}
               className='is-full sm:is-auto'
             >
               Export
-            </Button>
+            </Button> */}
             <Button
               variant='contained'
               startIcon={<i className='tabler-plus' />}
