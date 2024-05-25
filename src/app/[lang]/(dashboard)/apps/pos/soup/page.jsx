@@ -1,12 +1,16 @@
 'use client'
 
 // MUI Imports
-import Grid from '@mui/material/Grid'
+import Grid from '@mui/material/Grid';
+
 
 // Component Imports
-import SoupList from '@/views/apps/pos/Soup.jsx'
+import SoupList from '@views/apps/pos/soup.jsx'
 
-const PosListApp = () => {
+
+
+const PosListApp =  () => {
+
   return (
     <>
       <div className=''>
@@ -28,7 +32,11 @@ const PosListApp = () => {
         </div>
       </div>
     </>
+
   )
+
 }
 
-export default PosListApp
+export default PosListApp;
+
+

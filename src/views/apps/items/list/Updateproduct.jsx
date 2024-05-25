@@ -12,37 +12,31 @@ import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import MenuItem from '@mui/material/MenuItem'
-
 import Divider from '@mui/material/Divider'
-import Select from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
+import MenuItem from '@mui/material/MenuItem'
 
 import CustomTextField from '@core/components/mui/TextField'
 
 const Updateproduct = ({ product }) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState('')
-  const [data, setData] = useState(null)
+  const [data, setData] = useState({})
   const [imageUrl, setImageUrl] = useState(null)
   const [categories, setCategories] = useState([])
-
   useEffect(() => {
-    // Fetch categories from API
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get('/api/categories')
-
-        setCategories(response.data)
-      } catch (error) {
-        console.error('Error fetching categories:', error)
-      }
-    }
-
-    fetchCategories()
+    getCategory()
   }, [])
 
+  const getCategory = async () => {
+    try {
+      const response = await fetch('/api/categories')
+      const jsonData = await response.json()
+
+      setCategories(jsonData)
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
   useEffect(() => {
     setData(product)
   }, [product])
@@ -146,26 +140,27 @@ const Updateproduct = ({ product }) => {
                 }}
               />
               {/* Parent ID Input */}
-              <FormControl fullWidth>
-                <InputLabel id='category-label'>Category Name</InputLabel>
-                <Select
-                  labelId='category-label'
-                  value={data?.categoryId}
-                  label='Category'
-                  onChange={e =>
-                    setData({
-                      ...data,
-                      categoryId: e.target.value
-                    })
-                  }
-                >
-                  {categories.map(category => (
-                    <MenuItem key={category.id} value={category.id}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+              <CustomTextField
+                label='Category '
+                select
+                fullWidth
+                id='select-category'
+                value={data?.categoryId}
+                onChange={e =>
+                  setData({
+                    ...data,
+                    categoryId: e.target.value
+                  })
+                }
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Select Category</MenuItem>
+                {categories.map(category => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
               <CustomTextField
                 label='price'
                 fullWidth

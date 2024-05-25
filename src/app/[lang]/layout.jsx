@@ -11,6 +11,7 @@ import '@/app/globals.css'
 
 // Generated Icon CSS Imports
 import '@assets/iconify-icons/generated-icons.css'
+import LayoutRouter from '@/views/layout'
 
 export const metadata = {
   title: 'Food System Ordering',
@@ -24,7 +25,9 @@ const RootLayout = ({ children, params }) => {
 
   return (
     <html id='__next' lang={params.lang} dir={direction}>
-      <body className='flex is-full min-bs-full flex-auto flex-col'>{children}</body>
+      <body className='flex is-full min-bs-full flex-auto flex-col'>
+        <LayoutRouter>{children}</LayoutRouter>
+      </body>
     </html>
   )
 }
