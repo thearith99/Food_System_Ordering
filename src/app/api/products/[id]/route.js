@@ -3,24 +3,21 @@ import { writeFile } from 'fs/promises'
 import { error } from 'console'
 import { buffer } from 'stream/consumers'
 
-import { NextResponse } from 'next/server'
+import { request } from 'http'
+
+import { NextRequest, NextResponse } from 'next/server'
 
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 // Update Product
-export const PUT = async (req, res) => {
+export const PUT = async req => {
   const path = req.nextUrl.pathname.split('/')
-  const id = path[path.length - 1]
-  const formData = await req.formData()
-  const name = formData.get('name')
-  const categoryId = parseInt(formData.get('categoryId'))
-  const image = formData.get('image')
-  const description = formData.get('description')
-  const price = parseFloat(formData.get('price'))
+  const formData = await req.json()
+  const { id, name, price, description, image, categoryId, category } = formData
 
-  console.log('ID from form data:', id);
+  console.log('from form data:', formData)
 
   try {
     // Check if the category exists
@@ -123,7 +120,7 @@ export const GET = async (req, res) => {
     })
 
     if (!product) {
-      return NextResponse.json({ error: 'Category not found.' }, { status: 404 })
+      return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
     }
 
     return NextResponse.json({

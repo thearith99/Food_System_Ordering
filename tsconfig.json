@@ -63,7 +63,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "src/contexts/home.context.tsx", "src/contexts/home.state.tsx"  ],
   "exclude": [
     "node_modules"
   ]

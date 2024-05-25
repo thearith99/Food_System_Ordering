@@ -1,8 +1,29 @@
 'use client'
 
+import { useContext, useEffect, useState } from 'react'
+
 import { FaShoppingCart } from 'react-icons/fa'
 
+import homeContext from '@/contexts/home.context'
+import { useStorage } from '@/hooks/useHook'
+
 const Payment = () => {
+  const {
+    state: { addcards },
+    dispatch
+  } = useContext(homeContext)
+
+
+  const [cards, setCart] = useStorage('CardList',[])
+  const [prices, setPrice] = useState(0)
+
+  useEffect(() => {
+    setCart([...cards, ...addcards])
+    const sum = cards.map(e => e.price.toString().replace('$', '')).reduce((a, b) => a + b, 0)
+
+    setPrice(sum)
+  }, [addcards])
+
   return (
     <>
       <section className='min-h-screen bg-gray-100 py-0 sm:py-0 lg:py-0'>
@@ -23,117 +44,78 @@ const Payment = () => {
               <div className='px-4 py-6 sm:px-2 sm:py-4 lg:px-6 lg:py-8'>
                 <div className='flow-root'>
                   <ul className='-my-8'>
-                    <li className='flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0'>
-                      <div className='shrink-0 relative'>
-                        <img
-                          className='h-16 w-16 max-w-full rounded-lg object-cover'
-                          src='http://localhost:3000/images/Fried.jpg'
-                          alt=''
-                        />
-                      </div>
-
-                      <div className='relative flex flex-1 flex-col justify-between'>
-                        <div className='sm:col-gap-5 sm:grid sm:grid-cols-2'>
-                          <div className='pr-8 sm:pr-5 block'>
-                            <div>
-                              <p className='lg:text-xs sm:text-[9px] font-semibold text-gray-900'>Nike Air Max 2019</p>
-                            </div>
-                            <div className='grid grid-cols-3 lg:gap-1 sm:gap-6 lg:pt-1 sm:pt-1'>
-                              <button className='lg:text-xl bg-blue-500/70 hover:bg-blue-700 text-white font-bold px-2 rounded lg:h-7 lg:w-7 sm:h-5 sm:text-sm sm:px-2 sm:w-5'>-</button>
-                              <div className='lg:text-xl lg:px-2 lg:h-7 lg:w-7 bg-blue-500/70 rounded text-white font-bold sm:h-5 sm:text-sm sm:px-2 sm:w-5 sm:flex justify-center'>0</div>
-                              <button className='lg:text-xl bg-blue-500/70 hover:bg-blue-700 text-white font-bold px-2 rounded lg:h-7 lg:w-7 sm:h-5 sm:text-sm sm:px-1 sm:w-5'>+</button>
-                            </div>
+                    {cards.map((item, i) => {
+                      return (
+                        <li
+                          key={i}
+                          className='flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0'
+                        >
+                          <div className='shrink-0 relative'>
+                            <img
+                              className='h-16 w-16 max-w-full rounded-lg object-cover'
+                              src={`http://localhost:3000/images/${item.image}.jpg`}
+                              alt=''
+                            />
                           </div>
 
-                          <div className='mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end'>
-                            <p className='shrink-0 w-20 lg:text-base sm:text-xs font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right'>
-                              $1259.00
-                            </p>
-                          </div>
-                        </div>
+                          <div className='relative flex flex-1 flex-col justify-between'>
+                            <div className='sm:col-gap-5 sm:grid sm:grid-cols-2'>
+                              <div className='pr-8 sm:pr-5 block'>
+                                <div>
+                                  <p className='lg:text-xs sm:text-[9px] font-semibold text-gray-900'>{item.name}</p>
+                                </div>
+                                <div className='grid grid-cols-3 lg:gap-1 sm:gap-6 lg:pt-1 sm:pt-1'>
+                                  <button className='lg:text-xl bg-blue-500/70 hover:bg-blue-700 text-white font-bold px-2 rounded lg:h-7 lg:w-7 sm:h-5 sm:text-sm sm:px-2 sm:w-5'>
+                                    -
+                                  </button>
+                                  <div className='lg:text-xl lg:px-2 lg:h-7 lg:w-7 bg-blue-500/70 rounded text-white font-bold sm:h-5 sm:text-sm sm:px-2 sm:w-5 sm:flex justify-center'>
+                                    0
+                                  </div>
+                                  <button className='lg:text-xl bg-blue-500/70 hover:bg-blue-700 text-white font-bold px-2 rounded lg:h-7 lg:w-7 sm:h-5 sm:text-sm sm:px-1 sm:w-5'>
+                                    +
+                                  </button>
+                                </div>
+                              </div>
 
-                        <div className='absolute top-0 right-0 flex sm:bottom-0 sm:top-auto'>
-                          <button
-                            type='button'
-                            className='flex rounded p-2 text-center text-gray-500 transition-all duration-200 ease-in-out focus:shadow hover:text-gray-900'
-                          >
-                            <svg
-                              className='block h-5 w-5'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              stroke='currentColor'
-                            >
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='M6 18L18 6M6 6l12 12'
-                              ></path>
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    </li>
-                    <li className='flex flex-col space-y-3 py-6 text-left sm:flex-row sm:space-x-5 sm:space-y-0'>
-                      <div className='shrink-0 relative'>
-                        <img
-                          className='h-16 w-16 max-w-full rounded-lg object-cover'
-                          src='http://localhost:3000/images/Fried.jpg'
-                          alt=''
-                        />
-                      </div>
-
-                      <div className='relative flex flex-1 flex-col justify-between'>
-                        <div className='sm:col-gap-5 sm:grid sm:grid-cols-2'>
-                          <div className='pr-8 sm:pr-5 block'>
-                            <div>
-                              <p className='lg:text-xs sm:text-[9px] font-semibold text-gray-900'>Nike Air Max 2019</p>
+                              <div className='mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end'>
+                                <p className='shrink-0 w-20 lg:text-base sm:text-xs font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right'>
+                                  {item.price}$
+                                </p>
+                              </div>
                             </div>
-                            <div className='grid grid-cols-3 lg:gap-1 sm:gap-6 lg:pt-1 sm:pt-1'>
-                              <button className='lg:text-xl bg-blue-500/70 hover:bg-blue-700 text-white font-bold px-2 rounded lg:h-7 lg:w-7 sm:h-5 sm:text-sm sm:px-2 sm:w-5'>-</button>
-                              <div className='lg:text-xl lg:px-2 lg:h-7 lg:w-7 bg-blue-500/70 rounded text-white font-bold sm:h-5 sm:text-sm sm:px-2 sm:w-5 sm:flex justify-center'>0</div>
-                              <button className='lg:text-xl bg-blue-500/70 hover:bg-blue-700 text-white font-bold px-2 rounded lg:h-7 lg:w-7 sm:h-5 sm:text-sm sm:px-1 sm:w-5'>+</button>
+
+                            <div className='absolute top-0 right-0 flex sm:bottom-0 sm:top-auto'>
+                              <button
+                                type='button'
+                                className='flex rounded p-2 text-center text-gray-500 transition-all duration-200 ease-in-out focus:shadow hover:text-gray-900'
+                              >
+                                <svg
+                                  className='block h-5 w-5'
+                                  xmlns='http://www.w3.org/2000/svg'
+                                  fill='none'
+                                  viewBox='0 0 24 24'
+                                  stroke='currentColor'
+                                >
+                                  <path
+                                    strokeLinecap='round'
+                                    strokeLinejoin='round'
+                                    strokeWidth='2'
+                                    d='M6 18L18 6M6 6l12 12'
+                                  ></path>
+                                </svg>
+                              </button>
                             </div>
                           </div>
-
-                          <div className='mt-4 flex items-end justify-between sm:mt-0 sm:items-start sm:justify-end'>
-                            <p className='shrink-0 w-20 lg:text-base sm:text-xs font-semibold text-gray-900 sm:order-2 sm:ml-8 sm:text-right'>
-                              $1259.00
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className='absolute top-0 right-0 flex sm:bottom-0 sm:top-auto'>
-                          <button
-                            type='button'
-                            className='flex rounded p-2 text-center text-gray-500 transition-all duration-200 ease-in-out focus:shadow hover:text-gray-900'
-                          >
-                            <svg
-                              className='block h-5 w-5'
-                              xmlns='http://www.w3.org/2000/svg'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              stroke='currentColor'
-                            >
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                strokeWidth='2'
-                                d='M6 18L18 6M6 6l12 12'
-                              ></path>
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                    </li>
+                        </li>
+                      )
+                    })}
                   </ul>
                 </div>
 
                 <div className='mt-6 space-y-3 border-t border-b py-8'>
                   <div className='flex items-center justify-between'>
                     <p className='text-gray-400'>Subtotal</p>
-                    <p className='text-lg font-semibold text-gray-900'>$2399.00</p>
+                    <p className='text-lg font-semibold text-gray-900'>{prices}$</p>
                   </div>
                   <div className='flex items-center justify-between'>
                     <p className='text-gray-400'>Shipping</p>

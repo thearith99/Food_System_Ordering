@@ -19,7 +19,7 @@ import CustomTextField from '@core/components/mui/TextField'
 const Updateproduct = ({ product }) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState('')
-  const [data, setData] = useState(null)
+  const [data, setData] = useState({})
   const [imageUrl, setImageUrl] = useState(null)
 
   useEffect(() => {
@@ -38,18 +38,14 @@ const Updateproduct = ({ product }) => {
   const handleSubmit = async e => {
     e.preventDefault()
 
-    const formDataObj = new FormData()
-
-    formDataObj.append('name', data.nameProduct)
-    formDataObj.append('image', data.imageProduct)
-    formDataObj.append('categoryId', data.categoryId)
-    formDataObj.append('price', data.price)
-    formDataObj.append('description', data.description)
-
     try {
+      if (typeof data.image != 'object') {
+        delete data.image
+      }
+
       const res = await fetch(`/api/products/${data.id}`, {
         method: 'PUT',
-        body: formDataObj
+        body: JSON.stringify(data)
       })
 
       // const res = await axios.put('/api/categories', formDataObj)
