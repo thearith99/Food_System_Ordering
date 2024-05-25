@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
+  flexRender,
   getCoreRowModel,
   useReactTable,
   getFilteredRowModel,
@@ -101,7 +102,7 @@ const CategoryListTable = ({ tableData }) => {
   const getCategory = async () => {
     try {
       const response = await fetch('/api/categories')
-      const jsonData = await response.json()
+      const jsonData = await response.json();
 
       // console.log('Fetched categories:', jsonData) // Log the fetched data
       setCategories(jsonData)
@@ -167,17 +168,17 @@ const CategoryListTable = ({ tableData }) => {
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search User'
+              placeholder='Search Category'
               className='is-full sm:is-auto'
             />
-            <Button
+            {/* <Button
               color='secondary'
               variant='tonal'
               startIcon={<i className='tabler-upload' />}
               className='is-full sm:is-auto'
             >
               Export
-            </Button>
+            </Button> */}
             <Button
               variant='contained'
               startIcon={<i className='tabler-plus' />}
@@ -206,7 +207,7 @@ const CategoryListTable = ({ tableData }) => {
                     <td>{category.id}</td>
                     <td>{category.name}</td>
                     <td>
-                      <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' width='50' height='50' />
+                      <img src={`http://localhost:3000/images/${category.image}.jpg`} alt='' class="object-cover h-10 w-10"/>
                     </td>
                     <td className='flex justify-start pt-4 space-x-1'>
                       <UpdateCategory category={category} />
@@ -232,4 +233,4 @@ const CategoryListTable = ({ tableData }) => {
   )
 }
 
-export default CategoryListTable
+export default CategoryListTable;

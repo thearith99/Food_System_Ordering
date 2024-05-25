@@ -10,22 +10,16 @@ import { useParams } from 'next/navigation'
 // MUI Imports
 import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
-
 import CardContent from '@mui/material/CardContent'
 import MenuItem from '@mui/material/MenuItem'
-import Chip from '@mui/material/Chip'
 import Typography from '@mui/material/Typography'
-import Checkbox from '@mui/material/Checkbox'
-import IconButton from '@mui/material/IconButton'
 import TablePagination from '@mui/material/TablePagination'
 import { styled } from '@mui/material/styles'
 
 // Third-party Imports
-import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   useReactTable,
   getFilteredRowModel,
@@ -37,17 +31,15 @@ import {
 } from '@tanstack/react-table'
 
 // Component Imports
-import OptionMenu from '@core/components/option-menu'
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import TableFilters from './TableFilters'
 import AddFoodDrawer from './AddfoodDrawer'
-import UpdateProduct from './Updateproduct'
+
+import Updateproduct from './Updateproduct'
 import DeleteProduct from './Deleteproduct'
 
 // Util Imports
-import { getLocalizedUrl } from '@/utils/i18n'
-
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 
@@ -55,20 +47,12 @@ import tableStyles from '@core/styles/table.module.css'
 const Icon = styled('i')({})
 
 const fuzzyFilter = (row, columnId, value, addMeta) => {
-  // Rank the item
   const itemRank = rankItem(row.getValue(columnId), value)
-
-  // Store the itemRank info
-  addMeta({
-    itemRank
-  })
-
-  // Return if the item should be filtered in/out
+  addMeta({ itemRank })
   return itemRank.passed
 }
 
 const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...props }) => {
-  // States
   const [value, setValue] = useState(initialValue)
 
   useEffect(() => {
@@ -80,25 +64,22 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
     }, debounce)
 
     return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
   return <CustomTextField {...props} value={value} onChange={e => setValue(e.target.value)} />
 }
 
-// Column Definitions
 const columnHelper = createColumnHelper()
 
 const FoodTable = ({ tableData }) => {
-  // States
   const [addFoodOpen, setAddFoodOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
   const [products, setProducts] = useState(null)
-  const [data, setData] = useState(...[tableData])
-  const [globalFilter, setGlobalFilter] = useState('')
   const [filteredProducts, setFilteredProducts] = useState([])
-  // Hooks
+  const [searchQuery, setSearchQuery] = useState('')
+
   const { lang: locale } = useParams()
+
   useEffect(() => {
     getProduct()
   }, [])
@@ -107,46 +88,39 @@ const FoodTable = ({ tableData }) => {
     if (products) {
       filterProducts('')
     }
-  }, [products])
+  }, [products, searchQuery])
 
   const getProduct = async () => {
     try {
       const response = await fetch('/api/products')
       const jsonData = await response.json()
       setProducts(jsonData)
+      setFilteredProducts(jsonData)
     } catch (error) {
       console.error('Error fetching products:', error)
     }
   }
 
   const filterProducts = category => {
-    if (!category) {
-      setFilteredProducts(products)
-    } else {
-      const filtered = products.filter(product => product.category.name === category)
-      setFilteredProducts(filtered)
+    let filtered = products
+    if (category) {
+      filtered = filtered.filter(product => product.category.name === category)
     }
+    if (searchQuery) {
+      filtered = filtered.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    }
+    setFilteredProducts(filtered)
   }
 
   const table = useReactTable({
-    data: data,
-    filterFns: {
-      fuzzy: fuzzyFilter
-    },
-    state: {
-      rowSelection,
-      globalFilter
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10
-      }
-    },
+    data: filteredProducts,
+    filterFns: { fuzzy: fuzzyFilter },
+    state: { rowSelection },
+    initialState: { pagination: { pageSize: 10 } },
     enableRowSelection: true,
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
-    onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -174,6 +148,12 @@ const FoodTable = ({ tableData }) => {
             </CustomTextField>
           </div>
           <div className='flex gap-4 flex-col !items-start is-full sm:flex-row sm:is-auto sm:items-center'>
+            <DebouncedInput
+              value={searchQuery}
+              className='is-[250px]'
+              onChange={value => setSearchQuery(value)}
+              placeholder='Search Food'
+            />
             <Button
               variant='contained'
               startIcon={<i className='tabler-plus' />}
@@ -203,25 +183,11 @@ const FoodTable = ({ tableData }) => {
                   <td>{product.name}</td>
                   <td>{product.category.name}</td>
                   <td>
-                    <div style={{ width: '50px', height: '50px', overflow: 'hidden', position: 'relative' }}>
-                      <img
-                        src={`http://localhost:3000/images/${product.image}.jpg`}
-                        alt=''
-                        style={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover',
-                          position: 'absolute',
-                          top: 0,
-                          left: 0
-                        }}
-                      />
-                    </div>
+                    <img src={`http://localhost:3000/images/${product.image}.jpg`} alt='' width='50' height='50' />
                   </td>
-
                   <td>{product.price} $</td>
                   <td className='flex justify-start pt-4 space-x-1'>
-                    <UpdateProduct product={product} />
+                    <Updateproduct product={product} />
                     <DeleteProduct product={product} />
                   </td>
                 </tr>

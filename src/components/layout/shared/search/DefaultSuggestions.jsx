@@ -14,24 +14,24 @@ const defaultSuggestions = [
     sectionLabel: 'Popular Searches',
     items: [
       {
-        label: 'Analytics',
-        href: '/dashboards/analytics',
-        icon: 'tabler-trending-up'
-      },
-      {
-        label: 'CRM',
+        label: 'Dashboards',
         href: '/dashboards/crm',
-        icon: 'tabler-chart-pie-2'
+        icon: 'tabler-layout-dashboard-filled'
       },
       {
-        label: 'eCommerce',
-        href: '/dashboards/ecommerce',
-        icon: 'tabler-shopping-cart'
+        label: 'Ordering',
+        href: '/apps/ordering',
+        icon: 'tabler-border-all'
       },
       {
-        label: 'User List',
-        href: '/apps/user/list',
-        icon: 'tabler-file-description'
+        label: 'Location Order',
+        href: '/apps/locationOrder',
+        icon: 'tabler-current-location'
+      },
+      {
+        label: 'Branching',
+        href: '/apps/branching',
+        icon: 'tabler-git-branch'
       }
     ]
   },
@@ -39,24 +39,24 @@ const defaultSuggestions = [
     sectionLabel: 'Apps',
     items: [
       {
-        label: 'Customer List',
+        label: 'POS',
+        href: '/apps/pos',
+        icon: 'tabler-http-post'
+      },
+      {
+        label: 'Customer',
         href: '/apps/customer',
         icon: 'tabler-user-square'
       },
       {
-        label: 'Invoice List',
-        href: '/apps/invoice/list',
-        icon: 'tabler-file-info'
+        label: 'List Food',
+        href: '/apps/items/listFood',
+        icon: 'tabler-menu-2'
       },
       {
-        label: 'User List',
-        href: '/apps/user/list',
-        icon: 'tabler-file-invoice'
-      },
-      {
-        label: 'Roles & Permissions',
-        href: '/apps/roles',
-        icon: 'tabler-lock'
+        label: 'List Category',
+        href: '/apps/items/listCategory',
+        icon: 'tabler-menu-2'
       }
     ]
   },

@@ -12,8 +12,12 @@ import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
-import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
+
+import Divider from '@mui/material/Divider'
+import Select from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 import CustomTextField from '@core/components/mui/TextField'
 
@@ -23,21 +27,22 @@ const Updateproduct = ({ product }) => {
   const [data, setData] = useState(null)
   const [imageUrl, setImageUrl] = useState(null)
   const [categories, setCategories] = useState([])
-  const [category, setCategory] = useState('')
+
   useEffect(() => {
-    getCategory()
+    // Fetch categories from API
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('/api/categories')
+
+        setCategories(response.data)
+      } catch (error) {
+        console.error('Error fetching categories:', error)
+      }
+    }
+
+    fetchCategories()
   }, [])
 
-  const getCategory = async () => {
-    try {
-      const response = await fetch('/api/categories')
-      const jsonData = await response.json()
-
-      setCategories(jsonData)
-    } catch (error) {
-      console.error('Error fetching categories:', error)
-    }
-  }
   useEffect(() => {
     setData(product)
   }, [product])
@@ -56,8 +61,8 @@ const Updateproduct = ({ product }) => {
 
     const formDataObj = new FormData()
 
-    formDataObj.append('name', data.nameProduct)
-    formDataObj.append('image', data.imageProduct)
+    formDataObj.append('name', data.name)
+    formDataObj.append('image', data.image)
     formDataObj.append('categoryId', data.categoryId)
     formDataObj.append('price', data.price)
     formDataObj.append('description', data.description)
@@ -67,6 +72,8 @@ const Updateproduct = ({ product }) => {
         method: 'PUT',
         body: formDataObj
       })
+
+      // const res = await axios.put('/api/categories', formDataObj)
 
       if (res.status == 200) {
         handleReset()
@@ -97,7 +104,7 @@ const Updateproduct = ({ product }) => {
       >
         <div>
           <div className='flex items-center justify-between plb-5 pli-6'>
-            <Typography variant='h5'>Update Product</Typography>
+            <Typography variant='h5'>Update Category</Typography>
             <IconButton onClick={handleReset}>
               <i className='tabler-x text-textPrimary' />
             </IconButton>
@@ -105,9 +112,9 @@ const Updateproduct = ({ product }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              {/* Product Name Input */}
+              {/* Category Name Input */}
               <CustomTextField
-                label='Product Name'
+                label='Category Name'
                 fullWidth
                 value={data?.name}
                 onChange={e =>
@@ -117,7 +124,7 @@ const Updateproduct = ({ product }) => {
                   })
                 }
               />
-              {/* Product Image Input */}
+              {/* Category Image Input */}
               {imageUrl ? (
                 <img src={imageUrl} width={50} height={50} />
               ) : (
@@ -126,7 +133,7 @@ const Updateproduct = ({ product }) => {
 
               <CustomTextField
                 type='file'
-                label='Product Image'
+                label='Category Image'
                 fullWidth
                 onChange={e => {
                   const selectedImage = e.target.files[0]
@@ -138,38 +145,27 @@ const Updateproduct = ({ product }) => {
                     setImageUrl(URL.createObjectURL(selectedImage))
                 }}
               />
-              {/* <CustomTextField
-                label='Category '
-                fullWidth
-                value={data?.categoryId}
-                onChange={e =>
-                  setData({
-                    ...data,
-                    categoryId: e.target.value
-                  })
-                }
-              /> */}
-              <CustomTextField
-                label='Category '
-                select
-                fullWidth
-                id='select-category'
-                value={data?.categoryId}
-                onChange={e =>
-                  setData({
-                    ...data,
-                    categoryId: e.target.value
-                  })
-                }
-                SelectProps={{ displayEmpty: true }}
-              >
-                <MenuItem value=''>Select Category</MenuItem>
-                {categories.map(category => (
-                  <MenuItem key={category.id} value={category.id}>
-                    {category.name}
-                  </MenuItem>
-                ))}
-              </CustomTextField>
+              {/* Parent ID Input */}
+              <FormControl fullWidth>
+                <InputLabel id='category-label'>Category Name</InputLabel>
+                <Select
+                  labelId='category-label'
+                  value={data?.categoryId}
+                  label='Category'
+                  onChange={e =>
+                    setData({
+                      ...data,
+                      categoryId: e.target.value
+                    })
+                  }
+                >
+                  {categories.map(category => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
               <CustomTextField
                 label='price'
                 fullWidth

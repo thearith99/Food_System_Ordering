@@ -1,21 +1,20 @@
-// React Imports
 import { useState, useEffect } from 'react'
-
-// MUI Imports
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
-
-// Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
 const TableFilters = ({ filterProducts }) => {
   // States
   const [categories, setCategories] = useState([])
   const [category, setCategory] = useState('')
+  const [products, setProducts] = useState([]) // Assuming you have products state
+  const [filteredProducts, setFilteredProducts] = useState([]) // State for filtered products
 
   useEffect(() => {
     getCategory()
+    // Fetch initial products
+    getProducts()
   }, [])
 
   const getCategory = async () => {
@@ -29,10 +28,23 @@ const TableFilters = ({ filterProducts }) => {
     }
   }
 
+  const getProducts = async () => {
+    try {
+      const response = await fetch('/api/products')
+      const jsonData = await response.json()
+
+      // Set initial products and filteredProducts state to show all products
+      setProducts(jsonData)
+      setFilteredProducts(jsonData)
+    } catch (error) {
+      console.error('Error fetching products:', error)
+    }
+  }
+
   const handleCategoryChange = event => {
     const selectedCategory = event.target.value
     setCategory(selectedCategory)
-    filterProducts(selectedCategory) // Call the filterProducts function with the selected category
+    filterProducts(selectedCategory)
   }
 
   return (
@@ -47,7 +59,7 @@ const TableFilters = ({ filterProducts }) => {
             onChange={handleCategoryChange}
             SelectProps={{ displayEmpty: true }}
           >
-            <MenuItem value=''>Select Category</MenuItem>
+            <MenuItem value=''>All Products</MenuItem>
             {categories.map(category => (
               <MenuItem key={category.id} value={category.name}>
                 {category.name}

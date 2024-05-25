@@ -16,6 +16,7 @@ import CustomTextField from '@core/components/mui/TextField'
 const AddCategory = ({ open, handleClose }) => {
   const [nameCategory, setNameCategory] = useState('')
   const [imageCategory, setImageCategory] = useState('')
+  const [parentId, setParentId] = useState('')
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -29,22 +30,22 @@ const AddCategory = ({ open, handleClose }) => {
 
     formDataObj.append('name', nameCategory)
     formDataObj.append('image', imageCategory)
+    formDataObj.append('parentId', parentId)
 
     try {
       await axios.post('/api/categories', formDataObj)
       handleClose()
       setNameCategory('')
       setImageCategory('')
+      setParentId('')
       Swal.fire({
         icon: 'success',
         title: 'Success!',
         text: 'Data submitted successfully!'
-      }).then(() => {
-        window.location.reload() // Refresh the page
       })
     } catch (error) {
       // console.error('Error submitting form:', error);
-      setError('Failed to submit data. Please try again.')
+      setError('Failed to submit data. Please try again.');
     }
   }
 
@@ -52,6 +53,7 @@ const AddCategory = ({ open, handleClose }) => {
     handleClose()
     setNameCategory('')
     setImageCategory('')
+    setParentId('')
   }
 
   return (
@@ -86,6 +88,9 @@ const AddCategory = ({ open, handleClose }) => {
             fullWidth
             onChange={e => setImageCategory(e.target.files[0])}
           />
+          {/* Parent ID Input */}
+          <CustomTextField label='Parent ID' fullWidth value={parentId} onChange={e => setParentId(e.target.value)} />
+          {/* Error Message */}
           {error && (
             <Typography variant='body2' color='error'>
               {error}

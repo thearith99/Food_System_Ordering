@@ -22,6 +22,7 @@ export const POST = async (req, res) => {
   const image = formData.get('image')
   const description = formData.get('description')
   const price = parseFloat(formData.get('price'))
+
   if (!image) {
     return NextResponse.json({ error: 'No image received.' }, { status: 400 })
   }
@@ -59,10 +60,13 @@ export const GET = async request => {
         category: true
       }
     })
+
     const response = products.map(product => ({
       ...product
     }))
-    return NextResponse.json(response)
+
+
+return NextResponse.json(response)
   } catch (error) {
     return NextResponse.error(new Error('Failed to fetch products'))
   }
