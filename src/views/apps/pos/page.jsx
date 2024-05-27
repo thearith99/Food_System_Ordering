@@ -23,7 +23,7 @@ const Page = () => {
   // Memoize the entire component's JSX
   const memoizedPage = useMemo(
     () => (
-      <section className='bg-gray-100 py-12 text-gray-700 sm:py-16 lg:py-1'>
+      <section className='bg-gray-100 py-12 text-gray-700 sm:py-16 lg:py-1 '>
         <div className='mx-auto w-full px-4 sm:px-6 lg:px-0'>
           <div className='fixed lg:fixed md:fixed sm:fixed w-[62.4%] sm:w-[65%] md:w-[64.7%] lg:w-[60.5%] top-16 z-20 text-center flex justify-between'>
             <h2 className='text-1xl font-bold sm:text-2xl lg:text-2xl lg:pt-2'>All Food</h2>
@@ -40,7 +40,7 @@ const Page = () => {
           </div>
           {/* Display Grid */}
           <div className='grid gap-6 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:py-16 '>
-            {loading && filteredProducts.length === 0 ? (
+            {filteredProducts.length && loading  === 0 ? (
               <div className='col-span-4 text-center flex justify-center items-center h-96'>
                 <div className='border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-blue-600' />
               </div>
