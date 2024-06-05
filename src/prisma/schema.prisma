@@ -80,8 +80,6 @@ generator client {
     productId     Int
     totalAmount   Float
     qty           Int
-    order         Order     @relation(fields: [orderId], references: [id])
-    orderId       Int
   }
 
   model Payment {
@@ -99,7 +97,6 @@ generator client {
     locationId    Int
     createdAt     DateTime
     status        String
-    orderDetails  OrderDetail[]
     updatedAt     DateTime
     user          User          @relation(fields: [userId], references: [id])
     userId        Int

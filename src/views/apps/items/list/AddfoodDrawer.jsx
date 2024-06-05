@@ -53,8 +53,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
   const getCategoryIdByName = name => {
     const category = categories.find(category => category.name === name)
 
-
-return category ? category.id : ''
+    return category ? category.id : ''
   }
 
   const handleSubmit = async e => {

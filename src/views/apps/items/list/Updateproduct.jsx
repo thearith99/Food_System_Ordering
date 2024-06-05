@@ -13,6 +13,7 @@ import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
+import MenuItem from '@mui/material/MenuItem'
 
 import CustomTextField from '@core/components/mui/TextField'
 
@@ -21,7 +22,23 @@ const Updateproduct = ({ product }) => {
   const [error, setError] = useState('')
   const [data, setData] = useState({})
   const [imageUrl, setImageUrl] = useState(null)
+  const [categories, setCategories] = useState([])
 
+  useEffect(() => {
+    getCategory()
+  }, [])
+
+  const getCategory = async () => {
+    try {
+      const response = await fetch('/api/categories')
+      const jsonData = await response.json()
+
+      setCategories(jsonData)
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
+  
   useEffect(() => {
     setData(product)
   }, [product])
@@ -37,6 +54,14 @@ const Updateproduct = ({ product }) => {
 
   const handleSubmit = async e => {
     e.preventDefault()
+
+    const formDataObj = new FormData()
+
+    formDataObj.append('name', data.name)
+    formDataObj.append('image', data.image)
+    formDataObj.append('categoryId', data.categoryId)
+    formDataObj.append('price', data.price)
+    formDataObj.append('description', data.description)
 
     try {
       if (typeof data.image != 'object') {
@@ -122,8 +147,10 @@ const Updateproduct = ({ product }) => {
               />
               {/* Parent ID Input */}
               <CustomTextField
-                label='Category ID'
+                label='Category '
+                select
                 fullWidth
+                id='select-category'
                 value={data?.categoryId}
                 onChange={e =>
                   setData({
@@ -131,7 +158,15 @@ const Updateproduct = ({ product }) => {
                     categoryId: e.target.value
                   })
                 }
-              />
+                SelectProps={{ displayEmpty: true }}
+              >
+                <MenuItem value=''>Select Category</MenuItem>
+                {categories.map(category => (
+                  <MenuItem key={category.id} value={category.id}>
+                    {category.name}
+                  </MenuItem>
+                ))}
+              </CustomTextField>
               <CustomTextField
                 label='price'
                 fullWidth

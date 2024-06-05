@@ -35,7 +35,7 @@ export const LayoutRouter = memo(({ children }) => {
     }
 
     getProduct()
-  }, [])
+  }, []) 
 
   // useEffect(() => {
   //   const data = fetch('/products/card/{user_id}')

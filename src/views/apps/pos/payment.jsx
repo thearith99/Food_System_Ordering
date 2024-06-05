@@ -1,8 +1,9 @@
-'use client';
+'use client'
 
 import { useContext, useEffect, useState } from 'react';
 
 import { FaShoppingCart } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 import homeContext from '@/contexts/home.context';
 import { useStorage } from '@/hooks/useHook';
@@ -11,43 +12,107 @@ const Payment = () => {
   const {
     state: { addcards },
     dispatch
-  } = useContext(homeContext);
+  } = useContext(homeContext)
 
-  const [cards, setCart] = useStorage('CardList', []);
-  const [prices, setPrice] = useState(0);
-  const [total, setTotal] = useState(0);
-  const shippingCost = 0;
-
-  useEffect(() => {
-    const updatedCards = addcards.map(card => ({ ...card, quantity: 1 }));
-
-    setCart([...cards, ...updatedCards]);
-  }, [addcards]);
+  const [cards, setCart] = useStorage('CardList', [])
+  const [prices, setPrice] = useState(0)
+  const [total, setTotal] = useState(0)
+  const shippingCost = 0
 
   useEffect(() => {
-    const sum = cards.reduce((acc, item) => acc + parseFloat(item.price.toString().replace('$', '')) * item.quantity, 0);
+    const updatedCards = addcards.map(card => ({ ...card, quantity: 1 }))
 
-    setPrice(sum);
-    setTotal(sum + shippingCost);
-  }, [cards]);
+    // console.log(updatedCards);
+    let newCards = cards
+    let exists = false
 
-  const removeFromCart = (index) => {
-    const newCards = cards.filter((_, i) => i !== index);
+    for (const key in newCards) {
+      if (updatedCards.length == 0) {
+        exists = false
+        break
+      }
 
-    setCart(newCards);
+      if (newCards[key].id == updatedCards[0].id && newCards[key].category.id == updatedCards[0].category.id) {
+        newCards[key].quantity += 1
+        exists = true
+        break
+      }
+    }
+
+    if (exists == false) {
+      newCards = [...newCards, ...updatedCards]
+    }
+
+    setCart([...newCards])
+  }, [addcards])
+
+  useEffect(() => {
+    const sum = cards.reduce((acc, item) => acc + parseFloat(item.price.toString().replace('$', '')) * item.quantity, 0)
+
+    setPrice(sum)
+    setTotal(sum + shippingCost)
+  }, [cards])
+
+  const removeFromCart = index => {
+    const newCards = cards.filter((_, i) => i !== index)
+
+    setCart(newCards)
+  }
+
+  const incrementQuantity = index => {
+    const newCards = cards.map((item, i) => (i === index ? { ...item, quantity: item.quantity + 1 } : item))
+
+    setCart(newCards)
+  }
+
+  const decrementQuantity = index => {
+    const newCards = cards.map((item, i) =>
+      i === index && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
+    )
+
+    setCart(newCards)
+  }
+
+
+  const handleCheckout = async () => {
+    console.log('Checking out with cards:', cards);
+
+    const orderDetails = cards.map(card => ({
+      productId: card.id,
+      totalAmount: parseFloat(card.price) * card.quantity,
+      qty: card.quantity
+    }));
+
+    const requestData = orderDetails;
+
+    console.log('Order details being sent to API:', requestData);
+
+    try {
+      const response = await fetch('http://localhost:3000/api/orderDetails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+
+      console.log('Checkout successful:', data);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Order Detail successfully!'
+      })
+    } catch (error) {
+      console.error('Error during checkout:', error);
+    }
   };
 
-  const incrementQuantity = (index) => {
-    const newCards = cards.map((item, i) => i === index ? { ...item, quantity: item.quantity + 1 } : item);
-
-    setCart(newCards);
-  };
-
-  const decrementQuantity = (index) => {
-    const newCards = cards.map((item, i) => i === index && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item);
-
-    setCart(newCards);
-  };
 
   return (
     <>
@@ -69,7 +134,7 @@ const Payment = () => {
               <div className='px-4 py-6 sm:px-2 sm:py-4 lg:px-6 lg:py-8'>
                 <div className='flow-root lg:h-[305px] lg:w-[330px] sm:h-[200px] overflow-y-auto'>
                   <ul className='lg:-my-7 sm:-my-6 lg:w-full lg:h-96 sm:w-full sm:h-96'>
-                  {/* list cart when add food */}
+                    {/* list cart when add food */}
                     {cards.map((item, i) => (
                       <li
                         key={i}
@@ -88,7 +153,7 @@ const Payment = () => {
                               <div className='lg:w-full lg:h-[51%] sm:w-[63px] sm:h-[64%]'>
                                 <p className='lg:text-xs sm:text-[9px] font-semibold text-gray-900'>{item.name}</p>
                               </div>
-                              <div className='lg:w-full lg:h-[48%] sm:w-[63px] sm:h-[35%] grid grid-cols-3 lg:gap-1 sm:gap-1 lg:pt-1 sm:pt-1'>
+                              <div className='lg:w-full lg:h-[48%] sm:w-[63px] sm:h-[35%] grid grid-cols-3 lg:gap-1 sm:gap-1 lg:pt-1 sm:pt-[3px]'>
                                 <button
                                   className='lg:text-xl bg-blue-500/70 hover:bg-blue-700 text-white font-bold px-2 rounded lg:h-7 lg:w-7 sm:h-5 sm:text-sm sm:px-2 sm:w-5'
                                   onClick={() => decrementQuantity(i)}
@@ -158,9 +223,10 @@ const Payment = () => {
                 <div className='mt-6 text-center'>
                   <button
                     type='button'
-                    className='group inline-flex lg:w-full sm:w-full items-center justify-center rounded-md bg-orange-500 px-6 py-4 lg:text-lg font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800'
+                    className='group inline-flex lg:w-full sm:w-full items-center justify-center rounded-md bg-orange-500 px-6 py-4 lg:text-lg sm:text-xs font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800 cursor-pointer'
+                    onClick={handleCheckout}
                   >
-                    Submit
+                    GO TO CHECKOUT
                     <svg
                       xmlns='http://www.w3.org/2000/svg'
                       className='group-hover:ml-8 ml-4 h-6 w-6 transition-all'
@@ -179,7 +245,7 @@ const Payment = () => {
         </div>
       </section>
     </>
-  );
-};
+  )
+}
 
-export default Payment;
+export default Payment

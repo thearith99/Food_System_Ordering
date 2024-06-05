@@ -1,23 +1,51 @@
 'use client'
 
+import { useEffect, useMemo, useState } from 'react'
+
 import { usePathname, useParams } from 'next/navigation'
 import Link from 'next/link'
 
 import classNames from 'classnames'
 
-// Import View Component
-
 const Navbar = () => {
   const pathname = usePathname()
-  const params = useParams()
-  const { lang: locale, id } = params
+  const { lang: locale } = useParams()
+  const [categories, setCategories] = useState([])
+  const [error, setError] = useState(null)
 
-  const navItems = [
-    { name: 'All', path: `/${locale}/apps/pos` },
-    { name: 'Soup', path: `/${locale}/apps/pos/soup` },
-    { name: 'Fried', path: `/${locale}/services` },
-    { name: 'Grilled', path: `/${locale}/contact` }
-  ]
+  useEffect(() => {
+    const getCategory = async () => {
+      try {
+        const response = await fetch('/api/categories')
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok')
+        }
+
+        const jsonData = await response.json()
+
+        setCategories(jsonData)
+      } catch (error) {
+        setError(error.message)
+      }
+    }
+
+    getCategory()
+  }, [])
+
+  const navItems = useMemo(() => {
+    return [
+      { name: 'All', path: `/${locale}/apps/pos` },
+      ...categories.map(category => ({
+        name: category.name,
+        path: `/${locale}/apps/pos/${category.id}`
+      }))
+    ]
+  }, [locale, categories])
+
+  if (error) {
+    return <div>Error: {error}</div>
+  }
 
   return (
     <nav className='z-10 fixed top-0 min-w-screen w-full flex bg-blue-500/70 justify-between items-center'>
