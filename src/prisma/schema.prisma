@@ -4,70 +4,136 @@ datasource db {
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  binaryTargets   = ["native", "debian-openssl-3.0.x", "linux-arm64-openssl-1.1.x", "rhel-openssl-3.0.x"]
+  provider = "prisma-client-js"
 }
 
-model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?
-  access_token       String?
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?
-  session_state      String?
+  model Product {
+    id              Int               @id @default(autoincrement())
+    name            String
+    price           Float
+    description     String
+    image           String
+    category        Category          @relation(fields: [categoryId], references: [id])
+    categoryId      Int
+    discounts       ProductDiscount[]
+    branchProducts  BranchProduct[]
+    orderDetails    OrderDetail[]
+  }
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  model Category {
+    id        Int       @id @default(autoincrement())
+    name      String
+    image     String
+    parent    Category?  @relation("ChildCategories", fields: [parentId], references: [id])
+    parentId  Int?
+    children    Category[] @relation("ChildCategories")
+    products  Product[]
+  }
 
-  @@unique([provider, providerAccountId])
-}
+  model ProductDiscount {
+    id              Int          @id @default(autoincrement())
+    product         Product      @relation(fields: [productId], references: [id])
+    productId       Int
+    discount        Discount     @relation(fields: [discountId], references: [id])
+    discountId      Int
+  }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
+  model Discount {
+    id              Int          @id @default(autoincrement())
+    branch          Branch       @relation(fields: [branchId], references: [id])
+    branchId        Int
+    amount          Float
+    productDiscounts ProductDiscount[]
+  }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-}
+  model Branch {
+    id         Int       @id @default(autoincrement())
+    name       String
+    location   Location  @relation(fields: [locationId], references: [id])
+    locationId Int
+    discounts  Discount[]
+    products   BranchProduct[]
+  }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+  model BranchProduct {
+    id         Int       @id @default(autoincrement())
+    price      Float
+    status     String
+    branch     Branch    @relation(fields: [branchId], references: [id])
+    branchId   Int
+    product    Product   @relation(fields: [productId], references: [id])
+    productId  Int
+  }
 
-  @@unique([identifier, token])
-}
-model Product {
-  id          Int      @id @default(autoincrement())
-  name        String
-  price       Float
-  description String
-  image       String
-  status      Boolean @default(true)
-  category    Category @relation(fields: [categoryId], references: [id])
-  categoryId  Int
-}
+  model Location {
+    id         Int       @id @default(autoincrement())
+    markName   String
+    lat        Float
+    long       Float
+    branches   Branch[]
+    orders     Order[]
+  }
 
-model Category {
-  id        Int       @id @default(autoincrement())
-  name      String
-  image     String
-  parentId  Int
-  status    Boolean @default(true)
-  products  Product[]
-}
+  model OrderDetail {
+    id            Int       @id @default(autoincrement())
+    product       Product   @relation(fields: [productId], references: [id])
+    productId     Int
+    totalAmount   Float
+    qty           Int
+    order         Order     @relation(fields: [orderId], references: [id])
+    orderId       Int
+  }
+
+  model Payment {
+    id         Int      @id @default(autoincrement())
+    order      Order    @relation(fields: [orderId], references: [id])
+    orderId    Int
+    type       String
+    amount     Float
+  }
+
+  model Order {
+    id            Int           @id @default(autoincrement())
+    orderNumber   String
+    location      Location      @relation(fields: [locationId], references: [id])
+    locationId    Int
+    createdAt     DateTime
+    status        String
+    orderDetails  OrderDetail[]
+    updatedAt     DateTime
+    user          User          @relation(fields: [userId], references: [id])
+    userId        Int
+    payments      Payment[]
+  }
+
+  model User {
+    id        Int       @id @default(autoincrement())
+    name      String
+    email     String
+    phone     String
+    password  String
+    orders    Order[]
+  }
+
+  model Role {
+    id            Int            @id @default(autoincrement())
+    name          String
+    permissions  Permission[]
+    rolePermissions RolePermission[]
+  }
+
+  model Permission {
+    id            Int           @id @default(autoincrement())
+    name          String
+    roles        Role[]
+    rolePermissions RolePermission[]
+  }
+
+  // Define many-to-many relationship between Role and Permission
+  model RolePermission {
+    id             Int       @id @default(autoincrement())
+    role           Role      @relation(fields: [roleId], references: [id])
+    roleId         Int
+    permission     Permission @relation(fields: [permissionId], references: [id])
+    permissionId   Int
+  }

@@ -1,13 +1,10 @@
-import Card from '@mui/material/Card'
+'use client'
 
-import ProductList from '@views/apps/pos'
+// Component Imports
+import Pos from '@views/apps/pos/page.jsx'
 
-const AnotherPage = () => {
-  return (
-    <Card className='overflow-visible'>
-      <ProductList />
-    </Card>
-  )
+const PosList =  () => {
+  return <Pos />
 }
 
-export default AnotherPage
+export default PosList;

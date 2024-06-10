@@ -61,7 +61,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
       {/* Incase you also want to scroll NavHeader to scroll with Vertical Menu, remove NavHeader from above and paste it below this comment */}
       {/* Vertical Menu */}
       <Menu
-        popoutMenuOffset={{ mainAxis: 23 }}
+        popupMenuOffset={{ mainAxis: 23 }}
         menuItemStyles={menuItemStyles(verticalNavOptions, theme, settings)}
         renderExpandIcon={({ open }) => <RenderExpandIcon open={open} transitionDuration={transitionDuration} />}
         renderExpandedMenuItemIcon={{ icon: <i className='tabler-circle text-xs' /> }}
@@ -102,8 +102,8 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
         </SubMenu> */}
 
         <SubMenu label='Items' icon={<i className='tabler-menu-2' />}>
-          <MenuItem href={`/${locale}/apps/user/list`}>List Food</MenuItem>
-          <MenuItem href={`/${locale}/apps/user/view`}>List Category</MenuItem>
+          <MenuItem href={`/${locale}/apps/items/list`}>List Food</MenuItem>
+          <MenuItem href={`/${locale}/apps/items/listCategory`}>List Category</MenuItem>
         </SubMenu>
 
         <SubMenu label={dictionary['navigation'].rolesPermissions} icon={<i className='tabler-lock' />}>

@@ -157,7 +157,7 @@ const Customizer = ({ breakpoint = 'lg', dir = 'ltr', disableDirection = false }
         })}
       >
         <div
-          className={classnames('customizer-toggler flex items-center justify-center cursor-pointer', styles.toggler)}
+          className={classnames('customizer-toggler  items-center justify-center cursor-pointer hidden', styles.toggler)}
           onClick={handleToggle}
         >
           <i className='tabler-settings text-[22px]' />
