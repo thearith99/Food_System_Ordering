@@ -14,7 +14,7 @@ const ListOrder = () => {
   // Fetch category data from the API
   const fetchData = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/order`)
+      const res = await fetch(`http://localhost:3000/api/orders`)
 
       if (!res.ok) {
         throw new Error('Failed to fetch Order data')

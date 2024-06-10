@@ -13,6 +13,8 @@ import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import Select from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 
 // Component Imports
@@ -54,21 +56,6 @@ const AddUserDrawer = ({ open, handleClose }) => {
     return category ? category.id : ''
   }
 
-  useEffect(() => {
-    // Fetch categories from API
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get('/api/categories')
-
-        setCategories(response.data)
-      } catch (error) {
-        console.error('Error fetching categories:', error)
-      }
-    }
-
-    fetchCategories()
-  }, [])
-
   const handleSubmit = async e => {
     e.preventDefault()
 
@@ -76,7 +63,6 @@ const AddUserDrawer = ({ open, handleClose }) => {
 
     formDataObj.append('name', nameProduct)
     formDataObj.append('image', imageProduct)
-    formDataObj.append('categoryId', getCategoryIdByName(categoryId))
     formDataObj.append('categoryId', getCategoryIdByName(categoryId))
     formDataObj.append('price', price)
     formDataObj.append('description', description)
@@ -97,6 +83,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
         window.location.reload() // Refresh the page
       })
     } catch (error) {
+      // console.error('Error submitting form:', error);
       setError('Failed to submit data. Please try again.')
     }
   }
@@ -144,9 +131,10 @@ const AddUserDrawer = ({ open, handleClose }) => {
           <FormControl fullWidth>
             <CustomTextField
               labelId='category-label'
+              select
+              fullWidth
               value={categoryId}
               label='Category'
-              select
               onChange={e => setCategoryId(e.target.value)}
               SelectProps={{
                 MenuProps: {
@@ -166,7 +154,6 @@ const AddUserDrawer = ({ open, handleClose }) => {
               ))}
             </CustomTextField>
           </FormControl>
-
           <CustomTextField label='Price' type='text' fullWidth onChange={e => setPrice(e.target.value)} />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>

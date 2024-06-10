@@ -125,10 +125,23 @@ const Loadingskel = ({ loading }) => {
           </thead>
           <tbody>
             <tr>
-              <td colSpan='2'></td>
-
-              <td colSpan='4'>
-                <CircularProgress size={360} thickness={5} />
+              <th>
+                <CircularProgress size={24} />
+              </th>
+              <th>
+                <CircularProgress size={24} />
+              </th>
+              <th>
+                <CircularProgress size={24} />
+              </th>
+              <th>
+                <CircularProgress size={24} />
+              </th>
+              <th>
+                <CircularProgress size={24} />
+              </th>
+              <td>
+                <CircularProgress size={24} />
               </td>
             </tr>
           </tbody>

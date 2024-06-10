@@ -12,6 +12,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 // Component Imports
 import { Menu, SubMenu, MenuItem, MenuSection } from '@menu/vertical-menu'
 import CustomChip from '@core/components/mui/Chip'
+import UserDropdown from '@components/layout/shared/UserDropdown'
 
 // import { GenerateVerticalMenu } from '@components/GenerateMenu'
 // Hook Imports
@@ -87,6 +88,10 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
         <MenuItem href={`/${locale}/apps/pos`} icon={<i className='tabler-http-post' />}>
           POS
         </MenuItem>
+        {/* For Checkout */}
+        <MenuItem href={`/${locale}/apps/checkout`} icon={<i className='tabler-shopping-cart-filled' />}>
+          Checkout
+        </MenuItem>
         {/* For Customer */}
         <MenuItem href={`/${locale}/apps/customer`} icon={<i className='tabler-user-square' />}>
           Customer
@@ -110,6 +115,9 @@ const VerticalMenu = ({ dictionary, scrollMenu }) => {
           <MenuItem href={`/${locale}/apps/roles`}>{dictionary['navigation'].roles}</MenuItem>
           <MenuItem href={`/${locale}/apps/permissions`}>{dictionary['navigation'].permissions}</MenuItem>
         </SubMenu>
+        <MenuItem>
+          <UserDropdown />
+        </MenuItem>
       </Menu>
 
       {/* <Menu

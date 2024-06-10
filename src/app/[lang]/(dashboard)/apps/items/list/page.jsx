@@ -2,7 +2,7 @@
 
 // React Imports
 // Component Imports
-import UserList from '@views/apps/items/list'
+import UserList from '@/views/apps/items/list'
 
 const ListCategory = () => {
   return <UserList />

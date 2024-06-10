@@ -12,6 +12,8 @@ export const LayoutRouter = memo(({ children }) => {
   const { dispatch } = contextValue
 
   useEffect(() => {
+
+    // For Get Product
     const getProduct = async () => {
       try {
         const response = await fetch('/api/products')
@@ -34,7 +36,31 @@ export const LayoutRouter = memo(({ children }) => {
       }
     }
 
+    // For Get User
+    const getUser = async () => {
+      try {
+        const response = await fetch('/api/users')
+        const jsonData = await response.json()
+
+        if (jsonData) {
+          // console.log('LayoutRouter', jsonData)
+          dispatch({
+            field: 'users',
+            value: jsonData
+          })
+        }
+
+        // dispatch({
+        //   field: 'loading',
+        //   value: true
+        // })
+      } catch (error) {
+        console.error('Error fetching users:', error)
+      }
+    }
+
     getProduct()
+    getUser()
   }, [])
 
   // useEffect(() => {
@@ -48,4 +74,4 @@ export const LayoutRouter = memo(({ children }) => {
 
   return <homeContext.Provider value={{ ...contextValue }}>{children}</homeContext.Provider>
 })
-export default LayoutRouter
+export default LayoutRouter;

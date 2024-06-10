@@ -15,7 +15,7 @@ const Page = () => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const filteredProducts = useMemo(() => {
-    console.log('filteredProducts', products)
+    // console.log('filteredProducts', products);
 
     return products.filter(product => product.name.toLowerCase().includes(searchQuery.toLowerCase()))
   }, [products, searchQuery])
@@ -23,9 +23,9 @@ const Page = () => {
   // Memoize the entire component's JSX
   const memoizedPage = useMemo(
     () => (
-      <section className='bg-gray-100 py-12 text-gray-700 sm:py-16 lg:py-1'>
+      <section className='bg-gray-100 py-12 text-gray-700 sm:py-16 lg:py-1 '>
         <div className='mx-auto w-full px-4 sm:px-6 lg:px-0'>
-          <div className='fixed lg:fixed md:fixed sm:fixed w-[62.4%] sm:w-[65%] md:w-[64.7%] lg:w-[60.5%] top-16 z-20 text-center flex justify-between'>
+          <div className='fixed w-[62.4%] sm:w-[65%] md:w-[64.7%] lg:w-[60.5%] top-16 z-10 text-center flex justify-between'>
             <h2 className='text-1xl font-bold sm:text-2xl lg:text-2xl lg:pt-2'>All Food</h2>
             {/* Search Bar */}
             <div className='text-center'>
@@ -40,7 +40,7 @@ const Page = () => {
           </div>
           {/* Display Grid */}
           <div className='grid gap-6 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:py-16 '>
-            {loading && filteredProducts.length === 0 ? (
+            {filteredProducts.length && loading  === 0 ? (
               <div className='col-span-4 text-center flex justify-center items-center h-96'>
                 <div className='border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-blue-600' />
               </div>
@@ -70,15 +70,15 @@ const Page = () => {
                     </div>
                     <h3 className='mb-2 text-sm text-gray-400'>{product?.name}</h3>
                   </div>
-                  <button
-                    onClick={() => {
-                      dispatch({
-                        field: 'addcards',
-                        value: [...addcards, product]
-                      })
-                    }}
-                    className='hover:border-white/40 flex items-center justify-center rounded-md border border-transparent bg-blue-500/70 px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer'
-                  >
+                    <button
+                      onClick={() => {
+                        dispatch({
+                          field: 'addcards',
+                          value: [ product]
+                        })
+                      }}
+                      className='hover:border-white/40 flex items-center justify-center rounded-md border border-transparent bg-blue-500/70 px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer'
+                    >
                     <FaShoppingCart className='mr-2 h-6 w-6' />
                     Add to cart
                   </button>

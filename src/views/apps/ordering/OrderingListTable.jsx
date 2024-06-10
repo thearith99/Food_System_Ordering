@@ -189,6 +189,10 @@ const UserListTable = ({ tableData }) => {
         header: 'Status',
         cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.status}</Typography>)
       }),
+      columnHelper.accessor('userId', {
+        header: 'User Id',
+        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.userId}</Typography>)
+      }),
       columnHelper.accessor('action', {
         header: 'Action',
         cell: () =>

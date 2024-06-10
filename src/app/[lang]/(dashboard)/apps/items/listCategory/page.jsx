@@ -1,46 +1,22 @@
-'use client'
-
-// React Imports
-import { useState, useEffect } from 'react'
 // Component Imports
-import UserList from '@views/apps/items/listCategory'
-import Loading from '@views/apps/items/listCategory/skeleton'
+import CategoryList from '@views/apps/items/listCategory'
 
-const ListCategory = () => {
-  // State to hold category data and loading state
-  const [userData, setUserData] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+const getData = async () => {
+  // Vars
+  const res = await fetch(`${process.env.API_URL}/apps/user-list`)
 
-  // Fetch category data from the API
-  const fetchData = async () => {
-    try {
-      const res = await fetch(`http://localhost:3000/api/categories`)
-      if (!res.ok) {
-        throw new Error('Failed to fetch category data')
-      }
-      const data = await res.json()
-      setUserData(data)
-    } catch (error) {
-      setError(error.message)
-    } finally {
-      setLoading(false)
-    }
+  if (!res.ok) {
+    throw new Error('Failed to fetch userData')
   }
 
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  if (error) {
-    return <p>Error: {error}</p>
-  }
-
-  if (!userData || userData.length === 0) {
-    return <Loading loading={loading} />
-  }
-
-  return <UserList userData={userData} loading={loading} />
+  return res.json()
 }
 
-export default ListCategory
+const UserListApp = async () => {
+  // Vars
+  const data = await getData()
+
+  return <CategoryList userData={data} />
+}
+
+export default UserListApp

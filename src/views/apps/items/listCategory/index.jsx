@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid'
 // Component Imports
 import CategoryListTable from './CategoryListTable'
 
+
 const UserList = ({ userData }) => {
   return (
     <Grid container spacing={6}>
