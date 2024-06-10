@@ -39,7 +39,7 @@ const PosPage = () => {
     () => (
       <section className='bg-gray-100 py-12 text-gray-700 sm:py-16 lg:py-1 '>
         <div className='mx-auto w-full px-4 sm:px-6 lg:px-0'>
-          <div className='fixed lg:fixed md:fixed sm:fixed w-[62.4%] sm:w-[65%] md:w-[64.7%] lg:w-[60.5%] top-16 z-20 text-center flex justify-between'>
+          <div className='fixed lg:fixed md:fixed sm:fixed w-[62.4%] sm:w-[65%] md:w-[64.7%] lg:w-[60.5%] top-16 z-20 text-center flex justify-between bg-bl'>
             <h2 className='text-1xl font-bold sm:text-2xl lg:text-2xl lg:pt-2'>{categoryName}</h2>
             {/* Search Bar */}
             <div className='text-center'>

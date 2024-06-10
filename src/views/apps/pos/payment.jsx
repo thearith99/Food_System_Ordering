@@ -3,8 +3,10 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { FaShoppingCart } from 'react-icons/fa';
+import { IoPersonSharp } from "react-icons/io5";
 import Swal from 'sweetalert2';
 
+import AddUser from './addUser'; // Make sure the component name is correct here
 import homeContext from '@/contexts/home.context';
 import { useStorage } from '@/hooks/useHook';
 
@@ -17,6 +19,7 @@ const Payment = () => {
   const [cards, setCart] = useStorage('CardList', [])
   const [prices, setPrice] = useState(0)
   const [total, setTotal] = useState(0)
+  const [addUserOpen, setAddUserOpen] = useState(false)
   const shippingCost = 0
 
   useEffect(() => {
@@ -73,7 +76,6 @@ const Payment = () => {
     setCart(newCards)
   }
 
-
   const handleCheckout = async () => {
     console.log('Checking out with cards:', cards);
 
@@ -113,7 +115,6 @@ const Payment = () => {
     }
   };
 
-
   return (
     <>
       <section className='min-h-screen bg-gray-100 py-0 sm:py-0 lg:py-0'>
@@ -131,8 +132,16 @@ const Payment = () => {
           </div>
           <div className='mx-auto max-w-md sm:py-0 sm:mt-7 lg:py-0 py-3'>
             <div className='rounded-lg bg-white shadow-lg'>
-              <div className='px-4 py-6 sm:px-2 sm:py-4 lg:px-6 lg:py-8'>
-                <div className='flow-root lg:h-[305px] lg:w-[330px] sm:h-[200px] overflow-y-auto'>
+              <div className='w-full flex h-10 justify-center'>
+                <div onClick={() => setAddUserOpen(!addUserOpen)} className='p-1 m-2 pl-2 text-xs border border-gray-400 rounded w-[95%] cursor-pointer hover:text-blue-700'>
+                  <span className='font-bold items-center justify-start flex gap-1'>
+                  <IoPersonSharp />
+                  Select Customer
+                  </span>
+                </div>
+              </div>
+              <div className='px-4 py-6 sm:px-2 sm:py-2 lg:px-6 lg:py-2'>
+                <div className='flow-root lg:h-[305px] lg:w-[330px] sm:h-[200px] overflow-y-auto lg:pt-2'>
                   <ul className='lg:-my-7 sm:-my-6 lg:w-full lg:h-96 sm:w-full sm:h-96'>
                     {/* list cart when add food */}
                     {cards.map((item, i) => (
@@ -220,7 +229,7 @@ const Payment = () => {
                     <span className='text-xs font-normal text-gray-400'>USD</span> {total}$
                   </p>
                 </div>
-                <div className='mt-6 text-center'>
+                <div className='mt-6  text-center'>
                   <button
                     type='button'
                     className='group inline-flex lg:w-full sm:w-full items-center justify-center rounded-md bg-orange-500 px-6 py-4 lg:text-lg sm:text-xs font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800 cursor-pointer'
@@ -244,6 +253,7 @@ const Payment = () => {
           </div>
         </div>
       </section>
+      <AddUser open={addUserOpen} handleClose={() => setAddUserOpen(!addUserOpen)} />
     </>
   )
 }
