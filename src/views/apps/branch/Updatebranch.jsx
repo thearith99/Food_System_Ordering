@@ -17,31 +17,26 @@ import MenuItem from '@mui/material/MenuItem'
 
 import CustomTextField from '@core/components/mui/TextField'
 
-const Updateproduct = ({ product }) => {
+const UpdateBranch = ({ branch }) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState('')
   const [data, setData] = useState({})
-  const [imageUrl, setImageUrl] = useState(null)
-  const [categories, setCategories] = useState([])
-
+  const [locations, setLocations] = useState([])
   useEffect(() => {
-    getCategory()
+    fetchLocations()
   }, [])
 
-  const getCategory = async () => {
+  const fetchLocations = async () => {
     try {
-      const response = await fetch('/api/categories')
-      const jsonData = await response.json()
-
-      setCategories(jsonData)
+      const response = await axios.get('/api/location')
+      setLocations(response.data)
     } catch (error) {
-      console.error('Error fetching categories:', error)
+      console.error('Error fetching Locations:', error)
     }
   }
-
   useEffect(() => {
-    setData(product)
-  }, [product])
+    setData(branch)
+  }, [branch])
 
   const handleReset = () => {
     setOpen(false)
@@ -58,13 +53,10 @@ const Updateproduct = ({ product }) => {
     const formDataObj = new FormData()
 
     formDataObj.append('name', data.name)
-    formDataObj.append('image', data.image)
-    formDataObj.append('categoryId', data.categoryId)
-    formDataObj.append('price', data.price)
-    formDataObj.append('description', data.description)
+    formDataObj.append('locationId', data.locationId)
 
     try {
-      const res = await fetch(`/api/products/${data.id}`, {
+      const res = await fetch(`/api/branch/${data.id}`, {
         method: 'PUT',
         body: formDataObj
       })
@@ -76,14 +68,14 @@ const Updateproduct = ({ product }) => {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Product updated successfully!'
+          text: 'Branch updated successfully!'
         }).then(() => {
           window.location.reload() // Refresh the page
         })
       }
     } catch (error) {
-      console.error('Error updating Product:', error)
-      setError('Failed to update Product. Please try again.')
+      console.error('Error updating Branch:', error)
+      setError('Failed to update Branch. Please try again.')
     }
   }
 
@@ -100,7 +92,7 @@ const Updateproduct = ({ product }) => {
       >
         <div>
           <div className='flex items-center justify-between plb-5 pli-6'>
-            <Typography variant='h5'>Update Category</Typography>
+            <Typography variant='h5'>Update Branch</Typography>
             <IconButton onClick={handleReset}>
               <i className='tabler-x text-textPrimary' />
             </IconButton>
@@ -108,9 +100,8 @@ const Updateproduct = ({ product }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              {/* Category Name Input */}
               <CustomTextField
-                label='Category Name'
+                label='Branch Name'
                 fullWidth
                 value={data?.name}
                 onChange={e =>
@@ -120,37 +111,16 @@ const Updateproduct = ({ product }) => {
                   })
                 }
               />
-              {/* Category Image Input */}
-              {imageUrl ? (
-                <img src={imageUrl} width={50} height={50} />
-              ) : (
-                <img src={`http://localhost:3000/images/${data?.image}.jpg`} width={50} height={50} />
-              )}
               <CustomTextField
-                type='file'
-                label='Category Image'
-                fullWidth
-                onChange={e => {
-                  const selectedImage = e.target.files[0]
-
-                  setData({
-                    ...data,
-                    image: selectedImage
-                  }),
-                    setImageUrl(URL.createObjectURL(selectedImage))
-                }}
-              />
-              {/* Parent ID Input */}
-              <CustomTextField
-                label='Category'
+                label='Location  '
                 select
                 fullWidth
-                id='select-category'
-                value={data?.categoryId}
+                id='select-Location'
+                value={data?.locationId}
                 onChange={e =>
                   setData({
                     ...data,
-                    categoryId: e.target.value
+                    locationId: e.target.value
                   })
                 }
                 SelectProps={{
@@ -164,34 +134,12 @@ const Updateproduct = ({ product }) => {
                   }
                 }}
               >
-                {categories.map(category => (
-                  <MenuItem key={category.id} value={category.id}>
-                    {category.name}
+                {locations.map(location => (
+                  <MenuItem key={location.id} value={location.id}>
+                    {location.markName}
                   </MenuItem>
                 ))}
               </CustomTextField>
-              <CustomTextField
-                label='price'
-                fullWidth
-                value={data?.price}
-                onChange={e =>
-                  setData({
-                    ...data,
-                    price: e.target.value
-                  })
-                }
-              />
-              <CustomTextField
-                label='description'
-                fullWidth
-                value={data?.description}
-                onChange={e =>
-                  setData({
-                    ...data,
-                    description: e.target.value
-                  })
-                }
-              />
               {/* Error message */}
               {error && (
                 <Typography variant='body2' color='error'>
@@ -215,4 +163,4 @@ const Updateproduct = ({ product }) => {
   )
 }
 
-export default Updateproduct
+export default UpdateBranch

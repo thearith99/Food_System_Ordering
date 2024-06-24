@@ -4,6 +4,7 @@
 import { useEffect, useState, useMemo } from 'react'
 
 // Next Imports
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
@@ -12,7 +13,7 @@ import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Checkbox from '@mui/material/Checkbox'
-import CircularProgress from '@mui/material/CircularProgress'
+import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
@@ -34,12 +35,13 @@ import {
 } from '@tanstack/react-table'
 
 // Component Imports
-import CustomTextField from '@core/components/mui/TextField'
+import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
-import TableFilters from './TableFilters'
-import AddFoodDrawer from './AddfoodDrawer'
-import Updateproduct from './Updateproduct'
-import Deleteproduct from './Deleteproduct'
+import CustomTextField from '@core/components/mui/TextField'
+
+// Util Imports
+import { getInitials } from '@/utils/getInitials'
+import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -82,43 +84,37 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 // Column Definitions
 const columnHelper = createColumnHelper()
 
-const ListCategory = ({ tableData }) => {
+const UserListTable = ({ tableData }) => {
   // States
-  const [AddFoodOpen, setAddFoodOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(tableData)
+
+  const [data, setData] = useState(...[tableData])
   const [globalFilter, setGlobalFilter] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [categories, setCategories] = useState([])
+
+  const [locations, setLocations] = useState([])
 
   useEffect(() => {
-    getCategories()
+    getLocation()
   }, [])
 
-  const getCategories = async () => {
+  const getLocation = async () => {
     try {
-      const response = await fetch('/api/categories')
-
+      const response = await fetch('/api/location')
       if (!response.ok) {
-        throw new Error('Failed to fetch categories')
+        throw new Error('Failed to fetch locations')
       }
-
       const jsonData = await response.json()
-
-      setCategories(jsonData)
-      setLoading(false) // Set loading to false after fetching categories
+      setLocations(jsonData)
     } catch (error) {
-      console.error('Error fetching categories:', error)
+      console.error('Error fetching locations:', error)
     }
   }
 
-  const getCategoryName = categoryId => {
-    const category = categories.find(cat => cat.id === categoryId)
-
-
-return category ? category.name : 'Unknown'
+  const getLocationName = locationId => {
+    const location = locations.find(loc => loc.id === locationId)
+    return location ? location.markName : 'Unknown'
   }
-
+  // Hooks
   const { lang: locale } = useParams()
 
   const columns = useMemo(
@@ -145,75 +141,61 @@ return category ? category.name : 'Unknown'
           />
         )
       },
-      columnHelper.accessor('name', {
-        header: 'Product Name',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {row.original.name}
-                </Typography>
-              </div>
+      columnHelper.accessor('orderNumber', {
+        header: 'Order Number',
+        cell: ({ row }) => (
+          <div className='flex items-center gap-4'>
+            <div className='flex flex-col'>
+              <Typography color='text.primary' className='font-medium'>
+                {row.original.orderNumber}
+              </Typography>
             </div>
-          )
+          </div>
+        )
       }),
-      columnHelper.accessor('categoryId', {
-        header: 'Category Name',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {getCategoryName(row.original.categoryId)}
-                </Typography>
-              </div>
-            </div>
-          )
+      columnHelper.accessor('locationId', {
+        header: 'Location',
+        cell: ({ row }) => (
+          <Typography className='capitalize' color='text.primary'>
+            {getLocationName(row.original.locationId)}
+          </Typography>
+        )
       }),
-      columnHelper.accessor('price', {
-        header: 'Price',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {row.original.price}
-                </Typography>
-              </div>
-            </div>
-          )
+      columnHelper.accessor('createdAt', {
+        header: 'Created At',
+        cell: ({ row }) => (
+          <Typography className='capitalize' color='text.primary'>
+            {row.original.createdAt}
+          </Typography>
+        )
       }),
-      columnHelper.accessor('image', {
-        header: 'Image',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <img src={`http://localhost:3000/images/${row.original.image}.jpg`} alt='' width='50' height='50' />
-          )
+      columnHelper.accessor('updatedAt', {
+        header: 'Updated At',
+        cell: ({ row }) => <Typography>{row.original.updatedAt}</Typography>
+      }),
+      columnHelper.accessor('status', {
+        header: 'Status',
+        cell: ({ row }) => <Typography>{row.original.status}</Typography>
       }),
       columnHelper.accessor('action', {
         header: 'Action',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center'>
-              <Deleteproduct product={row.original.id} />
-              <Updateproduct product={row.original} />
-            </div>
-          ),
+        cell: () => (
+          <div className='flex items-center'>
+            <IconButton>
+              <i className='tabler-trash text-[22px] text-textSecondary' />
+            </IconButton>
+            <IconButton>
+              <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
+                <i className='tabler-eye text-[22px] text-textSecondary' />
+              </Link>
+            </IconButton>
+          </div>
+        ),
         enableSorting: false
       })
     ],
-    [categories, loading]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [locations]
   )
 
   const table = useReactTable({
@@ -231,7 +213,7 @@ return category ? category.name : 'Unknown'
         pageSize: 10
       }
     },
-    enableRowSelection: true, // enable row selection for all rows
+    enableRowSelection: true, //enable row selection for all rows
     // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
@@ -248,8 +230,7 @@ return category ? category.name : 'Unknown'
   return (
     <>
       <Card>
-        <CardHeader title='List Food' className='pbe-4' />
-        <TableFilters setData={setData} tableData={tableData} />{' '}
+        <CardHeader title='List Order' className='pbe-4' />
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -265,25 +246,9 @@ return category ? category.name : 'Unknown'
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search Product'
+              placeholder='Search Order'
               className='is-full sm:is-auto'
             />
-            <Button
-              color='secondary'
-              variant='tonal'
-              startIcon={<i className='tabler-upload' />}
-              className='is-full sm:is-auto'
-            >
-              Export
-            </Button>
-            <Button
-              variant='contained'
-              startIcon={<i className='tabler-plus' />}
-              onClick={() => setAddFoodOpen(!AddFoodOpen)}
-              className='is-full sm:is-auto'
-            >
-              Add New Product
-            </Button>
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -351,9 +316,8 @@ return category ? category.name : 'Unknown'
           }}
         />
       </Card>
-      <AddFoodDrawer open={AddFoodOpen} handleClose={() => setAddFoodOpen(!AddFoodOpen)} />
     </>
   )
 }
 
-export default ListCategory
+export default UserListTable

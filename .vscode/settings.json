@@ -52,5 +52,12 @@
     "tanstack",
     "vuexy"
   ],
+<<<<<<< HEAD
   "WillLuke.nextjs.hasPrompted": true
+=======
+  "WillLuke.nextjs.hasPrompted": true,
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
+>>>>>>> 97f0aacf026c61ce1871e33f7f5a49535f7f5567
 }

@@ -23,12 +23,10 @@ import CustomTextField from '@core/components/mui/TextField'
 // Vars
 
 const AddUserDrawer = ({ open, handleClose }) => {
-  const [nameProduct, setNameProduct] = useState('')
-  const [imageProduct, setImageProduct] = useState('')
-  const [categoryId, setCategoryId] = useState('')
-  const [categories, setCategories] = useState([])
-  const [price, setPrice] = useState('')
-  const [description, setDescription] = useState('')
+  const [nameBranch, setNameBranch] = useState('')
+  const [imageProduct, setImageProduct] = useState(null) // Set to null to handle file input correctly
+  const [locationId, setLocationId] = useState('')
+  const [locations, setLocations] = useState([])
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -36,45 +34,37 @@ const AddUserDrawer = ({ open, handleClose }) => {
   }, [open]) // Reset error state when the drawer opens or closes
 
   useEffect(() => {
-    // Fetch categories from API
-    const fetchCategories = async () => {
+    // Fetch Locations from API
+    const fetchLocations = async () => {
       try {
-        const response = await axios.get('/api/categories')
-
-        setCategories(response.data)
+        const response = await axios.get('/api/location')
+        setLocations(response.data)
       } catch (error) {
-        console.error('Error fetching categories:', error)
+        console.error('Error fetching Locations:', error)
       }
     }
-
-    fetchCategories()
+    fetchLocations()
   }, [])
 
-  const getCategoryIdByName = name => {
-    const category = categories.find(category => category.name === name)
-
-    return category ? category.id : ''
+  const getLocationIdByName = markName => {
+    const location = locations.find(location => location.markName === markName)
+    return location ? location.id : ''
   }
 
   const handleSubmit = async e => {
     e.preventDefault()
 
     const formDataObj = new FormData()
-
-    formDataObj.append('name', nameProduct)
-    formDataObj.append('image', imageProduct)
-    formDataObj.append('categoryId', getCategoryIdByName(categoryId))
-    formDataObj.append('price', price)
-    formDataObj.append('description', description)
+    formDataObj.append('name', nameBranch)
+    // formDataObj.append('image', imageProduct)
+    formDataObj.append('locationId', getLocationIdByName(locationId))
 
     try {
-      await axios.post('/api/products', formDataObj)
+      await axios.post('/api/branch', formDataObj)
       handleClose()
-      setNameProduct('')
-      setImageProduct('')
-      setCategoryId('')
-      setDescription('')
-      setPrice('')
+      setNameBranch('')
+      // setImageProduct(null)
+      setLocationId('')
       Swal.fire({
         icon: 'success',
         title: 'Success!',
@@ -83,18 +73,15 @@ const AddUserDrawer = ({ open, handleClose }) => {
         window.location.reload() // Refresh the page
       })
     } catch (error) {
-      // console.error('Error submitting form:', error);
       setError('Failed to submit data. Please try again.')
     }
   }
 
   const handleReset = () => {
     handleClose()
-    setNameProduct('')
-    setImageProduct('')
-    setCategoryId('')
-    setDescription('')
-    setPrice('')
+    setNameBranch('')
+    // setImageProduct(null)
+    setLocationId('')
   }
 
   return (
@@ -107,7 +94,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <div className='flex items-center justify-between plb-5 pli-6'>
-        <Typography variant='h5'>Add New Food</Typography>
+        <Typography variant='h5'>Add New Branch</Typography>
         <IconButton onClick={handleReset}>
           <i className='tabler-x text-textPrimary' />
         </IconButton>
@@ -116,26 +103,19 @@ const AddUserDrawer = ({ open, handleClose }) => {
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
           <CustomTextField
-            label='Product Name'
+            label='Branch Name'
             fullWidth
-            value={nameProduct}
-            onChange={e => setNameProduct(e.target.value)}
+            value={nameBranch}
+            onChange={e => setNameBranch(e.target.value)}
           />
-          <CustomTextField
-            type='file'
-            label='Product Image'
-            fullWidth
-            onChange={e => setImageProduct(e.target.files[0])}
-          />
-          <CustomTextField label='Description' type='text' fullWidth onChange={e => setDescription(e.target.value)} />
+
           <FormControl fullWidth>
             <CustomTextField
-              labelId='category-label'
+              labelId='location-label'
+              value={locationId}
+              label='Location'
               select
-              fullWidth
-              value={categoryId}
-              label='Category'
-              onChange={e => setCategoryId(e.target.value)}
+              onChange={e => setLocationId(e.target.value)}
               SelectProps={{
                 MenuProps: {
                   PaperProps: {
@@ -147,22 +127,22 @@ const AddUserDrawer = ({ open, handleClose }) => {
                 }
               }}
             >
-              {categories.map(category => (
-                <MenuItem key={category.id} value={category.name}>
-                  {category.name}
+              {locations.map(location => (
+                <MenuItem key={location.id} value={location.markName}>
+                  {location.markName}
                 </MenuItem>
               ))}
             </CustomTextField>
           </FormControl>
-          <CustomTextField label='Price' type='text' fullWidth onChange={e => setPrice(e.target.value)} />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
               Submit
             </Button>
-            <Button variant='tonal' color='error' type='reset' onClick={() => handleReset()}>
+            <Button variant='tonal' color='error' type='reset' onClick={handleReset}>
               Cancel
             </Button>
           </div>
+          {error && <Typography color='error'>{error}</Typography>}
         </form>
       </div>
     </Drawer>

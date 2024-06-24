@@ -12,12 +12,12 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-import Chip from '@mui/material/Chip'
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // Third-party Imports
 import classnames from 'classnames'
@@ -36,12 +36,9 @@ import {
 } from '@tanstack/react-table'
 
 // Component Imports
-import TableFilters from './TableFilters'
-import AddUserDrawer from './AddUserDrawer'
 import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
-import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
@@ -85,31 +82,44 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
   return <CustomTextField {...props} value={value} onChange={e => setValue(e.target.value)} />
 }
 
-// Vars
-const userRoleObj = {
-  admin: { icon: 'tabler-crown', color: 'error' },
-  author: { icon: 'tabler-device-desktop', color: 'warning' },
-  editor: { icon: 'tabler-edit', color: 'info' },
-  maintainer: { icon: 'tabler-chart-pie', color: 'success' },
-  subscriber: { icon: 'tabler-user', color: 'primary' }
-}
-
-const userStatusObj = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
-}
-
 // Column Definitions
 const columnHelper = createColumnHelper()
 
 const UserListTable = ({ tableData }) => {
   // States
-  const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-
-  const [data, setData] = useState(...[tableData])
+  const [data, setData] = useState(tableData)
   const [globalFilter, setGlobalFilter] = useState('')
+  const [locations, setLocations] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    getLocation()
+  }, [])
+
+  const getLocation = async () => {
+    try {
+      const response = await fetch('/api/location')
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch locations')
+      }
+
+      const jsonData = await response.json()
+
+      setLocations(jsonData)
+      setLoading(false) // Set loading to false after fetching categories
+    } catch (error) {
+      console.error('Error fetching locations:', error)
+    }
+  }
+
+  const getLocationName = locationId => {
+    const location = locations.find(loc => loc.id === locationId)
+
+
+return location ? location.markName : 'Unknown'
+  }
 
   // Hooks
   const { lang: locale } = useParams()
@@ -138,94 +148,77 @@ const UserListTable = ({ tableData }) => {
           />
         )
       },
-      columnHelper.accessor('fullName', {
-        header: 'User',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-4'>
-            {getAvatar({ avatar: row.original.avatar, fullName: row.original.fullName })}
-            <div className='flex flex-col'>
-              <Typography color='text.primary' className='font-medium'>
-                {row.original.fullName}
-              </Typography>
-              <Typography variant='body2'>{row.original.username}</Typography>
+      columnHelper.accessor('orderNumber', {
+        header: 'Order Number',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <div className='flex items-center gap-4'>
+              <div className='flex flex-col'>
+                <Typography color='text.primary' className='font-medium'>
+                  {row.original.orderNumber}
+                </Typography>
+              </div>
             </div>
-          </div>
-        )
+          )
       }),
-      columnHelper.accessor('role', {
-        header: 'Role',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-2'>
-            <Icon
-              className={userRoleObj[row.original.role].icon}
-              sx={{ color: `var(--mui-palette-${userRoleObj[row.original.role].color}-main)` }}
-            />
+      columnHelper.accessor('locationId', {
+        header: 'Location',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
             <Typography className='capitalize' color='text.primary'>
-              {row.original.role}
+              {getLocationName(row.original.locationId)}
             </Typography>
-          </div>
-        )
+          )
       }),
-      columnHelper.accessor('currentPlan', {
-        header: 'Plan',
-        cell: ({ row }) => (
-          <Typography className='capitalize' color='text.primary'>
-            {row.original.currentPlan}
-          </Typography>
-        )
+      columnHelper.accessor('createdAt', {
+        header: 'Created At',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Typography className='capitalize' color='text.primary'>
+              {row.original.createdAt}
+            </Typography>
+          )
       }),
-      columnHelper.accessor('billing', {
-        header: 'Billing',
-        cell: ({ row }) => <Typography>{row.original.billing}</Typography>
+      columnHelper.accessor('updatedAt', {
+        header: 'Updated At',
+        cell: ({ row }) =>
+          loading ? <CircularProgress size={24} /> : <Typography>{row.original.updatedAt}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            <Chip
-              variant='tonal'
-              className='capitalize'
-              label={row.original.status}
-              color={userStatusObj[row.original.status]}
-              size='small'
-            />
-          </div>
-        )
+        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.status}</Typography>)
+      }),
+      columnHelper.accessor('userId', {
+        header: 'User Id',
+        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.userId}</Typography>)
       }),
       columnHelper.accessor('action', {
         header: 'Action',
-        cell: () => (
-          <div className='flex items-center'>
-            <IconButton>
-              <i className='tabler-trash text-[22px] text-textSecondary' />
-            </IconButton>
-            <IconButton>
-              <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
-                <i className='tabler-eye text-[22px] text-textSecondary' />
-              </Link>
-            </IconButton>
-            <OptionMenu
-              iconClassName='text-[22px] text-textSecondary'
-              options={[
-                {
-                  text: 'Download',
-                  icon: 'tabler-download text-[22px]',
-                  menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                },
-                {
-                  text: 'Edit',
-                  icon: 'tabler-edit text-[22px]',
-                  menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                }
-              ]}
-            />
-          </div>
-        ),
+        cell: () =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <div className='flex items-center'>
+              <IconButton>
+                <i className='tabler-trash text-[22px] text-textSecondary' />
+              </IconButton>
+              <IconButton>
+                <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
+                  <i className='tabler-eye text-[22px] text-textSecondary' />
+                </Link>
+              </IconButton>
+            </div>
+          ),
         enableSorting: false
       })
     ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [locations, loading]
   )
 
   const table = useReactTable({
@@ -243,7 +236,7 @@ const UserListTable = ({ tableData }) => {
         pageSize: 10
       }
     },
-    enableRowSelection: true, //enable row selection for all rows
+    enableRowSelection: true, // enable row selection for all rows
     // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
@@ -257,21 +250,10 @@ const UserListTable = ({ tableData }) => {
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
-  const getAvatar = params => {
-    const { avatar, fullName } = params
-
-    if (avatar) {
-      return <CustomAvatar src={avatar} size={34} />
-    } else {
-      return <CustomAvatar size={34}>{getInitials(fullName)}</CustomAvatar>
-    }
-  }
-
   return (
     <>
       <Card>
-        <CardHeader title='Filters' className='pbe-4' />
-        <TableFilters setData={setData} tableData={tableData} />
+        <CardHeader title='List Order' className='pbe-4' />
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -287,25 +269,9 @@ const UserListTable = ({ tableData }) => {
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search User'
+              placeholder='Search Order'
               className='is-full sm:is-auto'
             />
-            <Button
-              color='secondary'
-              variant='tonal'
-              startIcon={<i className='tabler-upload' />}
-              className='is-full sm:is-auto'
-            >
-              Export
-            </Button>
-            <Button
-              variant='contained'
-              startIcon={<i className='tabler-plus' />}
-              onClick={() => setAddUserOpen(!addUserOpen)}
-              className='is-full sm:is-auto'
-            >
-              Add New User
-            </Button>
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -373,7 +339,6 @@ const UserListTable = ({ tableData }) => {
           }}
         />
       </Card>
-      <AddUserDrawer open={addUserOpen} handleClose={() => setAddUserOpen(!addUserOpen)} />
     </>
   )
 }

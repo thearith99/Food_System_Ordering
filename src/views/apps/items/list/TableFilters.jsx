@@ -1,25 +1,28 @@
 import { useState, useEffect } from 'react'
+
 import CardContent from '@mui/material/CardContent'
 import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
+
 import CustomTextField from '@core/components/mui/TextField'
 
-const TableFilters = ({ filterProducts }) => {
+const TableFilters = ({ setData, tableData }) => {
   // States
   const [categories, setCategories] = useState([])
   const [category, setCategory] = useState('')
-  const [products, setProducts] = useState([]) // Assuming you have products state
-  const [filteredProducts, setFilteredProducts] = useState([]) // State for filtered products
 
   useEffect(() => {
     getCategory()
-    // Fetch initial products
-    getProducts()
   }, [])
 
   const getCategory = async () => {
     try {
       const response = await fetch('/api/categories')
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories')
+      }
+
       const jsonData = await response.json()
 
       setCategories(jsonData)
@@ -28,26 +31,19 @@ const TableFilters = ({ filterProducts }) => {
     }
   }
 
-  const getProducts = async () => {
-    try {
-      const response = await fetch('/api/products')
-      const jsonData = await response.json()
+  useEffect(() => {
+    const filteredData = tableData?.filter(item => {
+      if (category && item.categoryId !== category) {
+        return false
+      } else {
+        return true
+      }
+    })
 
-      // Set initial products and filteredProducts state to show all products
-      setProducts(jsonData)
-      setFilteredProducts(jsonData)
-    } catch (error) {
-      console.error('Error fetching products:', error)
-    }
-  }
+    setData(filteredData)
+  }, [category, tableData, setData])
 
-  const handleCategoryChange = event => {
-    const selectedCategory = event.target.value
-    setCategory(selectedCategory)
-    filterProducts(selectedCategory)
-  }
-
-  return (
+return (
     <CardContent>
       <Grid container spacing={6}>
         <Grid item xs={12} sm={4}>
@@ -56,13 +52,13 @@ const TableFilters = ({ filterProducts }) => {
             fullWidth
             id='select-category'
             value={category}
-            onChange={handleCategoryChange}
+            onChange={e => setCategory(e.target.value)}
             SelectProps={{ displayEmpty: true }}
           >
             <MenuItem value=''>All Products</MenuItem>
-            {categories.map(category => (
-              <MenuItem key={category.id} value={category.name}>
-                {category.name}
+            {categories.map(cat => (
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
               </MenuItem>
             ))}
           </CustomTextField>

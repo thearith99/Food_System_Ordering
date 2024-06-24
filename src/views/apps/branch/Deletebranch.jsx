@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 
-const Deleteproduct = ({ product }) => {
+const Deletebranch = ({ branch }) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState('')
 
@@ -25,7 +25,7 @@ const Deleteproduct = ({ product }) => {
     e.preventDefault()
 
     try {
-      const res = await fetch(`/api/products/${product}`, {
+      const res = await fetch(`/api/branch/${branch.id}`, {
         method: 'DELETE'
       })
 
@@ -34,14 +34,14 @@ const Deleteproduct = ({ product }) => {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Product deleted successfully!'
+          text: 'Branch deleted successfully!'
         }).then(() => {
           window.location.reload() // Refresh the page
         })
       }
     } catch (error) {
-      console.error('Error deleting product:', error)
-      setError('Failed to delete product. Please try again.')
+      console.error('Error deleting branch:', error)
+      setError('Failed to delete branch. Please try again.')
     }
   }
 
@@ -58,7 +58,7 @@ const Deleteproduct = ({ product }) => {
       >
         <div>
           <div className='flex items-center justify-between plb-5 pli-6'>
-            <Typography variant='h5'>Delete product</Typography>
+            <Typography variant='h5'>Delete branch</Typography>
             <IconButton onClick={handleReset}>
               <i className='tabler-x text-textPrimary' />
             </IconButton>
@@ -66,7 +66,7 @@ const Deleteproduct = ({ product }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              <p>Are you sure you want to delete this {product.name}?</p>
+              <p>Are you sure you want to delete this branch name {branch.name}?</p>
               <div className='flex items-center gap-4'>
                 <Button variant='contained' type='submit'>
                   Delete
@@ -83,4 +83,4 @@ const Deleteproduct = ({ product }) => {
   )
 }
 
-export default Deleteproduct
+export default Deletebranch
