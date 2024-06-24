@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid'
 import MenuItem from '@mui/material/MenuItem'
 import CustomTextField from '@core/components/mui/TextField'
 
+<<<<<<< HEAD
 const TableFilters = ({ filterProducts }) => {
   // States
   const [categories, setCategories] = useState([])
@@ -15,19 +16,36 @@ const TableFilters = ({ filterProducts }) => {
     getCategory()
     // Fetch initial products
     getProducts()
+=======
+const TableFilters = ({ setData, tableData }) => {
+  // States
+  const [categories, setCategories] = useState([])
+  const [category, setCategory] = useState('')
+
+  useEffect(() => {
+    getCategory()
+>>>>>>> origin/master
   }, [])
 
   const getCategory = async () => {
     try {
       const response = await fetch('/api/categories')
+<<<<<<< HEAD
       const jsonData = await response.json()
 
+=======
+      if (!response.ok) {
+        throw new Error('Failed to fetch categories')
+      }
+      const jsonData = await response.json()
+>>>>>>> origin/master
       setCategories(jsonData)
     } catch (error) {
       console.error('Error fetching categories:', error)
     }
   }
 
+<<<<<<< HEAD
   const getProducts = async () => {
     try {
       const response = await fetch('/api/products')
@@ -47,6 +65,18 @@ const TableFilters = ({ filterProducts }) => {
     filterProducts(selectedCategory)
   }
 
+=======
+  useEffect(() => {
+    const filteredData = tableData?.filter(item => {
+      if (category && item.categoryId !== category) {
+        return false
+      } else {
+        return true
+      }
+    })
+    setData(filteredData)
+  }, [category, tableData, setData])
+>>>>>>> origin/master
   return (
     <CardContent>
       <Grid container spacing={6}>
@@ -56,6 +86,7 @@ const TableFilters = ({ filterProducts }) => {
             fullWidth
             id='select-category'
             value={category}
+<<<<<<< HEAD
             onChange={handleCategoryChange}
             SelectProps={{ displayEmpty: true }}
           >
@@ -63,6 +94,15 @@ const TableFilters = ({ filterProducts }) => {
             {categories.map(category => (
               <MenuItem key={category.id} value={category.name}>
                 {category.name}
+=======
+            onChange={e => setCategory(e.target.value)}
+            SelectProps={{ displayEmpty: true }}
+          >
+            <MenuItem value=''>All Products</MenuItem>
+            {categories.map(cat => (
+              <MenuItem key={cat.id} value={cat.id}>
+                {cat.name}
+>>>>>>> origin/master
               </MenuItem>
             ))}
           </CustomTextField>

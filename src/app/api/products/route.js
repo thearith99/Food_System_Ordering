@@ -65,8 +65,12 @@ export const GET = async request => {
       ...product
     }))
 
+<<<<<<< HEAD
 
 return NextResponse.json(response)
+=======
+    return NextResponse.json(response)
+>>>>>>> origin/master
   } catch (error) {
     return NextResponse.error(new Error('Failed to fetch products'))
   }

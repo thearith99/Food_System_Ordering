@@ -12,19 +12,11 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
-<<<<<<< HEAD
-import Chip from '@mui/material/Chip'
-=======
->>>>>>> origin/master
 import Checkbox from '@mui/material/Checkbox'
 import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
-<<<<<<< HEAD
-=======
-import CircularProgress from '@mui/material/CircularProgress'
->>>>>>> origin/master
 
 // Third-party Imports
 import classnames from 'classnames'
@@ -43,18 +35,9 @@ import {
 } from '@tanstack/react-table'
 
 // Component Imports
-<<<<<<< HEAD
-import TableFilters from './TableFilters'
-import AddUserDrawer from './AddUserDrawer'
 import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
-import CustomAvatar from '@core/components/mui/Avatar'
-=======
-import OptionMenu from '@core/components/option-menu'
-import TablePaginationComponent from '@components/TablePaginationComponent'
-import CustomTextField from '@core/components/mui/TextField'
->>>>>>> origin/master
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
@@ -98,41 +81,17 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
   return <CustomTextField {...props} value={value} onChange={e => setValue(e.target.value)} />
 }
 
-<<<<<<< HEAD
-// Vars
-const userRoleObj = {
-  admin: { icon: 'tabler-crown', color: 'error' },
-  author: { icon: 'tabler-device-desktop', color: 'warning' },
-  editor: { icon: 'tabler-edit', color: 'info' },
-  maintainer: { icon: 'tabler-chart-pie', color: 'success' },
-  subscriber: { icon: 'tabler-user', color: 'primary' }
-}
-
-const userStatusObj = {
-  active: 'success',
-  pending: 'warning',
-  inactive: 'secondary'
-}
-
-=======
->>>>>>> origin/master
 // Column Definitions
 const columnHelper = createColumnHelper()
 
 const UserListTable = ({ tableData }) => {
   // States
-<<<<<<< HEAD
-  const [addUserOpen, setAddUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
 
   const [data, setData] = useState(...[tableData])
   const [globalFilter, setGlobalFilter] = useState('')
-=======
-  const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(tableData)
-  const [globalFilter, setGlobalFilter] = useState('')
+
   const [locations, setLocations] = useState([])
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     getLocation()
@@ -146,7 +105,6 @@ const UserListTable = ({ tableData }) => {
       }
       const jsonData = await response.json()
       setLocations(jsonData)
-      setLoading(false) // Set loading to false after fetching categories
     } catch (error) {
       console.error('Error fetching locations:', error)
     }
@@ -156,8 +114,6 @@ const UserListTable = ({ tableData }) => {
     const location = locations.find(loc => loc.id === locationId)
     return location ? location.markName : 'Unknown'
   }
->>>>>>> origin/master
-
   // Hooks
   const { lang: locale } = useParams()
 
@@ -185,60 +141,41 @@ const UserListTable = ({ tableData }) => {
           />
         )
       },
-<<<<<<< HEAD
-      columnHelper.accessor('fullName', {
-        header: 'User',
+      columnHelper.accessor('orderNumber', {
+        header: 'Order Number',
         cell: ({ row }) => (
           <div className='flex items-center gap-4'>
-            {getAvatar({ avatar: row.original.avatar, fullName: row.original.fullName })}
             <div className='flex flex-col'>
               <Typography color='text.primary' className='font-medium'>
-                {row.original.fullName}
+                {row.original.orderNumber}
               </Typography>
-              <Typography variant='body2'>{row.original.username}</Typography>
             </div>
           </div>
         )
       }),
-      columnHelper.accessor('role', {
-        header: 'Role',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-2'>
-            <Icon
-              className={userRoleObj[row.original.role].icon}
-              sx={{ color: `var(--mui-palette-${userRoleObj[row.original.role].color}-main)` }}
-            />
-            <Typography className='capitalize' color='text.primary'>
-              {row.original.role}
-            </Typography>
-          </div>
-        )
-      }),
-      columnHelper.accessor('currentPlan', {
-        header: 'Plan',
+      columnHelper.accessor('locationId', {
+        header: 'Location',
         cell: ({ row }) => (
           <Typography className='capitalize' color='text.primary'>
-            {row.original.currentPlan}
+            {getLocationName(row.original.locationId)}
           </Typography>
         )
       }),
-      columnHelper.accessor('billing', {
-        header: 'Billing',
-        cell: ({ row }) => <Typography>{row.original.billing}</Typography>
+      columnHelper.accessor('createdAt', {
+        header: 'Created At',
+        cell: ({ row }) => (
+          <Typography className='capitalize' color='text.primary'>
+            {row.original.createdAt}
+          </Typography>
+        )
+      }),
+      columnHelper.accessor('updatedAt', {
+        header: 'Updated At',
+        cell: ({ row }) => <Typography>{row.original.updatedAt}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            <Chip
-              variant='tonal'
-              className='capitalize'
-              label={row.original.status}
-              color={userStatusObj[row.original.status]}
-              size='small'
-            />
-          </div>
-        )
+        cell: ({ row }) => <Typography>{row.original.status}</Typography>
       }),
       columnHelper.accessor('action', {
         header: 'Action',
@@ -252,101 +189,13 @@ const UserListTable = ({ tableData }) => {
                 <i className='tabler-eye text-[22px] text-textSecondary' />
               </Link>
             </IconButton>
-            <OptionMenu
-              iconClassName='text-[22px] text-textSecondary'
-              options={[
-                {
-                  text: 'Download',
-                  icon: 'tabler-download text-[22px]',
-                  menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                },
-                {
-                  text: 'Edit',
-                  icon: 'tabler-edit text-[22px]',
-                  menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                }
-              ]}
-            />
           </div>
         ),
         enableSorting: false
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-=======
-      columnHelper.accessor('orderNumber', {
-        header: 'Order Number',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {row.original.orderNumber}
-                </Typography>
-              </div>
-            </div>
-          )
-      }),
-      columnHelper.accessor('locationId', {
-        header: 'Location',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <Typography className='capitalize' color='text.primary'>
-              {getLocationName(row.original.locationId)}
-            </Typography>
-          )
-      }),
-      columnHelper.accessor('createdAt', {
-        header: 'Created At',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <Typography className='capitalize' color='text.primary'>
-              {row.original.createdAt}
-            </Typography>
-          )
-      }),
-      columnHelper.accessor('updatedAt', {
-        header: 'Updated At',
-        cell: ({ row }) =>
-          loading ? <CircularProgress size={24} /> : <Typography>{row.original.updatedAt}</Typography>
-      }),
-      columnHelper.accessor('status', {
-        header: 'Status',
-        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.status}</Typography>)
-      }),
-      columnHelper.accessor('userId', {
-        header: 'User Id',
-        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.userId}</Typography>)
-      }),
-      columnHelper.accessor('action', {
-        header: 'Action',
-        cell: () =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center'>
-              <IconButton>
-                <i className='tabler-trash text-[22px] text-textSecondary' />
-              </IconButton>
-              <IconButton>
-                <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
-                  <i className='tabler-eye text-[22px] text-textSecondary' />
-                </Link>
-              </IconButton>
-            </div>
-          ),
-        enableSorting: false
-      })
-    ],
-    [locations, loading]
->>>>>>> origin/master
+    [locations]
   )
 
   const table = useReactTable({
@@ -364,11 +213,7 @@ const UserListTable = ({ tableData }) => {
         pageSize: 10
       }
     },
-<<<<<<< HEAD
     enableRowSelection: true, //enable row selection for all rows
-=======
-    enableRowSelection: true, // enable row selection for all rows
->>>>>>> origin/master
     // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
@@ -382,28 +227,10 @@ const UserListTable = ({ tableData }) => {
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
-<<<<<<< HEAD
-  const getAvatar = params => {
-    const { avatar, fullName } = params
-
-    if (avatar) {
-      return <CustomAvatar src={avatar} size={34} />
-    } else {
-      return <CustomAvatar size={34}>{getInitials(fullName)}</CustomAvatar>
-    }
-  }
-
-  return (
-    <>
-      <Card>
-        <CardHeader title='Filters' className='pbe-4' />
-        <TableFilters setData={setData} tableData={tableData} />
-=======
   return (
     <>
       <Card>
         <CardHeader title='List Order' className='pbe-4' />
->>>>>>> origin/master
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -419,31 +246,9 @@ const UserListTable = ({ tableData }) => {
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-<<<<<<< HEAD
-              placeholder='Search User'
-              className='is-full sm:is-auto'
-            />
-            <Button
-              color='secondary'
-              variant='tonal'
-              startIcon={<i className='tabler-upload' />}
-              className='is-full sm:is-auto'
-            >
-              Export
-            </Button>
-            <Button
-              variant='contained'
-              startIcon={<i className='tabler-plus' />}
-              onClick={() => setAddUserOpen(!addUserOpen)}
-              className='is-full sm:is-auto'
-            >
-              Add New User
-            </Button>
-=======
               placeholder='Search Order'
               className='is-full sm:is-auto'
             />
->>>>>>> origin/master
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -511,10 +316,6 @@ const UserListTable = ({ tableData }) => {
           }}
         />
       </Card>
-<<<<<<< HEAD
-      <AddUserDrawer open={addUserOpen} handleClose={() => setAddUserOpen(!addUserOpen)} />
-=======
->>>>>>> origin/master
     </>
   )
 }
