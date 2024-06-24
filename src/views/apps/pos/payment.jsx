@@ -12,20 +12,21 @@ import { useStorage } from '@/hooks/useHook';
 
 const Payment = () => {
   const {
-    state: { addcards },
+    state: { addcards, addusers },
     dispatch
   } = useContext(homeContext)
 
   const [cards, setCart] = useStorage('CardList', [])
   const [prices, setPrice] = useState(0)
   const [total, setTotal] = useState(0)
-  const [addUserOpen, setAddUserOpen] = useState(false)
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [selectedUserName, setSelectedUserName] = useState('');
   const shippingCost = 0
 
   useEffect(() => {
     const updatedCards = addcards.map(card => ({ ...card, quantity: 1 }))
 
-    // console.log(updatedCards);
+    console.log(updatedCards);
     let newCards = cards
     let exists = false
 
@@ -55,6 +56,19 @@ const Payment = () => {
     setPrice(sum)
     setTotal(sum + shippingCost)
   }, [cards])
+
+  useEffect(() => {
+    console.log('addusers:', addusers);
+
+    if (addusers) {
+      console.log('Selected user:', addusers.name);
+      setSelectedUserName(addusers.name);
+    } else {
+      console.log('User not found');
+      setSelectedUserName('');
+    }
+  }, [selectedUserName, addusers]);
+
 
   const removeFromCart = index => {
     const newCards = cards.filter((_, i) => i !== index)
@@ -135,8 +149,8 @@ const Payment = () => {
               <div className='w-full flex h-10 justify-center'>
                 <div onClick={() => setAddUserOpen(!addUserOpen)} className='p-1 m-2 pl-2 text-xs border border-gray-400 rounded w-[95%] cursor-pointer hover:text-blue-700'>
                   <span className='font-bold items-center justify-start flex gap-1'>
-                  <IoPersonSharp />
-                  Select Customer
+                    <IoPersonSharp />
+                    {selectedUserName ? selectedUserName : 'Select Customer'}
                   </span>
                 </div>
               </div>

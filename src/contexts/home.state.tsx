@@ -19,7 +19,7 @@ interface UserType {
 export interface homeInitialState {
   appName: string
   addcards: []
-  addusers:[]
+  addusers: {}
   products: ProductType[]
   users: UserType[]
   loading: boolean
@@ -28,7 +28,7 @@ export interface homeInitialState {
 export const initialState: homeInitialState = {
   appName: 'Food System Ordering',
   addcards: [],
-  addusers:[],
+  addusers:{},
   products: [],
   users:[],
   loading: false

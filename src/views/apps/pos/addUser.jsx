@@ -20,7 +20,7 @@ import CustomTextField from '@core/components/mui/TextField';
 
 const AddUser = ({ open, handleClose }) => {
   const {
-    state: { users },
+    state: { users, addusers },
     dispatch
   } = useContext(homeContext);
 
@@ -118,7 +118,16 @@ const AddUser = ({ open, handleClose }) => {
               <Select
                 labelId='customer-label'
                 value={selectedUser}
-                onChange={(e) => setSelectedUser(e.target.value)}
+                onChange={(e) => {
+                  const user = users.find(user => user.id === e.target.value);
+
+                  setSelectedUser(e.target.value);
+                  console.log('Selected user:', user);
+                  dispatch({
+                    field: 'addusers',
+                    value: user
+                  });
+                }}
               >
                 {/* <MenuItem value="">Select...</MenuItem> */}
                 {users.length > 0 && users.map((user) => (
