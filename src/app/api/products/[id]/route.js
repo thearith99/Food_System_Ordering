@@ -14,6 +14,18 @@ const prisma = new PrismaClient()
 // Update Product
 export const PUT = async req => {
   const path = req.nextUrl.pathname.split('/')
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+  const formData = await req.json()
+  const { id, name, price, description, image, categoryId, category } = formData
+
+  console.log('from form data:', formData)
+=======
+=======
+>>>>>>> origin/master
+>>>>>>> 361e9fae9d10d0d6fd2f43bd506581b2cad6c4af
   const id = path[path.length - 1]
   const formData = await req.formData()
   const name = formData.get('name')
@@ -24,6 +36,13 @@ export const PUT = async req => {
   const image = formData.get('image')
 
   console.log('ID from form data:', id)
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> b4b0cb207f5984ea6e36d842c669fbd0ca422c77
+=======
+>>>>>>> origin/master
+>>>>>>> 361e9fae9d10d0d6fd2f43bd506581b2cad6c4af
 
   try {
     // Check if the category exists

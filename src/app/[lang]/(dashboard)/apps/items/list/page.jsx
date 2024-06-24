@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Component Imports
 import CategoryList from '@views/apps/items/list'
 
@@ -20,3 +21,16 @@ const UserListApp = async () => {
 }
 
 export default UserListApp
+=======
+'use client'
+
+// React Imports
+// Component Imports
+import UserList from '@/views/apps/items/list'
+
+const ListCategory = () => {
+  return <UserList />
+}
+
+export default ListCategory
+>>>>>>> origin/master
