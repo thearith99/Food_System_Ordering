@@ -121,7 +121,7 @@ const BranchList = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
                   src={branch.imgSrc}
-                  alt={branch.name}
+                  alt={branch.id}
                   style={{
                     backgroundColor: 'black',
                     width: '50px',
@@ -129,8 +129,8 @@ const BranchList = () => {
                     marginRight: '10px'
                   }}
                 />
-                <span>{branch.name}</span>
               </div>
+              <div className='flex items-center'>{branch.name}</div>
               <div className='flex items-center'>
                 <DeleteBranch branch={branch} />
                 <UpdateBranch branch={branch} />

@@ -7,7 +7,7 @@ import { useEffect, useState, useMemo } from 'react'
 import { useParams } from 'next/navigation'
 import { getLocalizedUrl } from '@/utils/i18n'
 import axios from 'axios'
-import Link from 'next/link'
+
 // MUI Imports
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
@@ -37,9 +37,9 @@ import {
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@components/TablePaginationComponent'
-import AddbranchProduct from './Addproductinbranch'
-import UpdateBranchProduct from './UpdatebranchProduct'
-import DeleteBranchProduct from './DeletebranchProduct'
+import AddProductDiscount from './Addproductdiscount' // Ensure this is the correct import path
+import DeleteProductDiscount from './Deleteproductdiscount'
+import UpdateProductDiscount from './UpdateProductDiscount'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -85,33 +85,18 @@ const columnHelper = createColumnHelper()
 const ListCategory = () => {
   // States
   const { id } = useParams()
-  const [AddbranchProductOpen, setAddbranchProductOpen] = useState(false)
+  const [addProductDiscountOpen, setAddProductDiscountOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [products, setProducts] = useState([])
-  const [branchName, setBranchName] = useState('')
+  const [products, setProduct] = useState([])
   const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
   const locale = useParams().lang
-
-  useEffect(() => {
-    const fetchBranchName = async () => {
-      try {
-        const response = await axios.get(`/api/branch/${id}`) // Adjust the URL as needed
-        setBranchName(response.data.branch.name)
-        console.log('Fetched branch name:', response.data.branch.name)
-      } catch (error) {
-        console.error('Error fetching branch name:', error)
-      }
-    }
-
-    fetchBranchName()
-  }, [id])
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/branchProduct') // Adjust the URL as needed
+        const response = await axios.get('/api/ProductDiscount') // Adjust the URL as needed
         console.log('Fetched products:', response.data)
-        setProducts(response.data)
+        setProduct(response.data)
       } catch (error) {
         console.error('Error fetching products:', error)
       }
@@ -147,7 +132,7 @@ const ListCategory = () => {
     columnHelper.accessor('image', {
       header: 'Image',
       cell: ({ row }) => (
-        <img src={`http://localhost:3000/images/${row.original.image}.jpg`} alt='' width='50' height='50' />
+        <img src={`http://localhost:3000/images/${row.original.img}.jpg`} alt='' width='50' height='50' />
       )
     }),
     columnHelper.accessor('name', {
@@ -162,13 +147,13 @@ const ListCategory = () => {
         </div>
       )
     }),
-    columnHelper.accessor('availability', {
-      header: 'Availability',
+    columnHelper.accessor('discount', {
+      header: 'Discount',
       cell: ({ row }) => (
         <div className='flex items-center gap-4'>
           <div className='flex flex-col'>
             <Typography color='text.primary' className='font-medium'>
-              {row.original.status}
+              {row.original.discount}
             </Typography>
           </div>
         </div>
@@ -178,8 +163,8 @@ const ListCategory = () => {
       header: 'Action',
       cell: ({ row }) => (
         <div className='flex items-center'>
-          <DeleteBranchProduct branchProduct={row.original} />
-          <UpdateBranchProduct branchProduct={row.original} />
+          <DeleteProductDiscount product={row.original} />
+          <UpdateProductDiscount product={row.original} BranchId={id} />
         </div>
       ),
       enableSorting: false
@@ -218,26 +203,16 @@ const ListCategory = () => {
   return (
     <>
       <Card>
-        <CardHeader title={`Branch: ${branchName}`} className='pbe-4' />
+        <CardHeader title='List Discount Food' className='pbe-4' />
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <Button
             variant='contained'
             startIcon={<i className='tabler-arrow' />}
-            href={getLocalizedUrl(`apps/branching`, locale)}
+            href={getLocalizedUrl(`apps/branching/view/${id}`, locale)}
             className='is-full sm:is-auto'
           >
             Back
           </Button>
-          <Link href={getLocalizedUrl(`apps/branching/discount/${id}`, locale)} passHref>
-            <Button variant='contained' startIcon={<i className='tabler-plus' />} className='is-full sm:is-auto'>
-              View Discount{' '}
-            </Button>
-          </Link>
-          <Link href={getLocalizedUrl(`apps/branching/productdiscount/${id}`, locale)} passHref>
-            <Button variant='contained' startIcon={<i className='tabler-plus' />} className='is-full sm:is-auto'>
-              View Product Discount{' '}
-            </Button>
-          </Link>
         </div>
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
@@ -260,10 +235,10 @@ const ListCategory = () => {
             <Button
               variant='contained'
               startIcon={<i className='tabler-plus' />}
-              onClick={() => setAddbranchProductOpen(!AddbranchProductOpen)}
+              onClick={() => setAddProductDiscountOpen(!addProductDiscountOpen)}
               className='is-full sm:is-auto'
             >
-              Add New Branch Product
+              Add New Product Discount
             </Button>
           </div>
         </div>
@@ -332,11 +307,11 @@ const ListCategory = () => {
           }}
         />
       </Card>
-      <AddbranchProduct
-        open={AddbranchProductOpen}
-        handleClose={() => setAddbranchProductOpen(!AddbranchProductOpen)}
+      <AddProductDiscount
+        open={addProductDiscountOpen}
+        handleClose={() => setAddProductDiscountOpen(!addProductDiscountOpen)}
         BranchId={id}
-      />
+      />{' '}
     </>
   )
 }

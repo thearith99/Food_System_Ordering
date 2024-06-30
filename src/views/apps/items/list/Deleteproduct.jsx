@@ -25,7 +25,7 @@ const Deleteproduct = ({ product }) => {
     e.preventDefault()
 
     try {
-      const res = await fetch(`/api/products/${product}`, {
+      const res = await fetch(`/api/products/${product.id}`, {
         method: 'DELETE'
       })
 

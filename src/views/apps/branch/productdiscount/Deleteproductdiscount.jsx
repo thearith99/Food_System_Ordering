@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 
-const DeletebranchProduct = ({ branchProduct }) => {
+const Deletediscount = ({ product }) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState('')
 
@@ -25,7 +25,7 @@ const DeletebranchProduct = ({ branchProduct }) => {
     e.preventDefault()
 
     try {
-      const res = await fetch(`/api/branchProduct/${branchProduct.id}`, {
+      const res = await fetch(`/api/ProductDiscount/${product.id}`, {
         method: 'DELETE'
       })
 
@@ -34,14 +34,14 @@ const DeletebranchProduct = ({ branchProduct }) => {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Branch Product deleted successfully!'
+          text: 'Product discount deleted successfully!'
         }).then(() => {
           window.location.reload() // Refresh the page
         })
       }
     } catch (error) {
-      console.error('Error deleting branch Product', error)
-      setError('Failed to delete branch Product. Please try again.')
+      console.error('Error deleting discount', error)
+      setError('Failed to delete product discount. Please try again.')
     }
   }
 
@@ -58,7 +58,7 @@ const DeletebranchProduct = ({ branchProduct }) => {
       >
         <div>
           <div className='flex items-center justify-between plb-5 pli-6'>
-            <Typography variant='h5'>Delete branch Product</Typography>
+            <Typography variant='h5'>Delete Product Discount</Typography>
             <IconButton onClick={handleReset}>
               <i className='tabler-x text-textPrimary' />
             </IconButton>
@@ -66,7 +66,7 @@ const DeletebranchProduct = ({ branchProduct }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              <p>Are you sure you want to delete this branch Product name {branchProduct.product.name}?</p>
+              <p>Are you sure you want to delete this product discount name {product.product}?</p>
               <div className='flex items-center gap-4'>
                 <Button variant='contained' type='submit'>
                   Delete
@@ -83,4 +83,4 @@ const DeletebranchProduct = ({ branchProduct }) => {
   )
 }
 
-export default DeletebranchProduct
+export default Deletediscount

@@ -53,7 +53,7 @@ export const POST = async (req, res) => {
   }
 }
 
-export const GET = async request => {
+export const GET = async () => {
   try {
     const products = await prisma.product.findMany({
       include: {
@@ -62,7 +62,8 @@ export const GET = async request => {
     })
 
     const response = products.map(product => ({
-      ...product
+      ...product,
+      category: product.category.name
     }))
 
     return NextResponse.json(response)

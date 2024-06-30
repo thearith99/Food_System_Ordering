@@ -53,7 +53,7 @@ export const POST = async (req, res) => {
   }
 }
 
-export const GET = async request => {
+export const GET = async () => {
   try {
     const products = await prisma.branchProduct.findMany({
       include: {
@@ -63,7 +63,10 @@ export const GET = async request => {
     })
 
     const response = products.map(product => ({
-      ...product
+      ...product,
+      product: product.product.name,
+      image: product.product.image,
+      branch: product.branch.name
     }))
 
     return NextResponse.json(response)

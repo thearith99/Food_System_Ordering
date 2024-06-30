@@ -1,12 +1,4 @@
-import path from 'path'
-import { writeFile } from 'fs/promises'
-import { error } from 'console'
-import { buffer } from 'stream/consumers'
-
-import { request } from 'http'
-
-import { NextRequest, NextResponse } from 'next/server'
-
+import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -16,39 +8,37 @@ export const PUT = async req => {
   const path = req.nextUrl.pathname.split('/')
   const id = path[path.length - 1]
   const formData = await req.formData()
-  const name = formData.get('name')
-  const locationId = parseInt(formData.get('locationId'))
-
-  console.log('ID from form data:', id)
+  const amount = parseFloat(formData.get('amount'))
+  const branchId = parseInt(formData.get('branchId'))
 
   try {
     // Check if the category exists
-    const existingProductBranch = await prisma.branch.findUnique({
+    const existingDiscount = await prisma.discount.findUnique({
       where: { id: Number(id) }
     })
 
-    if (!existingProductBranch) {
-      return existingProductBranch.json({ error: 'Branch not found.' }, { status: 404 })
+    if (!existingDiscount) {
+      return existingDiscount.json({ error: 'Branch not found.' }, { status: 404 })
     }
 
     // Update other fields
-    await prisma.branch.update({
+    await prisma.discount.update({
       where: { id: Number(id) },
       data: {
-        name: name,
-        locationId: locationId
+        amount: amount,
+        branchId: branchId
       }
     })
 
     return NextResponse.json({
-      Message: 'Branch updated successfully.',
+      Message: 'Discount updated successfully.',
       status: 200
     })
   } catch (error) {
     console.log('Error occurred', error)
 
     return NextResponse.json({
-      Message: 'Failed to update Branch.',
+      Message: 'Failed to update Discount.',
       status: 500
     })
   }
@@ -61,28 +51,28 @@ export const DELETE = async (req, res) => {
 
   try {
     // Check if the Product exists
-    const existingBranch = await prisma.branch.findUnique({
+    const existingDiscount = await prisma.discount.findUnique({
       where: { id: Number(id) }
     })
 
-    if (!existingBranch) {
-      return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
+    if (!existingDiscount) {
+      return NextResponse.json({ error: 'Discount not found.' }, { status: 404 })
     }
 
     // Delete the category
-    await prisma.branch.delete({
+    await prisma.discount.delete({
       where: { id: Number(id) }
     })
 
     return NextResponse.json({
-      Message: 'Branch deleted successfully.',
+      Message: 'Discount deleted successfully.',
       status: 200
     })
   } catch (error) {
     console.log('Error occurred', error)
 
     return NextResponse.json({
-      Message: 'Failed to delete Branch.',
+      Message: 'Failed to delete Discount.',
       status: 500
     })
   }
@@ -95,23 +85,23 @@ export const GET = async (req, res) => {
 
   try {
     // Check if the Branch exists
-    const branch = await prisma.branch.findUnique({
+    const discount = await prisma.discount.findUnique({
       where: { id: Number(id) }
     })
 
-    if (!branch) {
-      return NextResponse.json({ error: 'Branch not found.' }, { status: 404 })
+    if (!discount) {
+      return NextResponse.json({ error: 'Discount not found.' }, { status: 404 })
     }
 
     return NextResponse.json({
-      branch,
+      discount,
       status: 200
     })
   } catch (error) {
     console.log('Error occurred', error)
 
     return NextResponse.json({
-      Message: 'Failed to get Branch.',
+      Message: 'Failed to get Discount.',
       status: 500
     })
   }

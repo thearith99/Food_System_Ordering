@@ -50,11 +50,11 @@ const AddUserDrawer = ({ open, handleClose }) => {
     fetchCategories()
   }, [])
 
-  const getCategoryIdByName = name => {
-    const category = categories.find(category => category.name === name)
+  // const getCategoryIdByName = name => {
+  //   const category = categories.find(category => category.name === name)
 
-    return category ? category.id : ''
-  }
+  //   return category ? category.id : ''
+  // }
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -63,7 +63,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
 
     formDataObj.append('name', nameProduct)
     formDataObj.append('image', imageProduct)
-    formDataObj.append('categoryId', getCategoryIdByName(categoryId))
+    formDataObj.append('categoryId', categoryId)
     formDataObj.append('price', price)
     formDataObj.append('description', description)
 
@@ -148,7 +148,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
               }}
             >
               {categories.map(category => (
-                <MenuItem key={category.id} value={category.name}>
+                <MenuItem key={category.id} value={category.id}>
                   {category.name}
                 </MenuItem>
               ))}

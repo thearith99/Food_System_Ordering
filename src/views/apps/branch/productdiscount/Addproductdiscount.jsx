@@ -13,50 +13,62 @@ import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
-
 import FormControl from '@mui/material/FormControl'
 
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
-// Vars
+const AddProductDiscountDrawer = ({ open, handleClose, BranchId }) => {
+  const [productId, setProductId] = useState('')
+  const [products, setProducts] = useState([])
+  const [branchproducts, setbranchProducts] = useState([])
+  const [discountId, setDiscountId] = useState('')
+  const [discount, setDiscount] = useState([])
+  const [branchdiscount, setbranchDiscount] = useState([])
 
-const AddUserDrawer = ({ open, handleClose }) => {
-  const [amount, setAmount] = useState('')
-  const [branchId, setbranchId] = useState('')
-  const [branchs, setbranchs] = useState([])
   const [error, setError] = useState(null)
-
   useEffect(() => {
     setError(null) // Reset error state on component mount
   }, [open]) // Reset error state when the drawer opens or closes
 
   useEffect(() => {
-    // Fetch Branch from API
-    const fetchbranchs = async () => {
+    // Fetch products from API
+    const fetchProducts = async () => {
       try {
-        const response = await axios.get('/api/branch')
-        setbranchs(response.data)
+        const response = await axios.get('/api/branchProduct')
+        setProducts(response.data)
       } catch (error) {
-        console.error('Error fetching branch:', error)
+        console.error('Error fetching products:', error)
       }
     }
-    fetchbranchs()
+    fetchProducts()
   }, [])
+  useEffect(() => {
+    setbranchProducts(products.filter(product => String(product.branchId) === String(BranchId)))
+  }, [products, BranchId])
+  useEffect(() => {
+    const fetchDiscount = async () => {
+      try {
+        const response = await axios.get(`/api/discount`) // Adjust the URL as needed
+        setDiscount(response.data)
+      } catch (error) {
+        console.error('Error fetching discount:', error)
+      }
+    }
+    fetchDiscount()
+  }, [])
+  useEffect(() => {
+    setbranchDiscount(discount.filter(dis => String(dis.branchId) === String(BranchId)))
+  }, [discount, BranchId])
 
-  const getbranchIdByname = name => {
-    const branch = branchs.find(branch => branch.name === name)
-    return branch ? branch.id : ''
-  }
   const handleSubmit = async e => {
     e.preventDefault()
-
     const formDataObj = new FormData()
-    formDataObj.append('amount', amount)
-    formDataObj.append('branchId', getbranchIdByname(branchId))
+    formDataObj.append('productId', parseInt(productId))
+    formDataObj.append('discountId', parseInt(discountId)) // Corrected to use discountId
 
     try {
-      const response = await axios.post('/api/discount', formDataObj)
+      const response = await axios.post('/api/ProductDiscount', formDataObj)
 
       const { message, status } = response.data
 
@@ -85,10 +97,8 @@ const AddUserDrawer = ({ open, handleClose }) => {
       }
 
       handleClose()
-      setPrice('')
-      setStatus('')
-      setproductId('')
-      setbranchId('')
+      setProductId('')
+      setDiscountId('')
     } catch (error) {
       setError('Failed to submit data. Please try again.')
       Swal.fire({
@@ -101,8 +111,8 @@ const AddUserDrawer = ({ open, handleClose }) => {
 
   const handleReset = () => {
     handleClose()
-    setAmount('')
-    setbranchId('')
+    setProductId('')
+    setDiscountId('')
   }
 
   return (
@@ -115,7 +125,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <div className='flex items-center justify-between plb-5 pli-6'>
-        <Typography variant='h5'>Add New Discount</Typography>
+        <Typography variant='h5'>Add New Product Discount</Typography>
         <IconButton onClick={handleReset}>
           <i className='tabler-x text-textPrimary' />
         </IconButton>
@@ -125,11 +135,11 @@ const AddUserDrawer = ({ open, handleClose }) => {
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
           <FormControl fullWidth>
             <CustomTextField
-              labelId='branch-label'
-              value={branchId}
-              label='Branch'
+              labelId='product-label'
+              value={productId}
+              label='Product'
               select
-              onChange={e => setbranchId(e.target.value)}
+              onChange={e => setProductId(e.target.value)}
               SelectProps={{
                 MenuProps: {
                   PaperProps: {
@@ -141,17 +151,39 @@ const AddUserDrawer = ({ open, handleClose }) => {
                 }
               }}
             >
-              <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                {branchs.map(branch => (
-                  <MenuItem key={branch.id} value={branch.name}>
-                    {branch.name}
-                  </MenuItem>
-                ))}
-              </div>
+              {branchproducts.map(product => (
+                <MenuItem key={product.id} value={product.productId}>
+                  {product.product.name}
+                </MenuItem>
+              ))}
+            </CustomTextField>
+          </FormControl>
+          <FormControl fullWidth>
+            <CustomTextField
+              labelId='discount-label'
+              value={discountId}
+              label='Discount'
+              select
+              onChange={e => setDiscountId(e.target.value)}
+              SelectProps={{
+                MenuProps: {
+                  PaperProps: {
+                    style: {
+                      maxHeight: '200px',
+                      overflowY: 'auto'
+                    }
+                  }
+                }
+              }}
+            >
+              {branchdiscount.map(dis => (
+                <MenuItem key={dis.id} value={dis.id}>
+                  {dis.amount}
+                </MenuItem>
+              ))}
             </CustomTextField>
           </FormControl>
 
-          <CustomTextField label='Price' fullWidth value={amount} onChange={e => setAmount(e.target.value)} />
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
               Submit
@@ -167,4 +199,4 @@ const AddUserDrawer = ({ open, handleClose }) => {
   )
 }
 
-export default AddUserDrawer
+export default AddProductDiscountDrawer

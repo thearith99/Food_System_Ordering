@@ -24,7 +24,6 @@ import CustomTextField from '@core/components/mui/TextField'
 
 const AddUserDrawer = ({ open, handleClose }) => {
   const [nameBranch, setNameBranch] = useState('')
-  const [imageProduct, setImageProduct] = useState(null) // Set to null to handle file input correctly
   const [locationId, setLocationId] = useState('')
   const [locations, setLocations] = useState([])
   const [error, setError] = useState(null)

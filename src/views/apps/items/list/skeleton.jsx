@@ -131,14 +131,7 @@ const Loadingskel = ({ loading }) => {
         </CustomTextField>
         <div className='flex flex-col sm:flex-row is-full sm:is-auto items-start sm:items-center gap-4'>
           <DebouncedInput placeholder='Search User' className='is-full sm:is-auto' />
-          <Button
-            color='secondary'
-            variant='tonal'
-            startIcon={<i className='tabler-upload' />}
-            className='is-full sm:is-auto'
-          >
-            Export
-          </Button>
+
           <Button variant='contained' startIcon={<i className='tabler-plus' />} className='is-full sm:is-auto'>
             Add New Food
           </Button>

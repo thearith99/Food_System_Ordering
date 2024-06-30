@@ -20,7 +20,7 @@ import CustomTextField from '@core/components/mui/TextField'
 
 // Vars
 
-const AddUserDrawer = ({ open, handleClose }) => {
+const AddUserDrawer = ({ open, handleClose, BranchId }) => {
   const Available = 'Available'
   const Unavailable = 'Unavailable'
 
@@ -29,8 +29,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
 
   const [productId, setproductId] = useState('')
   const [products, setproducts] = useState([])
-  const [branchId, setbranchId] = useState('')
-  const [branchs, setbranchs] = useState([])
+  const [branchName, setBranchName] = useState('')
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -50,26 +49,23 @@ const AddUserDrawer = ({ open, handleClose }) => {
     fetchproducts()
   }, [])
   useEffect(() => {
-    // Fetch Branch from API
-    const fetchbranchs = async () => {
+    const fetchBranchName = async () => {
       try {
-        const response = await axios.get('/api/branch')
-        setbranchs(response.data)
+        const response = await axios.get(`/api/branch/${BranchId}`) // Adjust the URL as needed
+        setBranchName(response.data.branch.name)
+        console.log('Fetched branch name:', response.data.branch.name)
       } catch (error) {
-        console.error('Error fetching branch:', error)
+        console.error('Error fetching branch name:', error)
       }
     }
-    fetchbranchs()
-  }, [])
+    fetchBranchName()
+  }, [BranchId])
 
   const getproductIdByname = name => {
     const product = products.find(product => product.name === name)
     return product ? product.id : ''
   }
-  const getbranchIdByname = name => {
-    const branch = branchs.find(branch => branch.name === name)
-    return branch ? branch.id : ''
-  }
+
   const handleSubmit = async e => {
     e.preventDefault()
 
@@ -77,7 +73,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
     formDataObj.append('price', price)
     formDataObj.append('status', status)
     formDataObj.append('productId', getproductIdByname(productId))
-    formDataObj.append('branchId', getbranchIdByname(branchId))
+    formDataObj.append('branchId', parseInt(BranchId))
 
     try {
       const response = await axios.post('/api/branchProduct', formDataObj)
@@ -112,7 +108,6 @@ const AddUserDrawer = ({ open, handleClose }) => {
       setPrice('')
       setStatus('')
       setproductId('')
-      setbranchId('')
     } catch (error) {
       setError('Failed to submit data. Please try again.')
       Swal.fire({
@@ -128,7 +123,6 @@ const AddUserDrawer = ({ open, handleClose }) => {
     setPrice('')
     setStatus('')
     setproductId('')
-    setbranchId('')
   }
 
   return (
@@ -149,31 +143,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
       <Divider />
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-          <FormControl fullWidth>
-            <CustomTextField
-              labelId='branch-label'
-              value={branchId}
-              label='Branch'
-              select
-              onChange={e => setbranchId(e.target.value)}
-              SelectProps={{
-                MenuProps: {
-                  PaperProps: {
-                    style: {
-                      maxHeight: '200px',
-                      overflowY: 'auto'
-                    }
-                  }
-                }
-              }}
-            >
-              {branchs.map(branch => (
-                <MenuItem key={branch.id} value={branch.name}>
-                  {branch.name}
-                </MenuItem>
-              ))}
-            </CustomTextField>
-          </FormControl>
+          <Typography variant='body1'>Branch: {branchName}</Typography>
           <FormControl fullWidth>
             <CustomTextField
               labelId='product-label'
