@@ -12,7 +12,6 @@ export const LayoutRouter = memo(({ children }) => {
   const { dispatch } = contextValue
 
   useEffect(() => {
-
     // For Get Product
     const getProduct = async () => {
       try {
@@ -98,4 +97,4 @@ export const LayoutRouter = memo(({ children }) => {
 
   return <homeContext.Provider value={{ ...contextValue }}>{children}</homeContext.Provider>
 })
-export default LayoutRouter;
+export default LayoutRouter

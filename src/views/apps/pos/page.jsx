@@ -40,7 +40,7 @@ const Page = () => {
           </div>
           {/* Display Grid */}
           <div className='grid gap-6 sm:gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:py-16 '>
-            {filteredProducts.length && loading  === 0 ? (
+            {filteredProducts.length && loading === 0 ? (
               <div className='col-span-4 text-center flex justify-center items-center h-96'>
                 <div className='border-gray-300 h-20 w-20 animate-spin rounded-full border-8 border-t-blue-600' />
               </div>
@@ -70,15 +70,15 @@ const Page = () => {
                     </div>
                     <h3 className='mb-2 text-sm text-gray-400'>{product?.name}</h3>
                   </div>
-                    <button
-                      onClick={() => {
-                        dispatch({
-                          field: 'addcards',
-                          value: [ product]
-                        })
-                      }}
-                      className='hover:border-white/40 flex items-center justify-center rounded-md border border-transparent bg-blue-500/70 px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer'
-                    >
+                  <button
+                    onClick={() => {
+                      dispatch({
+                        field: 'addcards',
+                        value: [product]
+                      })
+                    }}
+                    className='hover:border-white/40 flex items-center justify-center rounded-md border border-transparent bg-blue-500/70 px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none focus:ring-4 focus:ring-blue-300 cursor-pointer'
+                  >
                     <FaShoppingCart className='mr-2 h-6 w-6' />
                     Add to cart
                   </button>

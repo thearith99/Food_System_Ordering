@@ -33,21 +33,21 @@ export const PUT = async (req, res) => {
     // Update the image if provided
     let imageName = existingCategory.image
 
-    // if (image) {
-    //   const buffer = Buffer.from(await image.arrayBuffer())
+    if (image) {
+      const buffer = Buffer.from(await image.arrayBuffer())
 
-    //   // imageName = name.replaceAll("", "_");
-    //   imageName = name.replace(/\s/g, '_') // Replace all spaces with underscores
-    //   const imageExt = image.name.split('.').pop()
+      // imageName = name.replaceAll("", "_");
+      imageName = name.replace(/\s/g, '_') // Replace all spaces with underscores
+      const imageExt = image.name.split('.').pop()
 
-    //   // Write the new image file
-    //   await writeFile(
-    //     `${process.cwd()}/public/images/${imageName}.${imageExt}`,
+      // Write the new image file
+      await writeFile(
+        `${process.cwd()}/public/images/${imageName}.${imageExt}`,
 
-    //     // `${process.cwd()}/public/images/${imageName}.jpg`,
-    //     buffer
-    //   )
-    // }
+        // `${process.cwd()}/public/images/${imageName}.jpg`,
+        buffer
+      )
+    }
 
     // Update other fields
     await prisma.category.update({

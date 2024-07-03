@@ -9,18 +9,18 @@ interface ProductType {
 }
 
 interface UserType {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
+  id: number
+  name: string
+  email: string
+  phone: string
+  password: string
 }
 
 interface LocationType {
-  id: number;
-  markName: string;
-  lat: number;
-  long: number;
+  id: number
+  markName: string
+  lat: number
+  long: number
 }
 
 export interface homeInitialState {
@@ -30,15 +30,17 @@ export interface homeInitialState {
   products: ProductType[]
   users: UserType[]
   locations: LocationType[]
+  selectedLocation: null | LocationType
   loading: boolean
 }
 
 export const initialState: homeInitialState = {
   appName: 'Food System Ordering',
   addcards: [],
-  addusers:{},
+  addusers: {},
   products: [],
-  users:[],
-  locations:[],
+  users: [],
+  locations: [],
+  selectedLocation: null,
   loading: false
 }
