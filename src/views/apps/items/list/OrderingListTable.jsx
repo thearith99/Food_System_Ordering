@@ -100,10 +100,13 @@ const UserListTable = ({ tableData }) => {
   const getLocation = async () => {
     try {
       const response = await fetch('/api/location')
+
       if (!response.ok) {
         throw new Error('Failed to fetch locations')
       }
+
       const jsonData = await response.json()
+
       setLocations(jsonData)
     } catch (error) {
       console.error('Error fetching locations:', error)
@@ -112,8 +115,12 @@ const UserListTable = ({ tableData }) => {
 
   const getLocationName = locationId => {
     const location = locations.find(loc => loc.id === locationId)
-    return location ? location.markName : 'Unknown'
+
+
+return location ? location.markName : 'Unknown'
   }
+
+
   // Hooks
   const { lang: locale } = useParams()
 

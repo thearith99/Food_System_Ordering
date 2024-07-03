@@ -16,12 +16,20 @@ interface UserType {
   password: string;
 }
 
+interface LocationType {
+  id: number;
+  markName: string;
+  lat: number;
+  long: number;
+}
+
 export interface homeInitialState {
   appName: string
   addcards: []
   addusers: {}
   products: ProductType[]
   users: UserType[]
+  locations: LocationType[]
   loading: boolean
 }
 
@@ -31,5 +39,6 @@ export const initialState: homeInitialState = {
   addusers:{},
   products: [],
   users:[],
+  locations:[],
   loading: false
 }

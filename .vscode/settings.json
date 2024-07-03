@@ -59,5 +59,9 @@
   "[dotenv]": {
     "editor.defaultFormatter": "foxundermoon.shell-format"
   }
+<<<<<<< HEAD
 >>>>>>> 97f0aacf026c61ce1871e33f7f5a49535f7f5567
+=======
+>>>>>>> origin/master
+>>>>>>> b7c01953868ca9385f9947f83fcc67d0dcc12ade
 }

@@ -1,5 +1,3 @@
-'use client'
-
 // React Imports
 import { useEffect, useState, useMemo } from 'react'
 
@@ -40,7 +38,7 @@ import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
 
-import DeleteOrdering from './DeleteOrdering'
+import DeleteLocation from './DeleteLocation'
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
@@ -87,7 +85,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 // Column Definitions
 const columnHelper = createColumnHelper()
 
-const OrderingListTable = () => {
+const LocationListTable = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([])
@@ -95,15 +93,15 @@ const OrderingListTable = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getOrder()
+    getLocations()
   }, [])
 
-  const getOrder = async () => {
+  const getLocations = async () => {
     try {
-      const response = await fetch('/api/orders')
+      const response = await fetch('/api/locations')
 
       if (!response.ok) {
-        throw new Error('Failed to fetch orders')
+        throw new Error('Failed to fetch locations')
       }
 
       const jsonData = await response.json()
@@ -111,7 +109,7 @@ const OrderingListTable = () => {
       setData(jsonData)
       setLoading(false)
     } catch (error) {
-      console.error('Error fetching orders:', error)
+      console.error('Error fetching locations:', error)
     }
   }
 
@@ -142,8 +140,8 @@ const OrderingListTable = () => {
           />
         )
       },
-      columnHelper.accessor('orderNumber', {
-        header: 'Order Number',
+      columnHelper.accessor('markName', {
+        header: 'Mark Name',
         cell: ({ row }) =>
           loading ? (
             <CircularProgress size={24} />
@@ -151,56 +149,36 @@ const OrderingListTable = () => {
             <div className='flex items-center gap-4'>
               <div className='flex flex-col'>
                 <Typography color='text.primary' className='font-medium'>
-                  {row.original.orderNumber}
+                  {row.original.markName}
                 </Typography>
               </div>
             </div>
           )
       }),
-      columnHelper.accessor('createdAt', {
-        header: 'Created At',
+      columnHelper.accessor('lat', {
+        header: 'Lat',
         cell: ({ row }) =>
           loading ? (
             <CircularProgress size={24} />
           ) : (
             <Typography className='capitalize' color='text.primary'>
-              {row.original.createdAt}
+              {row.original.lat}
             </Typography>
           )
       }),
-      columnHelper.accessor('updatedAt', {
-        header: 'Updated At',
-        cell: ({ row }) =>
-          loading ? <CircularProgress size={24} /> : <Typography>{row.original.updatedAt}</Typography>
-      }),
-      columnHelper.accessor('status', {
-        header: 'Status',
-        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.status}</Typography>)
-      }),
-      columnHelper.accessor('userId', {
-        header: 'User Id',
-        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.userId}</Typography>)
-      }),
-      columnHelper.accessor('locationId', {
-        header: 'location Id',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <Typography className='capitalize' color='text.primary'>
-              {row.original.locationId}
-            </Typography>
-          )
+      columnHelper.accessor('long', {
+        header: 'Long',
+        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.long}</Typography>)
       }),
       columnHelper.accessor('action', {
         header: 'Action',
-        cell: ({ row }) => (
+        cell: ({ row }) =>
           loading ? (
             <CircularProgress size={24} />
           ) : (
             <div className='flex items-center'>
               <IconButton>
-                <DeleteOrdering order={row.original.id}/>
+                <DeleteLocation location={row.original.id} />
               </IconButton>
               <IconButton>
                 <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
@@ -208,8 +186,7 @@ const OrderingListTable = () => {
                 </Link>
               </IconButton>
             </div>
-          )
-        ),
+          ),
         enableSorting: false
       })
     ],
@@ -248,7 +225,7 @@ const OrderingListTable = () => {
   return (
     <>
       <Card>
-        <CardHeader title='List Order' className='pbe-4' />
+        <CardHeader title='List Location Order' className='pbe-4' />
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -264,7 +241,7 @@ const OrderingListTable = () => {
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search Order'
+              placeholder='Search Location'
               className='is-full sm:is-auto'
             />
           </div>
@@ -338,4 +315,4 @@ const OrderingListTable = () => {
   )
 }
 
-export default OrderingListTable
+export default LocationListTable

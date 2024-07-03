@@ -58,6 +58,8 @@ const UpdateCategory = ({ category }) => {
           icon: 'success',
           title: 'Success!',
           text: 'Category updated successfully!'
+        }).then(() => {
+          window.location.reload() // Refresh the page
         })
       }
     } catch (error) {

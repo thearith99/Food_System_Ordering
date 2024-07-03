@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import Button from '@mui/material/Button';
 import Drawer from '@mui/material/Drawer';
@@ -8,14 +7,14 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import Divider from '@mui/material/Divider';
 
-const DeleteCategory = ({ category }) => {
+const DeleteLocation = ({ location }) => {
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    setData(category);
-  }, [category]);
+    setData(location);
+  }, [location]);
 
   const handleReset = () => {
     setOpen(false);
@@ -30,23 +29,25 @@ const DeleteCategory = ({ category }) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`/api/categories/${data.id}`, {
+      const res = await fetch(`/api/locations/${location}`, {
         method: 'DELETE'
       });
 
-      if (res.status === 200) {
+      if (res.ok) {
         handleReset();
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Category deleted successfully!'
+          text: 'Location deleted successfully!'
         }).then(() => {
-          window.location.reload() // Refresh the page
-        })
+          window.location.reload(); // Refresh the page
+        });
+      } else {
+        throw new Error('Failed to delete location');
       }
     } catch (error) {
-      console.error('Error deleting category:', error);
-      setError('Failed to delete category. Please try again.');
+      console.error('Error deleting location:', error);
+      setError('Failed to delete location. Please try again.');
     }
   };
 
@@ -63,7 +64,7 @@ const DeleteCategory = ({ category }) => {
       >
         <div>
           <div className='flex items-center justify-between plb-5 pli-6'>
-            <Typography variant='h5'>Delete Category</Typography>
+            <Typography variant='h5'>Delete Location</Typography>
             <IconButton onClick={handleReset}>
               <i className='tabler-x text-textPrimary' />
             </IconButton>
@@ -71,12 +72,13 @@ const DeleteCategory = ({ category }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-            <p>Are you sure you want to delete this {data?.name}?</p>
+              <p>Are you sure you want to delete this location {data?.id}?</p>
+              {error && <Typography variant="body2" color="error">{error}</Typography>}
               <div className='flex items-center gap-4'>
                 <Button variant='contained' type='submit'>
                   Delete
                 </Button>
-                <Button variant='tonal' color='error' type='reset' onClick={handleReset}>
+                <Button variant='outlined' color='secondary' type='button' onClick={handleReset}>
                   Cancel
                 </Button>
               </div>
@@ -88,4 +90,4 @@ const DeleteCategory = ({ category }) => {
   );
 };
 
-export default DeleteCategory;
+export default DeleteLocation;

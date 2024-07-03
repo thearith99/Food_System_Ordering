@@ -59,8 +59,32 @@ export const LayoutRouter = memo(({ children }) => {
       }
     }
 
+    // For Get Location
+    const getLocation = async () => {
+      try {
+        const response = await fetch('/api/locations')
+        const jsonData = await response.json()
+
+        if (jsonData) {
+          // console.log('LayoutRouter', jsonData)
+          dispatch({
+            field: 'locations',
+            value: jsonData
+          })
+        }
+
+        // dispatch({
+        //   field: 'loading',
+        //   value: true
+        // })
+      } catch (error) {
+        console.error('Error fetching users:', error)
+      }
+    }
+
     getProduct()
     getUser()
+    getLocation()
   }, [])
 
   // useEffect(() => {
