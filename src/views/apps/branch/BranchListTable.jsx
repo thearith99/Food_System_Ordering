@@ -40,10 +40,10 @@ const ProductTable = ({ branchId, products }) => {
             filteredProducts.map(product => (
               <TableRow key={product.id}>
                 <TableCell>{product.id}</TableCell>
-                <TableCell>{product.product.name}</TableCell>
+                <TableCell>{product.product}</TableCell>
                 <TableCell>
                   <img
-                    src={`http://localhost:3000/images/${product.product.image}.jpg`}
+                    src={`http://localhost:3000/images/${product.image}.jpg`}
                     alt={product.product.name}
                     width='50'
                     height='50'

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 
 // Component Imports
 import UserList from '@views/apps/ordering'
-import Loading from '@views/apps/ordering/skeleton'
+import Loading from '@views/apps/location/skeleton'
 
 const ListOrder = () => {
   // State to hold category data and loading state
@@ -19,7 +19,9 @@ const ListOrder = () => {
       if (!res.ok) {
         throw new Error('Failed to fetch Order data')
       }
+
       const data = await res.json()
+
       setUserData(data)
     } catch (error) {
       setError(error.message)

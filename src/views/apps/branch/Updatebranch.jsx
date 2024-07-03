@@ -28,7 +28,7 @@ const UpdateBranch = ({ branch }) => {
 
   const fetchLocations = async () => {
     try {
-      const response = await axios.get('/api/location')
+      const response = await axios.get('/api/locations')
       setLocations(response.data)
     } catch (error) {
       console.error('Error fetching Locations:', error)

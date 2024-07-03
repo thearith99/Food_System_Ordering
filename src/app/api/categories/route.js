@@ -25,6 +25,21 @@ export const POST = async (req, res) => {
     return NextResponse.json({ error: 'No image received.' }, { status: 400 })
   }
 
+  if (parentId) {
+    const parentCategory = await prisma.category.findUnique({
+      where: { id: parentId }
+    })
+
+    console.log(`Parent ID: ${parentId}`)
+    console.log(`Parent Category: ${JSON.stringify(parentCategory)}`)
+
+    if (!parentCategory) {
+      console.error(`Parent category with ID ${parentId} does not exist.`)
+
+      return NextResponse.json({ error: `Parent category with ID ${parentId} does not exist.` }, { status: 400 })
+    }
+  }
+
   const buffer = Buffer.from(await image.arrayBuffer())
   const imageName = name.replaceAll('', '_')
   const imageExt = image.name.split('.').pop()

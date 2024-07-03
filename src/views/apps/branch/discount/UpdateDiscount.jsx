@@ -85,7 +85,7 @@ const UpdateBranch = ({ discount }) => {
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
               <FormControl fullWidth>
                 <CustomTextField
-                  label='Discount Amount'
+                  label='Discount %'
                   fullWidth
                   value={data?.amount}
                   onChange={e => setData({ ...data, amount: e.target.value })}

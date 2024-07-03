@@ -150,7 +150,7 @@ const ListCategory = () => {
         <img src={`http://localhost:3000/images/${row.original.image}.jpg`} alt='' width='50' height='50' />
       )
     }),
-    columnHelper.accessor('name', {
+    columnHelper.accessor('product', {
       header: 'Product Name',
       cell: ({ row }) => (
         <div className='flex items-center gap-4'>
@@ -162,8 +162,20 @@ const ListCategory = () => {
         </div>
       )
     }),
-    columnHelper.accessor('availability', {
-      header: 'Availability',
+    columnHelper.accessor('price', {
+      header: 'Price',
+      cell: ({ row }) => (
+        <div className='flex items-center gap-4'>
+          <div className='flex flex-col'>
+            <Typography color='text.primary' className='font-medium'>
+              {row.original.price}
+            </Typography>
+          </div>
+        </div>
+      )
+    }),
+    columnHelper.accessor('status', {
+      header: 'Status',
       cell: ({ row }) => (
         <div className='flex items-center gap-4'>
           <div className='flex flex-col'>

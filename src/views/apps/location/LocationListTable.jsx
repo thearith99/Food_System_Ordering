@@ -1,12 +1,9 @@
-'use client'
-
 // React Imports
 import { useEffect, useState, useMemo } from 'react'
 
 // Next Imports
+import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import { getLocalizedUrl } from '@/utils/i18n'
-import axios from 'axios'
 
 // MUI Imports
 import Card from '@mui/material/Card'
@@ -14,9 +11,11 @@ import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Checkbox from '@mui/material/Checkbox'
+import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // Third-party Imports
 import classnames from 'classnames'
@@ -35,11 +34,15 @@ import {
 } from '@tanstack/react-table'
 
 // Component Imports
-import CustomTextField from '@core/components/mui/TextField'
+import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
-import AddProductDiscount from './Addproductdiscount' // Ensure this is the correct import path
-import DeleteProductDiscount from './Deleteproductdiscount'
-import UpdateProductDiscount from './UpdateProductDiscount'
+import CustomTextField from '@core/components/mui/TextField'
+
+import DeleteLocation from './DeleteLocation'
+
+// Util Imports
+import { getInitials } from '@/utils/getInitials'
+import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -82,94 +85,113 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 // Column Definitions
 const columnHelper = createColumnHelper()
 
-const ListCategory = () => {
+const LocationListTable = () => {
   // States
-  const { id } = useParams()
-  const [addProductDiscountOpen, setAddProductDiscountOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [products, setProduct] = useState([])
   const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
-  const locale = useParams().lang
+  const [loading, setLoading] = useState(true)
+
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('/api/ProductDiscount') // Adjust the URL as needed
-        console.log('Fetched products:', response.data)
-        setProduct(response.data)
-      } catch (error) {
-        console.error('Error fetching products:', error)
-      }
-    }
-    fetchProducts()
+    getLocations()
   }, [])
-  useEffect(() => {
-    setData(products.filter(product => String(product.branchId) === String(id)))
-  }, [products, id])
-  const columns = useMemo(() => [
-    {
-      id: 'select',
-      header: ({ table }) => (
-        <Checkbox
-          {...{
-            checked: table.getIsAllRowsSelected(),
-            indeterminate: table.getIsSomeRowsSelected(),
-            onChange: table.getToggleAllRowsSelectedHandler()
-          }}
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          {...{
-            checked: row.getIsSelected(),
-            disabled: !row.getCanSelect(),
-            indeterminate: row.getIsSomeSelected(),
-            onChange: row.getToggleSelectedHandler()
-          }}
-        />
-      )
-    },
-    columnHelper.accessor('image', {
-      header: 'Image',
-      cell: ({ row }) => (
-        <img src={`http://localhost:3000/images/${row.original.img}.jpg`} alt='' width='50' height='50' />
-      )
-    }),
-    columnHelper.accessor('product', {
-      header: 'Product Name',
-      cell: ({ row }) => (
-        <div className='flex items-center gap-4'>
-          <div className='flex flex-col'>
-            <Typography color='text.primary' className='font-medium'>
-              {row.original.product}
+
+  const getLocations = async () => {
+    try {
+      const response = await fetch('/api/locations')
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch locations')
+      }
+
+      const jsonData = await response.json()
+
+      setData(jsonData)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching locations:', error)
+    }
+  }
+
+  // Hooks
+  const { lang: locale } = useParams()
+
+  const columns = useMemo(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            {...{
+              checked: table.getIsAllRowsSelected(),
+              indeterminate: table.getIsSomeRowsSelected(),
+              onChange: table.getToggleAllRowsSelectedHandler()
+            }}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            {...{
+              checked: row.getIsSelected(),
+              disabled: !row.getCanSelect(),
+              indeterminate: row.getIsSomeSelected(),
+              onChange: row.getToggleSelectedHandler()
+            }}
+          />
+        )
+      },
+      columnHelper.accessor('markName', {
+        header: 'Mark Name',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <div className='flex items-center gap-4'>
+              <div className='flex flex-col'>
+                <Typography color='text.primary' className='font-medium'>
+                  {row.original.markName}
+                </Typography>
+              </div>
+            </div>
+          )
+      }),
+      columnHelper.accessor('lat', {
+        header: 'Lat',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Typography className='capitalize' color='text.primary'>
+              {row.original.lat}
             </Typography>
-          </div>
-        </div>
-      )
-    }),
-    columnHelper.accessor('discount', {
-      header: 'Discount %',
-      cell: ({ row }) => (
-        <div className='flex items-center gap-4'>
-          <div className='flex flex-col'>
-            <Typography color='text.primary' className='font-medium'>
-              {row.original.discount}%
-            </Typography>
-          </div>
-        </div>
-      )
-    }),
-    columnHelper.accessor('action', {
-      header: 'Action',
-      cell: ({ row }) => (
-        <div className='flex items-center'>
-          <DeleteProductDiscount product={row.original} />
-          <UpdateProductDiscount product={row.original} BranchId={id} />
-        </div>
-      ),
-      enableSorting: false
-    })
-  ])
+          )
+      }),
+      columnHelper.accessor('long', {
+        header: 'Long',
+        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.long}</Typography>)
+      }),
+      columnHelper.accessor('action', {
+        header: 'Action',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <div className='flex items-center'>
+              <IconButton>
+                <DeleteLocation location={row.original.id} />
+              </IconButton>
+              <IconButton>
+                <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
+                  <i className='tabler-eye text-[22px] text-textSecondary' />
+                </Link>
+              </IconButton>
+            </div>
+          ),
+        enableSorting: false
+      })
+    ],
+    [loading]
+  )
 
   const table = useReactTable({
     data: data,
@@ -203,17 +225,7 @@ const ListCategory = () => {
   return (
     <>
       <Card>
-        <CardHeader title='List Discount Food' className='pbe-4' />
-        <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
-          <Button
-            variant='contained'
-            startIcon={<i className='tabler-arrow' />}
-            href={getLocalizedUrl(`apps/branching/view/${id}`, locale)}
-            className='is-full sm:is-auto'
-          >
-            Back
-          </Button>
-        </div>
+        <CardHeader title='List Location Order' className='pbe-4' />
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -229,17 +241,9 @@ const ListCategory = () => {
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search Product'
+              placeholder='Search Location'
               className='is-full sm:is-auto'
             />
-            <Button
-              variant='contained'
-              startIcon={<i className='tabler-plus' />}
-              onClick={() => setAddProductDiscountOpen(!addProductDiscountOpen)}
-              className='is-full sm:is-auto'
-            >
-              Add New Product Discount
-            </Button>
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -307,13 +311,8 @@ const ListCategory = () => {
           }}
         />
       </Card>
-      <AddProductDiscount
-        open={addProductDiscountOpen}
-        handleClose={() => setAddProductDiscountOpen(!addProductDiscountOpen)}
-        BranchId={id}
-      />{' '}
     </>
   )
 }
 
-export default ListCategory
+export default LocationListTable

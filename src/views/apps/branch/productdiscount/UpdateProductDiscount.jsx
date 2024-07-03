@@ -138,7 +138,7 @@ const UpdateBranch = ({ product, BranchId }) => {
                 >
                   {branchproducts.map(product => (
                     <MenuItem key={product.id} value={product.productId}>
-                      {product.product.name}
+                      {product.product}
                     </MenuItem>
                   ))}
                 </CustomTextField>
@@ -147,7 +147,7 @@ const UpdateBranch = ({ product, BranchId }) => {
                 <CustomTextField
                   labelId='discount-label'
                   value={data?.discountId}
-                  label='Discount'
+                  label='Discount %'
                   select
                   onChange={e => setData({ ...data, discountId: e.target.value })}
                   SelectProps={{

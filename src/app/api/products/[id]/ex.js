@@ -3,35 +3,40 @@ import { writeFile } from 'fs/promises'
 import { error } from 'console'
 import { buffer } from 'stream/consumers'
 
-import { NextResponse } from 'next/server'
+import { request } from 'http'
+
+import { NextRequest, NextResponse } from 'next/server'
 
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-// Update Category
-export const PUT = async (req, res) => {
+// Update Product
+export const PUT = async req => {
   const path = req.nextUrl.pathname.split('/')
   const id = path[path.length - 1]
   const formData = await req.formData()
   const name = formData.get('name')
-  const parentId = parseInt(formData.get('parentId'))
+  const categoryId = parseInt(formData.get('categoryId'))
+  const price = parseFloat(formData.get('price'))
+  const description = formData.get('description')
+
   const image = formData.get('image')
 
   console.log('ID from form data:', id)
 
   try {
     // Check if the category exists
-    const existingCategory = await prisma.category.findUnique({
+    const existingProduct = await prisma.product.findUnique({
       where: { id: Number(id) }
     })
 
-    if (!existingCategory) {
-      return NextResponse.json({ error: 'Category not found.' }, { status: 404 })
+    if (!existingProduct) {
+      return existingProduct.json({ error: 'Product not found.' }, { status: 404 })
     }
 
     // Update the image if provided
-    let imageName = existingCategory.image
+    let imageName = existingProduct.image
 
     if (image) {
       const buffer = Buffer.from(await image.arrayBuffer())
@@ -50,87 +55,89 @@ export const PUT = async (req, res) => {
     }
 
     // Update other fields
-    await prisma.category.update({
+    await prisma.product.update({
       where: { id: Number(id) },
       data: {
         name: name,
-        parentId: parentId,
-        image: imageName // Update image name if provided
+        categoryId: categoryId,
+        image: imageName, // Update image name if provided:
+        description: description,
+        price: price
       }
     })
 
     return NextResponse.json({
-      Message: 'Category updated successfully.',
+      Message: 'Product updated successfully.',
       status: 200
     })
   } catch (error) {
     console.log('Error occurred', error)
 
     return NextResponse.json({
-      Message: 'Failed to update category.',
+      Message: 'Failed to update Product.',
       status: 500
     })
   }
 }
 
-// Delete Category
+// Delete Product
 export const DELETE = async (req, res) => {
   const path = req.nextUrl.pathname.split('/')
   const id = path[path.length - 1]
 
   try {
-    // Check if the category exists
-    const existingCategory = await prisma.category.findUnique({
+    // Check if the Product exists
+    const existingProduct = await prisma.product.findUnique({
       where: { id: Number(id) }
     })
 
-    if (!existingCategory) {
-      return NextResponse.json({ error: 'Category not found.' }, { status: 404 })
+    if (!existingProduct) {
+      return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
     }
 
     // Delete the category
-    await prisma.category.delete({
+    await prisma.product.delete({
       where: { id: Number(id) }
     })
 
     return NextResponse.json({
-      Message: 'Category deleted successfully.',
+      Message: 'Product deleted successfully.',
       status: 200
     })
   } catch (error) {
     console.log('Error occurred', error)
 
     return NextResponse.json({
-      Message: 'Failed to delete category.',
+      Message: 'Failed to delete Product.',
       status: 500
     })
   }
 }
 
-// Get Category by id
+// Get Product by id
 export const GET = async (req, res) => {
   const path = req.nextUrl.pathname.split('/')
   const id = path[path.length - 1]
 
   try {
-    // Check if the category exists
-    const category = await prisma.category.findUnique({
+    // Check if the Product exists
+    const product = await prisma.product.findUnique({
       where: { id: Number(id) }
     })
 
-    if (!category) {
-      return NextResponse.json({ error: 'Category not found.' }, { status: 404 })
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
     }
 
     return NextResponse.json({
-      category,
+      product,
       status: 200
     })
   } catch (error) {
     console.log('Error occurred', error)
 
     return NextResponse.json({
-      Message: 'Failed to get category.',
+      Message: 'Failed to get Product.',
       status: 500
     })
   }

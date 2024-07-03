@@ -153,7 +153,7 @@ const AddProductDiscountDrawer = ({ open, handleClose, BranchId }) => {
             >
               {branchproducts.map(product => (
                 <MenuItem key={product.id} value={product.productId}>
-                  {product.product.name}
+                  {product.product}
                 </MenuItem>
               ))}
             </CustomTextField>
@@ -162,7 +162,7 @@ const AddProductDiscountDrawer = ({ open, handleClose, BranchId }) => {
             <CustomTextField
               labelId='discount-label'
               value={discountId}
-              label='Discount'
+              label='Discount %'
               select
               onChange={e => setDiscountId(e.target.value)}
               SelectProps={{

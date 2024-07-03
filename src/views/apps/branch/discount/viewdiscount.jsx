@@ -132,12 +132,12 @@ const ListCategory = () => {
       )
     },
     columnHelper.accessor('amount', {
-      header: 'Discount',
+      header: 'Discount %',
       cell: ({ row }) => (
         <div className='flex items-center gap-4'>
           <div className='flex flex-col'>
             <Typography color='text.primary' className='font-medium'>
-              {row.original.amount}
+              {row.original.amount} %
             </Typography>
           </div>
         </div>

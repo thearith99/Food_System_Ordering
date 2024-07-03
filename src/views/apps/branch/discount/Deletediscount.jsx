@@ -66,7 +66,7 @@ const Deletediscount = ({ discount }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              <p>Are you sure you want to delete this discount name {discount.amount}?</p>
+              <p>Are you sure you want to delete this discount {discount.amount}%?</p>
               <div className='flex items-center gap-4'>
                 <Button variant='contained' type='submit'>
                   Delete

@@ -40,6 +40,8 @@ import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
 
+import DeleteOrdering from './DeleteOrdering'
+
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
 import { getLocalizedUrl } from '@/utils/i18n'
@@ -85,35 +87,32 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 // Column Definitions
 const columnHelper = createColumnHelper()
 
-const UserListTable = ({ tableData }) => {
+const OrderingListTable = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(tableData)
+  const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
-  const [locations, setLocations] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    getLocation()
+    getOrder()
   }, [])
 
-  const getLocation = async () => {
+  const getOrder = async () => {
     try {
-      const response = await fetch('/api/location')
-      if (!response.ok) {
-        throw new Error('Failed to fetch locations')
-      }
-      const jsonData = await response.json()
-      setLocations(jsonData)
-      setLoading(false) // Set loading to false after fetching categories
-    } catch (error) {
-      console.error('Error fetching locations:', error)
-    }
-  }
+      const response = await fetch('/api/orders')
 
-  const getLocationName = locationId => {
-    const location = locations.find(loc => loc.id === locationId)
-    return location ? location.markName : 'Unknown'
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders')
+      }
+
+      const jsonData = await response.json()
+
+      setData(jsonData)
+      setLoading(false)
+    } catch (error) {
+      console.error('Error fetching orders:', error)
+    }
   }
 
   // Hooks
@@ -158,17 +157,6 @@ const UserListTable = ({ tableData }) => {
             </div>
           )
       }),
-      columnHelper.accessor('locationId', {
-        header: 'Location',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <Typography className='capitalize' color='text.primary'>
-              {getLocationName(row.original.locationId)}
-            </Typography>
-          )
-      }),
       columnHelper.accessor('createdAt', {
         header: 'Created At',
         cell: ({ row }) =>
@@ -193,15 +181,26 @@ const UserListTable = ({ tableData }) => {
         header: 'User Id',
         cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.userId}</Typography>)
       }),
+      columnHelper.accessor('locationId', {
+        header: 'location Id',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Typography className='capitalize' color='text.primary'>
+              {row.original.locationId}
+            </Typography>
+          )
+      }),
       columnHelper.accessor('action', {
         header: 'Action',
-        cell: () =>
+        cell: ({ row }) => (
           loading ? (
             <CircularProgress size={24} />
           ) : (
             <div className='flex items-center'>
               <IconButton>
-                <i className='tabler-trash text-[22px] text-textSecondary' />
+                <DeleteOrdering order={row.original.id}/>
               </IconButton>
               <IconButton>
                 <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
@@ -209,11 +208,12 @@ const UserListTable = ({ tableData }) => {
                 </Link>
               </IconButton>
             </div>
-          ),
+          )
+        ),
         enableSorting: false
       })
     ],
-    [locations, loading]
+    [loading]
   )
 
   const table = useReactTable({
@@ -338,4 +338,4 @@ const UserListTable = ({ tableData }) => {
   )
 }
 
-export default UserListTable
+export default OrderingListTable

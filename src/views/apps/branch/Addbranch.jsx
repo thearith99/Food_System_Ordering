@@ -13,8 +13,6 @@ import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
-import Select from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 
 // Component Imports
@@ -25,7 +23,7 @@ import CustomTextField from '@core/components/mui/TextField'
 const AddUserDrawer = ({ open, handleClose }) => {
   const [nameBranch, setNameBranch] = useState('')
   const [locationId, setLocationId] = useState('')
-  const [locations, setLocations] = useState([])
+  const [Locations, setLocations] = useState([])
   const [error, setError] = useState(null)
 
   useEffect(() => {
@@ -36,7 +34,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
     // Fetch Locations from API
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('/api/location')
+        const response = await axios.get('/api/locations')
         setLocations(response.data)
       } catch (error) {
         console.error('Error fetching Locations:', error)
@@ -45,24 +43,17 @@ const AddUserDrawer = ({ open, handleClose }) => {
     fetchLocations()
   }, [])
 
-  const getLocationIdByName = markName => {
-    const location = locations.find(location => location.markName === markName)
-    return location ? location.id : ''
-  }
-
   const handleSubmit = async e => {
     e.preventDefault()
 
     const formDataObj = new FormData()
     formDataObj.append('name', nameBranch)
-    // formDataObj.append('image', imageProduct)
-    formDataObj.append('locationId', getLocationIdByName(locationId))
+    formDataObj.append('locationId', locationId)
 
     try {
       await axios.post('/api/branch', formDataObj)
       handleClose()
       setNameBranch('')
-      // setImageProduct(null)
       setLocationId('')
       Swal.fire({
         icon: 'success',
@@ -79,7 +70,6 @@ const AddUserDrawer = ({ open, handleClose }) => {
   const handleReset = () => {
     handleClose()
     setNameBranch('')
-    // setImageProduct(null)
     setLocationId('')
   }
 
@@ -126,7 +116,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
                 }
               }}
             >
-              {locations.map(location => (
+              {Locations.map(location => (
                 <MenuItem key={location.id} value={location.markName}>
                   {location.markName}
                 </MenuItem>

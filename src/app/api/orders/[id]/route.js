@@ -1,80 +1,60 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 export const config = {
   api: {
     bodyParser: false
   }
-};
-
-// Get an order by id
-
-export async function Get(req, res) {
-  try {
-    const { id } = req.query;
-
-    if (!id) {
-      return NextResponse.error({ message: 'Missing required field: id' });
-    }
-
-    const order = await prisma.order.findUnique({
-      where: { id: parseInt(id, 10) },
-    });
-
-    if (!order) {
-      return NextResponse.error({ message: 'Order not found' });
-    }
-
-    return NextResponse.json({ data: order });
-  } catch (error) {
-    return NextResponse.error({ message: error.message });
-  }
 }
 
-
 // Update an order
-export async function PUT(req, res) {
+export async function PUT(req, { params }) {
   try {
-    const { id, orderNumber, locationId, status, userId } = JSON.parse(req.body);
+    const { id } = params
+    const body = await req.json()
+    const { orderNumber, locationId, status, userId } = body
 
-    if (!id || !orderNumber || !locationId || !status || !userId) {
-      return NextResponse.error({ message: 'Missing required fields' });
+    if (!orderNumber || !locationId || !status || !userId) {
+      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
     }
 
-    const order = await prisma.order.update({
-      where: { id },
+    const updatedAt = new Date() // Set updatedAt to current date and time
+
+    const updatedOrder = await prisma.order.update({
+      where: { id: parseInt(id) },
       data: {
         orderNumber,
         locationId,
         status,
         userId,
-      },
-    });
+        updatedAt
+      }
+    })
 
-    return NextResponse.json({ data: order });
+    return NextResponse.json({ data: updatedOrder }, { status: 200 })
   } catch (error) {
-    return NextResponse.error({ message: error.message });
+    console.error('Error updating order:', error)
+
+    return NextResponse.json({ message: error.message }, { status: 500 })
   }
 }
 
 // Delete an order
-export async function DELETE(req, res) {
+export async function DELETE(req, { params }) {
   try {
-    const { id } = JSON.parse(req.body);
-
-    if (!id) {
-      return NextResponse.error({ message: 'Missing required field: id' });
-    }
+    const { id } = params
 
     await prisma.order.delete({
-      where: { id },
-    });
+      where: { id: parseInt(id) }
+    })
 
-    return NextResponse.json({ message: 'Order deleted successfully' });
+    return NextResponse.json({ message: 'Order deleted successfully' }, { status: 200 })
   } catch (error) {
-    return NextResponse.error({ message: error.message });
+    console.error('Error deleting order:', error)
+
+    return NextResponse.json({ message: error.message }, { status: 500 })
   }
 }
