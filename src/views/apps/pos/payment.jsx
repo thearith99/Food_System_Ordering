@@ -1,95 +1,154 @@
 'use client'
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react'
 
-import { FaShoppingCart } from 'react-icons/fa';
-import { IoPersonSharp } from "react-icons/io5";
-import Swal from 'sweetalert2';
+import { FaShoppingCart } from 'react-icons/fa'
+import { IoPersonSharp } from 'react-icons/io5'
+import Swal from 'sweetalert2'
 
-import AddUser from './addUser'; // Make sure the component name is correct here
-import homeContext from '@/contexts/home.context';
-import { useStorage } from '@/hooks/useHook';
+import AddUser from './addUser' // Make sure the component name is correct here
+import SelectLocation from './selectLocation' // Make sure the component name is correct here
+import homeContext from '@/contexts/home.context'
+import { useStorage } from '@/hooks/useHook'
+import generateOrderNumber from './generateOrderNumber'
 
 const Payment = () => {
   const {
-    state: { addcards },
+    state: { addcards, addusers, locations, selectedLocation },
     dispatch
-  } = useContext(homeContext)
+  } = useContext(homeContext);
 
-  const [cards, setCart] = useStorage('CardList', [])
-  const [prices, setPrice] = useState(0)
-  const [total, setTotal] = useState(0)
-  const [addUserOpen, setAddUserOpen] = useState(false)
-  const shippingCost = 0
+  const [cards, setCart] = useStorage('CardList', []);
+  const [location, setLocation] = useStorage('selectedLocation', null);
+  const [prices, setPrice] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [addUserOpen, setAddUserOpen] = useState(false);
+  const [locationOpen, setLocationOpen] = useState(false);
+  const [selectedUserName, setSelectedUserName] = useState('');
+  const shippingCost = 0;
 
   useEffect(() => {
-    const updatedCards = addcards.map(card => ({ ...card, quantity: 1 }))
+    if (cards.length > 0 && location == null) {
+      setLocationOpen(true);
+    }
+  }, [cards, location]);
 
-    // console.log(updatedCards);
-    let newCards = cards
-    let exists = false
+  useEffect(() => {
+    if (selectedLocation) {
+      console.log('Selected Location:', selectedLocation);
+      setLocation(selectedLocation.id);
+    }
+  }, [selectedLocation]);
+
+  useEffect(() => {
+    const updatedCards = addcards.map(card => ({ ...card, quantity: 1 }));
+
+    console.log(updatedCards);
+    let newCards = cards;
+    let exists = false;
 
     for (const key in newCards) {
       if (updatedCards.length == 0) {
-        exists = false
-        break
+        exists = false;
+        break;
       }
 
       if (newCards[key].id == updatedCards[0].id && newCards[key].category.id == updatedCards[0].category.id) {
-        newCards[key].quantity += 1
-        exists = true
-        break
+        newCards[key].quantity += 1;
+        exists = true;
+        break;
       }
     }
 
     if (exists == false) {
-      newCards = [...newCards, ...updatedCards]
+      newCards = [...newCards, ...updatedCards];
     }
 
-    setCart([...newCards])
-  }, [addcards])
+    setCart([...newCards]);
+  }, [addcards]);
 
   useEffect(() => {
-    const sum = cards.reduce((acc, item) => acc + parseFloat(item.price.toString().replace('$', '')) * item.quantity, 0)
+    const sum = cards.reduce((acc, item) => acc + parseFloat(item.price.toString().replace('$', '')) * item.quantity, 0);
 
-    setPrice(sum)
-    setTotal(sum + shippingCost)
-  }, [cards])
+    setPrice(sum);
+    setTotal(sum + shippingCost);
+  }, [cards]);
 
+  useEffect(() => {
+    console.log('addusers:', addusers);
+
+    if (addusers) {
+      console.log('Selected user:', addusers.name);
+      setSelectedUserName(addusers.name);
+    } else {
+      console.log('User not found');
+      setSelectedUserName('');
+    }
+  }, [selectedUserName, addusers]);
+  
   const removeFromCart = index => {
-    const newCards = cards.filter((_, i) => i !== index)
+    const newCards = cards.filter((_, i) => i !== index);
 
-    setCart(newCards)
-  }
+    setCart(newCards);
+  };
 
   const incrementQuantity = index => {
-    const newCards = cards.map((item, i) => (i === index ? { ...item, quantity: item.quantity + 1 } : item))
+    const newCards = cards.map((item, i) => (i === index ? { ...item, quantity: item.quantity + 1 } : item));
 
-    setCart(newCards)
-  }
+    setCart(newCards);
+  };
 
   const decrementQuantity = index => {
     const newCards = cards.map((item, i) =>
       i === index && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-    )
+    );
 
-    setCart(newCards)
-  }
+    setCart(newCards);
+  };
 
   const handleCheckout = async () => {
     console.log('Checking out with cards:', cards);
+    console.log('selectedLocation', selectedLocation);
 
+    // For orderDetail
     const orderDetails = cards.map(card => ({
       productId: card.id,
       totalAmount: parseFloat(card.price) * card.quantity,
       qty: card.quantity
     }));
 
+    // For Order
+    // Generate order number
+    const orderNumber = generateOrderNumber(); // You need to implement this function
+    // Get userId from addusers if available
+    const userId = addusers ? addusers.id : '';
+
+    // Get locationId from selectedLocation
+    const locationId = selectedLocation ? selectedLocation.id : '';
+
+    // Set status, createdAt, and updatedAt
+    const status = 'pending'; // Adjust based on your order workflow
+    const createdAt = new Date().toISOString();
+    const updatedAt = createdAt;
+
+
+    // Construct complete order data for /api/orders
+    const orderData = {
+      orderNumber,
+      locationId,
+      status,
+      userId,
+      createdAt,
+      updatedAt
+    };
+
     const requestData = orderDetails;
 
     console.log('Order details being sent to API:', requestData);
+    console.log('Order  being sent to API (orders):', orderData);
 
     try {
+      // Send order details to /api/orderDetails
       const response = await fetch('http://localhost:3000/api/orderDetails', {
         method: 'POST',
         headers: {
@@ -102,14 +161,24 @@ const Payment = () => {
         throw new Error('Network response was not ok');
       }
 
-      const data = await response.json();
+      // Send data to /api/orders
+      const orderResponse = await fetch('http://localhost:3000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      });
 
-      console.log('Checkout successful:', data);
+      const data = await response.json();
+      const orderDataResponse = await orderResponse.json();
+
+      console.log('Checkout successful:', data, orderDataResponse);
       Swal.fire({
         icon: 'success',
         title: 'Success!',
-        text: 'Order Detail successfully!'
-      })
+        text: 'Order successfully!'
+      });
     } catch (error) {
       console.error('Error during checkout:', error);
     }
@@ -133,10 +202,13 @@ const Payment = () => {
           <div className='mx-auto max-w-md sm:py-0 sm:mt-7 lg:py-0 py-3'>
             <div className='rounded-lg bg-white shadow-lg'>
               <div className='w-full flex h-10 justify-center'>
-                <div onClick={() => setAddUserOpen(!addUserOpen)} className='p-1 m-2 pl-2 text-xs border border-gray-400 rounded w-[95%] cursor-pointer hover:text-blue-700'>
+                <div
+                  onClick={() => setAddUserOpen(!addUserOpen)}
+                  className='p-1 m-2 pl-2 text-xs border border-gray-400 rounded w-[95%] cursor-pointer hover:text-blue-700'
+                >
                   <span className='font-bold items-center justify-start flex gap-1'>
-                  <IoPersonSharp />
-                  Select Customer
+                    <IoPersonSharp />
+                    {selectedUserName ? selectedUserName : 'Select Customer'}
                   </span>
                 </div>
               </div>
@@ -229,6 +301,21 @@ const Payment = () => {
                     <span className='text-xs font-normal text-gray-400'>USD</span> {total}$
                   </p>
                 </div>
+                {/* <div className='mt-6 flex items-center justify-between'>
+                  <button
+                    type='button'
+                    className='group inline-flex lg:w-full sm:w-full items-center justify-center rounded-md bg-orange-500 px-6 py-4 lg:text-lg sm:text-xs font-semibold text-white transition-all duration-200 ease-in-out focus:shadow hover:bg-gray-800 cursor-pointer'
+                    onClick={() => {
+                      setLocation(null)
+                      dispatch({
+                        field: 'selectedLocation',
+                        value: null
+                      })
+                    }}
+                  >
+                    Clear Location
+                  </button>
+                </div> */}
                 <div className='mt-6  text-center'>
                   <button
                     type='button'
@@ -253,6 +340,7 @@ const Payment = () => {
           </div>
         </div>
       </section>
+      <SelectLocation open={locationOpen} handleClose={() => setLocationOpen(!locationOpen)} />
       <AddUser open={addUserOpen} handleClose={() => setAddUserOpen(!addUserOpen)} />
     </>
   )

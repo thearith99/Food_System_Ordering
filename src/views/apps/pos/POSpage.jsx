@@ -7,7 +7,7 @@ import { usePathname, useParams } from 'next/navigation'
 import { FaShoppingCart } from 'react-icons/fa'
 
 import homeContext from '@/contexts/home.context'
-
+a
 const PosPage = () => {
   const pathname = usePathname()
   const params = useParams()
