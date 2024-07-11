@@ -1,55 +1,55 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 
-import Swal from 'sweetalert2';
-import Button from '@mui/material/Button';
-import Drawer from '@mui/material/Drawer';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import Divider from '@mui/material/Divider';
+import Swal from 'sweetalert2'
+import Button from '@mui/material/Button'
+import Drawer from '@mui/material/Drawer'
+import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import Divider from '@mui/material/Divider'
 
 const DeleteLocation = ({ location }) => {
-  const [open, setOpen] = useState(false);
-  const [error, setError] = useState('');
-  const [data, setData] = useState(null);
+  const [open, setOpen] = useState(false)
+  const [error, setError] = useState('')
+  const [data, setData] = useState(null)
 
   useEffect(() => {
-    setData(location);
-  }, [location]);
+    setData(location)
+  }, [location])
 
   const handleReset = () => {
-    setOpen(false);
-    setError('');
-  };
+    setOpen(false)
+    setError('')
+  }
 
   const handleModal = () => {
-    setOpen(!open);
-  };
+    setOpen(!open)
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async e => {
+    e.preventDefault()
 
     try {
-      const res = await fetch(`/api/locations/${location}`, {
+      const res = await fetch(`/api/locations/${location.id}`, {
         method: 'DELETE'
-      });
+      })
 
       if (res.ok) {
-        handleReset();
+        handleReset()
         Swal.fire({
           icon: 'success',
           title: 'Success!',
           text: 'Location deleted successfully!'
         }).then(() => {
-          window.location.reload(); // Refresh the page
-        });
+          window.location.reload() // Refresh the page
+        })
       } else {
-        throw new Error('Failed to delete location');
+        throw new Error('Failed to delete location')
       }
     } catch (error) {
-      console.error('Error deleting location:', error);
-      setError('Failed to delete location. Please try again.');
+      console.error('Error deleting location:', error)
+      setError('Failed to delete location. Please try again.')
     }
-  };
+  }
 
   return (
     <>
@@ -72,8 +72,12 @@ const DeleteLocation = ({ location }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              <p>Are you sure you want to delete this location {data?.id}?</p>
-              {error && <Typography variant="body2" color="error">{error}</Typography>}
+              <p>Are you sure you want to delete this location {data?.markName}?</p>
+              {error && (
+                <Typography variant='body2' color='error'>
+                  {error}
+                </Typography>
+              )}
               <div className='flex items-center gap-4'>
                 <Button variant='contained' type='submit'>
                   Delete
@@ -87,7 +91,7 @@ const DeleteLocation = ({ location }) => {
         </div>
       </Drawer>
     </>
-  );
-};
+  )
+}
 
-export default DeleteLocation;
+export default DeleteLocation

@@ -15,8 +15,7 @@ export async function GET() {
   try {
     const locations = await prisma.location.findMany()
 
-
-return NextResponse.json(locations)
+    return NextResponse.json(locations)
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch locations' }, { status: 500 })
   }
@@ -25,14 +24,26 @@ return NextResponse.json(locations)
 // Create a location
 export async function POST(req) {
   try {
-    const body = await req.json()
-    const { markName, lat, long } = body
+    const formData = await req.formData()
+    const markName = formData.get('markName')
+    const lat = parseFloat(formData.get('lat'))
+    const long = parseFloat(formData.get('long'))
 
-    if (!markName || !lat || !long) {
-      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
+    // Check if the location already exists
+    const existingLocation = await prisma.location.findFirst({
+      where: {
+        markName,
+        lat,
+        long
+      }
+    })
+
+    if (existingLocation) {
+      return NextResponse.json({ Message: 'Location already exists', status: 400 })
     }
 
-    const location = await prisma.location.create({
+    // Create new location
+    await prisma.location.create({
       data: {
         markName,
         lat,
@@ -40,8 +51,9 @@ export async function POST(req) {
       }
     })
 
-    return NextResponse.json({ data: location }, { status: 201 })
+    return NextResponse.json({ Message: 'Success', status: 201 })
   } catch (error) {
-    return NextResponse.json({ message: error.message }, { status: 500 })
+    console.error('Error occurred:', error)
+    return NextResponse.json({ Message: 'Failed', status: 500 })
   }
 }

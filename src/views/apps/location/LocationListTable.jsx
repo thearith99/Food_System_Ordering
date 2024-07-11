@@ -39,6 +39,7 @@ import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
 
 import DeleteLocation from './DeleteLocation'
+import AddLocation from './AddLocation' // Ensure this is the correct import path
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
@@ -87,11 +88,11 @@ const columnHelper = createColumnHelper()
 
 const LocationListTable = () => {
   // States
+  const [addLocationOpen, setAddLocationOpen] = useState(false)
+
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
-  const [loading, setLoading] = useState(true)
-
   useEffect(() => {
     getLocations()
   }, [])
@@ -107,7 +108,6 @@ const LocationListTable = () => {
       const jsonData = await response.json()
 
       setData(jsonData)
-      setLoading(false)
     } catch (error) {
       console.error('Error fetching locations:', error)
     }
@@ -116,82 +116,65 @@ const LocationListTable = () => {
   // Hooks
   const { lang: locale } = useParams()
 
-  const columns = useMemo(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            {...{
-              checked: row.getIsSelected(),
-              disabled: !row.getCanSelect(),
-              indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
-            }}
-          />
-        )
-      },
-      columnHelper.accessor('markName', {
-        header: 'Mark Name',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {row.original.markName}
-                </Typography>
-              </div>
-            </div>
-          )
-      }),
-      columnHelper.accessor('lat', {
-        header: 'Lat',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <Typography className='capitalize' color='text.primary'>
-              {row.original.lat}
+  const columns = useMemo(() => [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          {...{
+            checked: table.getIsAllRowsSelected(),
+            indeterminate: table.getIsSomeRowsSelected(),
+            onChange: table.getToggleAllRowsSelectedHandler()
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          {...{
+            checked: row.getIsSelected(),
+            disabled: !row.getCanSelect(),
+            indeterminate: row.getIsSomeSelected(),
+            onChange: row.getToggleSelectedHandler()
+          }}
+        />
+      )
+    },
+    columnHelper.accessor('markName', {
+      header: 'Mark Name',
+      cell: ({ row }) => (
+        <div className='flex items-center gap-4'>
+          <div className='flex flex-col'>
+            <Typography color='text.primary' className='font-medium'>
+              {row.original.markName}
             </Typography>
-          )
-      }),
-      columnHelper.accessor('long', {
-        header: 'Long',
-        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.long}</Typography>)
-      }),
-      columnHelper.accessor('action', {
-        header: 'Action',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center'>
-              <IconButton>
-                <DeleteLocation location={row.original.id} />
-              </IconButton>
-              <IconButton>
-                <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
-                  <i className='tabler-eye text-[22px] text-textSecondary' />
-                </Link>
-              </IconButton>
-            </div>
-          ),
-        enableSorting: false
-      })
-    ],
-    [loading]
-  )
+          </div>
+        </div>
+      )
+    }),
+    columnHelper.accessor('lat', {
+      header: 'Latitude',
+      cell: ({ row }) => (
+        <Typography className='capitalize' color='text.primary'>
+          {row.original.lat}
+        </Typography>
+      )
+    }),
+    columnHelper.accessor('long', {
+      header: 'Longidue',
+      cell: ({ row }) => <Typography>{row.original.long}</Typography>
+    }),
+    columnHelper.accessor('action', {
+      header: 'Action',
+      cell: ({ row }) => (
+        <div className='flex items-center'>
+          <IconButton>
+            <DeleteLocation location={row.original} />
+          </IconButton>
+        </div>
+      ),
+      enableSorting: false
+    })
+  ])
 
   const table = useReactTable({
     data: data,
@@ -245,6 +228,14 @@ const LocationListTable = () => {
               className='is-full sm:is-auto'
             />
           </div>
+          <Button
+            variant='contained'
+            startIcon={<i className='tabler-plus' />}
+            onClick={() => setAddLocationOpen(!addLocationOpen)}
+            className='is-full sm:is-auto'
+          >
+            Add New location
+          </Button>
         </div>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
@@ -311,6 +302,7 @@ const LocationListTable = () => {
           }}
         />
       </Card>
+      <AddLocation open={addLocationOpen} handleClose={() => setAddLocationOpen(!addLocationOpen)} />{' '}
     </>
   )
 }

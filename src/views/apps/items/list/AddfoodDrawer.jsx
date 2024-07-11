@@ -50,12 +50,6 @@ const AddUserDrawer = ({ open, handleClose }) => {
     fetchCategories()
   }, [])
 
-  // const getCategoryIdByName = name => {
-  //   const category = categories.find(category => category.name === name)
-
-  //   return category ? category.id : ''
-  // }
-
   const handleSubmit = async e => {
     e.preventDefault()
 

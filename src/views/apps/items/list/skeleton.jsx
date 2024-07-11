@@ -168,6 +168,9 @@ const Loadingskel = ({ loading }) => {
               <td>
                 <CircularProgress size={24} />
               </td>
+              <td>
+                <CircularProgress size={24} />
+              </td>
             </tr>
           </tbody>
         </table>

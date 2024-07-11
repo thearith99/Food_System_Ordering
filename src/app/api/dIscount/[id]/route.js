@@ -58,7 +58,10 @@ export const DELETE = async (req, res) => {
     if (!existingDiscount) {
       return NextResponse.json({ error: 'Discount not found.' }, { status: 404 })
     }
-
+    // Delete related BranchProduct entries
+    await prisma.productDiscount.deleteMany({
+      where: { discountId: Number(id) }
+    })
     // Delete the category
     await prisma.discount.delete({
       where: { id: Number(id) }

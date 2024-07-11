@@ -10,51 +10,38 @@ import Swal from 'sweetalert2'
 import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
-import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
-import FormControl from '@mui/material/FormControl'
 
 // Component Imports
 import CustomTextField from '@core/components/mui/TextField'
 
 // Vars
 
-const AddUserDrawer = ({ open, handleClose }) => {
-  const [nameBranch, setNameBranch] = useState('')
-  const [locationId, setLocationId] = useState('')
-  const [Locations, setLocations] = useState([])
+const AddLocation = ({ open, handleClose }) => {
+  const [markName, setMarkName] = useState('')
+  const [lat, setLat] = useState('')
+  const [long, setLong] = useState('')
   const [error, setError] = useState(null)
 
   useEffect(() => {
     setError(null) // Reset error state on component mount
   }, [open]) // Reset error state when the drawer opens or closes
 
-  useEffect(() => {
-    // Fetch Locations from API
-    const fetchLocations = async () => {
-      try {
-        const response = await axios.get('/api/locations')
-        setLocations(response.data)
-      } catch (error) {
-        console.error('Error fetching Locations:', error)
-      }
-    }
-    fetchLocations()
-  }, [])
-
   const handleSubmit = async e => {
     e.preventDefault()
 
     const formDataObj = new FormData()
-    formDataObj.append('name', nameBranch)
-    formDataObj.append('locationId', locationId)
+    formDataObj.append('markName', markName)
+    formDataObj.append('lat', parseFloat(lat))
+    formDataObj.append('long', parseFloat(long))
 
     try {
-      await axios.post('/api/branch', formDataObj)
+      await axios.post('/api/locations', formDataObj)
       handleClose()
-      setNameBranch('')
-      setLocationId('')
+      setMarkName('')
+      setLat('')
+      setLong('')
       Swal.fire({
         icon: 'success',
         title: 'Success!',
@@ -69,8 +56,9 @@ const AddUserDrawer = ({ open, handleClose }) => {
 
   const handleReset = () => {
     handleClose()
-    setNameBranch('')
-    setLocationId('')
+    setMarkName('')
+    setLat('')
+    setLong('')
   }
 
   return (
@@ -83,7 +71,7 @@ const AddUserDrawer = ({ open, handleClose }) => {
       sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
     >
       <div className='flex items-center justify-between plb-5 pli-6'>
-        <Typography variant='h5'>Add New Branch</Typography>
+        <Typography variant='h5'>Add New Location</Typography>
         <IconButton onClick={handleReset}>
           <i className='tabler-x text-textPrimary' />
         </IconButton>
@@ -91,38 +79,10 @@ const AddUserDrawer = ({ open, handleClose }) => {
       <Divider />
       <div>
         <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-          <CustomTextField
-            label='Branch Name'
-            fullWidth
-            value={nameBranch}
-            onChange={e => setNameBranch(e.target.value)}
-          />
+          <CustomTextField label='Branch Name' fullWidth value={markName} onChange={e => setMarkName(e.target.value)} />
+          <CustomTextField label='latitude' fullWidth value={lat} onChange={e => setLat(e.target.value)} />
+          <CustomTextField label='longitude' fullWidth value={long} onChange={e => setLong(e.target.value)} />
 
-          <FormControl fullWidth>
-            <CustomTextField
-              labelId='location-label'
-              value={locationId}
-              label='Location'
-              select
-              onChange={e => setLocationId(e.target.value)}
-              SelectProps={{
-                MenuProps: {
-                  PaperProps: {
-                    style: {
-                      maxHeight: '200px',
-                      overflowY: 'auto'
-                    }
-                  }
-                }
-              }}
-            >
-              {Locations.map(location => (
-                <MenuItem key={location.id} value={location.id}>
-                  {location.markName}
-                </MenuItem>
-              ))}
-            </CustomTextField>
-          </FormControl>
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
               Submit
@@ -138,4 +98,4 @@ const AddUserDrawer = ({ open, handleClose }) => {
   )
 }
 
-export default AddUserDrawer
+export default AddLocation

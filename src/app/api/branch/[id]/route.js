@@ -60,16 +60,21 @@ export const DELETE = async (req, res) => {
   const id = path[path.length - 1]
 
   try {
-    // Check if the Product exists
+    // Check if the Branch exists
     const existingBranch = await prisma.branch.findUnique({
       where: { id: Number(id) }
     })
 
     if (!existingBranch) {
-      return NextResponse.json({ error: 'Product not found.' }, { status: 404 })
+      return NextResponse.json({ error: 'Branch not found.' }, { status: 404 })
     }
 
-    // Delete the category
+    // Delete related BranchProduct entries
+    await prisma.branchProduct.deleteMany({
+      where: { branchId: Number(id) }
+    })
+
+    // Delete the branch
     await prisma.branch.delete({
       where: { id: Number(id) }
     })
@@ -79,12 +84,19 @@ export const DELETE = async (req, res) => {
       status: 200
     })
   } catch (error) {
-    console.log('Error occurred', error)
+    console.error('Error occurred', error)
 
-    return NextResponse.json({
-      Message: 'Failed to delete Branch.',
-      status: 500
-    })
+    if (error instanceof PrismaClientKnownRequestError) {
+      return NextResponse.json({
+        Message: 'Failed to delete Branch due to database constraint.',
+        status: 500
+      })
+    } else {
+      return NextResponse.json({
+        Message: 'Failed to delete Branch.',
+        status: 500
+      })
+    }
   }
 }
 

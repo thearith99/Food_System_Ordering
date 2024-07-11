@@ -1,9 +1,10 @@
 'use client'
 
 // React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 // Next Imports
+import { useParams } from 'next/navigation'
 // MUI Imports
 import CircularProgress from '@mui/material/CircularProgress'
 import Card from '@mui/material/Card'
@@ -11,6 +12,9 @@ import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import MenuItem from '@mui/material/MenuItem'
+import Checkbox from '@mui/material/Checkbox'
+import CardContent from '@mui/material/CardContent'
+import Grid from '@mui/material/Grid'
 
 // Third-party Imports
 import { rankItem } from '@tanstack/match-sorter-utils'
@@ -71,10 +75,7 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 
 // Column Definitions
 const columnHelper = createColumnHelper()
-
 const Loadingskel = ({ loading }) => {
-  const [addCategoryOpen, setAddCategoryOpen] = useState(false)
-
   const table = useReactTable({
     filterFns: {
       fuzzy: fuzzyFilter
@@ -95,11 +96,28 @@ const Loadingskel = ({ loading }) => {
     getFacetedUniqueValues: getFacetedUniqueValues(),
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
-
-
-return (
+  return (
     <Card>
-      <CardHeader title='List Order' className='pbe-4' />
+      <CardHeader title='List Food' className='pbe-4' />
+      <CardContent>
+        <Grid container spacing={6}>
+          <Grid item xs={12} sm={4}>
+            <CustomTextField
+              select
+              fullWidth
+              id='select-category'
+              value={''} // Empty value
+              onChange={e => setCategory(e.target.value)}
+              SelectProps={{ displayEmpty: true }}
+              placeholder='All Products' // Placeholder text
+            >
+              <MenuItem value=''>All Products</MenuItem>
+              {/* Add other product options here */}
+            </CustomTextField>
+          </Grid>
+        </Grid>
+      </CardContent>
+
       <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
         <CustomTextField
           select
@@ -112,38 +130,40 @@ return (
           <MenuItem value='50'>50</MenuItem>
         </CustomTextField>
         <div className='flex flex-col sm:flex-row is-full sm:is-auto items-start sm:items-center gap-4'>
-          <DebouncedInput placeholder='Search Order' className='is-full sm:is-auto' />
+          <DebouncedInput placeholder='Search User' className='is-full sm:is-auto' />
+
+          <Button variant='contained' startIcon={<i className='tabler-plus' />} className='is-full sm:is-auto'>
+            Add New Food
+          </Button>
         </div>
       </div>
       <div className='overflow-x-auto'>
         <table className={tableStyles.table}>
           <thead>
             <tr>
-              <th>Order Number</th>
-              <th>Location</th>
-              <th>Created At</th>
-              <th>Updated At</th>
-              <th>Status</th>
+              <th>
+                <Checkbox />
+              </th>
+              <th>MarkName</th>
+              <th>Latitute</th>
+              <th>Longitute</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <th>
+              <td>
+                <Checkbox />{' '}
+              </td>
+              <td>
                 <CircularProgress size={24} />
-              </th>
-              <th>
+              </td>
+              <td>
                 <CircularProgress size={24} />
-              </th>
-              <th>
+              </td>
+              <td>
                 <CircularProgress size={24} />
-              </th>
-              <th>
-                <CircularProgress size={24} />
-              </th>
-              <th>
-                <CircularProgress size={24} />
-              </th>
+              </td>
               <td>
                 <CircularProgress size={24} />
               </td>

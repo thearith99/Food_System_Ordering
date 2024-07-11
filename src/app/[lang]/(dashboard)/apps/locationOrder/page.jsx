@@ -1,14 +1,20 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 
 // Component Imports
 import Index from '@views/apps/location/index'
 import Loading from '@views/apps/location/skeleton'
 
 const ListLocation = () => {
+  const Map = dynamic(() => import('../../../../../views/apps/location/map'), { ssr: false })
+
   // State to hold location data and loading state
-  const [locationData, setLocationData] = useState(null)
+  const [locationData, setLocationData] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
@@ -22,7 +28,6 @@ const ListLocation = () => {
       }
 
       const data = await res.json()
-
       setLocationData(data)
     } catch (error) {
       setError(error.message)
@@ -35,15 +40,32 @@ const ListLocation = () => {
     fetchData()
   }, [])
 
+  if (loading) {
+    return <Loading loading={loading} />
+  }
+
   if (error) {
     return <p>Error: {error}</p>
   }
 
-  if (!locationData || locationData.length === 0) {
-    return <Loading loading={loading} />
+  if (locationData.length === 0) {
+    return <p>No location data available.</p>
   }
 
-  return <Index userData={locationData} />
+  return (
+    <Box sx={{ flexGrow: 1, margin: 2 }}>
+      <Grid container spacing={6} direction='column'>
+        <Grid item xs={12}>
+          <Index userData={locationData} />
+        </Grid>
+        <Grid item xs={12}>
+          <Box sx={{ height: '500px', width: '100%' }}>
+            <Map locationData={locationData} />
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
+  )
 }
 
 export default ListLocation

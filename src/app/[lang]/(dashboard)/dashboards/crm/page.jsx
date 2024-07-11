@@ -68,15 +68,6 @@ const DashboardCRM = () => {
       <Grid item xs={12} md={6} lg={4}>
         <RadarSalesChart serverMode={serverMode} />
       </Grid>
-      <Grid item xs={12} md={6} lg={4}>
-        <SalesByCountries />
-      </Grid>
-      <Grid item xs={12} md={6} lg={4}>
-        <ProjectStatus />
-      </Grid>
-      <Grid item xs={12} md={6} lg={4}>
-        <ActiveProjects />
-      </Grid>
       <Grid item xs={12} md={6}>
         <LastTransaction serverMode={serverMode} />
       </Grid>
