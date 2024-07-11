@@ -160,10 +160,10 @@ const Login = ({ mode }) => {
             <Typography>Please sign-in to your account and start the adventure</Typography>
           </div>
           <Alert icon={false} className='bg-[var(--mui-palette-primary-lightOpacity)]'>
-            <Typography variant='body2' color='primary'>
+            {/* <Typography variant='body2' color='primary'>
               Email: <span className='font-medium'>admin@vuexy.com</span> / Pass:{' '}
               <span className='font-medium'>admin</span>
-            </Typography>
+            </Typography> */}
           </Alert>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6'>
             <Controller

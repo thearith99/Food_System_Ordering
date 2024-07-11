@@ -85,7 +85,7 @@ const Payment = () => {
       setSelectedUserName('');
     }
   }, [selectedUserName, addusers]);
-  
+
   const removeFromCart = index => {
     const newCards = cards.filter((_, i) => i !== index);
 
@@ -107,6 +107,26 @@ const Payment = () => {
   };
 
   const handleCheckout = async () => {
+    if (cards.length === 0) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Items in Cart',
+        text: 'Please add items to your cart before go to checkout.',
+      });
+
+      return;
+    }
+
+    if (!selectedUserName) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Customer Selected',
+        text: 'Please select a customer before go to checkout.',
+      });
+
+    return;
+    }
+
     console.log('Checking out with cards:', cards);
     console.log('selectedLocation', selectedLocation);
 

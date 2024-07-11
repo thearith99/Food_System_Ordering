@@ -64,6 +64,8 @@ const AddUser = ({ open, handleClose }) => {
         icon: 'success',
         title: 'Success!',
         text: 'User added successfully!'
+      }).then(() => {
+        window.location.reload() // Refresh the page
       });
     } catch (error) {
       setError(error.message);

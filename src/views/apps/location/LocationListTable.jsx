@@ -38,7 +38,10 @@ import OptionMenu from '@core/components/option-menu'
 import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
 
-import DeleteLocation from './DeleteLocation'
+import AddLocation  from './AddLocation';
+import DeleteLocation from './DeleteLocation';
+import UpdateLocation from './UpdateLocation';
+
 
 // Util Imports
 import { getInitials } from '@/utils/getInitials'
@@ -91,6 +94,7 @@ const LocationListTable = () => {
   const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
   const [loading, setLoading] = useState(true)
+  const [addLocationOpen, setAddLocationOpen] = useState(false)
 
   useEffect(() => {
     getLocations()
@@ -177,6 +181,14 @@ const LocationListTable = () => {
             <CircularProgress size={24} />
           ) : (
             <div className='flex items-center'>
+             <IconButton>
+             <UpdateLocation
+              location={row.original.id}
+              markName={row.original.markName}
+              lat={row.original.lat}
+              long={row.original.long}
+            />
+              </IconButton>
               <IconButton>
                 <DeleteLocation location={row.original.id} />
               </IconButton>
@@ -244,6 +256,14 @@ const LocationListTable = () => {
               placeholder='Search Location'
               className='is-full sm:is-auto'
             />
+            <Button
+              variant='contained'
+              startIcon={<i className='tabler-plus' />}
+              onClick={() => setAddLocationOpen(!addLocationOpen)}
+              className='is-full sm:is-auto'
+            >
+              Add New Location
+            </Button>
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -311,6 +331,7 @@ const LocationListTable = () => {
           }}
         />
       </Card>
+      <AddLocation open={addLocationOpen} handleClose={() => setAddLocationOpen(!addLocationOpen)} />
     </>
   )
 }

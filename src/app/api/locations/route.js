@@ -32,6 +32,10 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Missing required fields' }, { status: 400 })
     }
 
+    // Parse lat and long as floats
+    const parsedLat = parseFloat(lat);
+    const parsedLong = parseFloat(long);
+
     const location = await prisma.location.create({
       data: {
         markName,

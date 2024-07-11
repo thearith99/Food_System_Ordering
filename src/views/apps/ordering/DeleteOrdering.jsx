@@ -72,7 +72,7 @@ const DeleteOrdering = ({ order }) => {
           <Divider />
           <div>
             <form onSubmit={handleSubmit} className='flex flex-col gap-6 p-6'>
-              <p>Are you sure you want to delete this order with ID {data?.id}?</p>
+              <p>Are you sure you want to delete this order?</p>
               {error && <Typography variant="body2" color="error">{error}</Typography>}
               <div className='flex items-center gap-4'>
                 <Button variant='contained' type='submit'>

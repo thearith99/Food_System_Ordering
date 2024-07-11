@@ -13,10 +13,34 @@ export const config = {
 // Get all orders
 export async function GET() {
   try {
-    const orders = await prisma.order.findMany();
-    
+    const orders = await prisma.order.findMany({
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        location: {
+          select: {
+            markName: true,
+          },
+        },
+      },
+    });
 
-return NextResponse.json(orders);
+    const transformedOrders = orders.map(order => ({
+      ...order,
+      name: order.user.name,
+      markName: order.location.markName,
+    }));
+
+    // Remove the nested objects from the transformed orders
+    transformedOrders.forEach(order => {
+      delete order.user;
+      delete order.location;
+    });
+
+    return NextResponse.json(transformedOrders);
   } catch (error) {
     console.error('Error fetching orders:', error);
 

@@ -157,6 +157,25 @@ const OrderingListTable = () => {
             </div>
           )
       }),
+      columnHelper.accessor('user name', {
+        header: 'User Name',
+        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.name}</Typography>)
+      }),
+      columnHelper.accessor('mark location', {
+        header: 'Mark Location',
+        cell: ({ row }) =>
+          loading ? (
+            <CircularProgress size={24} />
+          ) : (
+            <Typography className='capitalize' color='text.primary'>
+              {row.original.markName}
+            </Typography>
+          )
+      }),
+      columnHelper.accessor('status', {
+        header: 'Status',
+        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.status}</Typography>)
+      }),
       columnHelper.accessor('createdAt', {
         header: 'Created At',
         cell: ({ row }) =>
@@ -172,25 +191,6 @@ const OrderingListTable = () => {
         header: 'Updated At',
         cell: ({ row }) =>
           loading ? <CircularProgress size={24} /> : <Typography>{row.original.updatedAt}</Typography>
-      }),
-      columnHelper.accessor('status', {
-        header: 'Status',
-        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.status}</Typography>)
-      }),
-      columnHelper.accessor('userId', {
-        header: 'User Id',
-        cell: ({ row }) => (loading ? <CircularProgress size={24} /> : <Typography>{row.original.userId}</Typography>)
-      }),
-      columnHelper.accessor('locationId', {
-        header: 'location Id',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <Typography className='capitalize' color='text.primary'>
-              {row.original.locationId}
-            </Typography>
-          )
       }),
       columnHelper.accessor('action', {
         header: 'Action',

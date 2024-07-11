@@ -10,17 +10,16 @@ export const config = {
   },
 };
 
-// Update a location
 export async function PUT(req, { params }) {
+  const { id } = params;
+
+  if (!id) {
+    return NextResponse.json({ message: 'ID parameter is missing' }, { status: 400 });
+  }
+
+  const { markName, lat, long } = await req.json();
+
   try {
-    const { id } = params;
-    const body = await req.json();
-    const { markName, lat, long } = body;
-
-    if (!markName || !lat || !long) {
-      return NextResponse.json({ message: 'Missing required fields' }, { status: 400 });
-    }
-
     const updatedLocation = await prisma.location.update({
       where: { id: parseInt(id) },
       data: {
@@ -30,11 +29,11 @@ export async function PUT(req, { params }) {
       },
     });
 
-    return NextResponse.json({ data: updatedLocation }, { status: 200 });
+    return NextResponse.json(updatedLocation, { status: 200 });
   } catch (error) {
     console.error('Error updating location:', error);
 
-    return NextResponse.json({ message: error.message }, { status: 500 });
+return NextResponse.json({ message: 'Failed to update location' }, { status: 500 });
   }
 }
 
