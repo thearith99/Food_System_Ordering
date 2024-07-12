@@ -7,4 +7,3 @@ const generateOrderNumber = () => {
 };
 
 export default generateOrderNumber;
-  

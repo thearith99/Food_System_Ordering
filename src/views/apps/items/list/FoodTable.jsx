@@ -88,133 +88,85 @@ const ListCategory = ({ tableData }) => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState(tableData)
   const [globalFilter, setGlobalFilter] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [categories, setCategories] = useState([])
-
-  useEffect(() => {
-    getCategories()
-  }, [])
-
-  const getCategories = async () => {
-    try {
-      const response = await fetch('/api/categories')
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch categories')
-      }
-
-      const jsonData = await response.json()
-
-      setCategories(jsonData)
-      setLoading(false) // Set loading to false after fetching categories
-    } catch (error) {
-      console.error('Error fetching categories:', error)
-    }
-  }
-
-  const getCategoryName = categoryId => {
-    const category = categories.find(cat => cat.id === categoryId)
-
-
-return category ? category.name : 'Unknown'
-  }
 
   const { lang: locale } = useParams()
 
-  const columns = useMemo(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            {...{
-              checked: row.getIsSelected(),
-              disabled: !row.getCanSelect(),
-              indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
-            }}
-          />
-        )
-      },
-      columnHelper.accessor('name', {
-        header: 'Product Name',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {row.original.name}
-                </Typography>
-              </div>
-            </div>
-          )
-      }),
-      columnHelper.accessor('categoryId', {
-        header: 'Category Name',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {getCategoryName(row.original.categoryId)}
-                </Typography>
-              </div>
-            </div>
-          )
-      }),
-      columnHelper.accessor('price', {
-        header: 'Price',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center gap-4'>
-              <div className='flex flex-col'>
-                <Typography color='text.primary' className='font-medium'>
-                  {row.original.price}
-                </Typography>
-              </div>
-            </div>
-          )
-      }),
-      columnHelper.accessor('image', {
-        header: 'Image',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <img src={`http://localhost:3000/images/${row.original.image}.jpg`} alt='' width='50' height='50' />
-          )
-      }),
-      columnHelper.accessor('action', {
-        header: 'Action',
-        cell: ({ row }) =>
-          loading ? (
-            <CircularProgress size={24} />
-          ) : (
-            <div className='flex items-center'>
-              <Deleteproduct product={row.original.id} />
-              <Updateproduct product={row.original} />
-            </div>
-          ),
-        enableSorting: false
-      })
-    ],
-    [categories, loading]
-  )
+  const columns = useMemo(() => [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          {...{
+            checked: table.getIsAllRowsSelected(),
+            indeterminate: table.getIsSomeRowsSelected(),
+            onChange: table.getToggleAllRowsSelectedHandler()
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          {...{
+            checked: row.getIsSelected(),
+            disabled: !row.getCanSelect(),
+            indeterminate: row.getIsSomeSelected(),
+            onChange: row.getToggleSelectedHandler()
+          }}
+        />
+      )
+    },
+    columnHelper.accessor('name', {
+      header: 'Product Name',
+      cell: ({ row }) => (
+        <div className='flex items-center gap-4'>
+          <div className='flex flex-col'>
+            <Typography color='text.primary' className='font-medium'>
+              {row.original.name}
+            </Typography>
+          </div>
+        </div>
+      )
+    }),
+    columnHelper.accessor('category', {
+      header: 'Category Name',
+      cell: ({ row }) => (
+        <div className='flex items-center gap-4'>
+          <div className='flex flex-col'>
+            <Typography color='text.primary' className='font-medium'>
+              {row.original.category}
+            </Typography>
+          </div>
+        </div>
+      )
+    }),
+    columnHelper.accessor('price', {
+      header: 'Price',
+      cell: ({ row }) => (
+        <div className='flex items-center gap-4'>
+          <div className='flex flex-col'>
+            <Typography color='text.primary' className='font-medium'>
+              {row.original.price}
+            </Typography>
+          </div>
+        </div>
+      )
+    }),
+    columnHelper.accessor('image', {
+      header: 'Image',
+      cell: ({ row }) => (
+        <img src={`http://localhost:3000/images/${row.original.image}.jpg`} alt='' width='50' height='50' />
+      )
+    }),
+    columnHelper.accessor('action', {
+      header: 'Action',
+      cell: ({ row }) => (
+        <div className='flex items-center'>
+          <Deleteproduct product={row.original} />
+          <Updateproduct product={row.original} />
+        </div>
+      ),
+      enableSorting: false
+    })
+  ])
 
   const table = useReactTable({
     data: data,
@@ -268,14 +220,7 @@ return category ? category.name : 'Unknown'
               placeholder='Search Product'
               className='is-full sm:is-auto'
             />
-            <Button
-              color='secondary'
-              variant='tonal'
-              startIcon={<i className='tabler-upload' />}
-              className='is-full sm:is-auto'
-            >
-              Export
-            </Button>
+
             <Button
               variant='contained'
               startIcon={<i className='tabler-plus' />}

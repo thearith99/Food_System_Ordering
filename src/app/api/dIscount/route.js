@@ -21,6 +21,19 @@ export const POST = async (req, res) => {
   const branchId = parseInt(formData.get('branchId'))
 
   try {
+    // Check if the branch already has a discount
+    const existingDiscount = await prisma.discount.findFirst({
+      where: {
+        branchId: branchId,
+        amount: amount
+      }
+    })
+
+    if (existingDiscount) {
+      return NextResponse.json({ Message: 'Branch already has a discount', status: 400 })
+    }
+
+    // Create new discount
     await prisma.discount.create({
       data: {
         amount: amount,
@@ -31,11 +44,9 @@ export const POST = async (req, res) => {
     return NextResponse.json({ Message: 'Success', status: 201 })
   } catch (error) {
     console.log('Error occurred', error)
-
     return NextResponse.json({ Message: 'Failed', status: 500 })
   }
 }
-
 export const GET = async request => {
   try {
     const discounts = await prisma.discount.findMany({})

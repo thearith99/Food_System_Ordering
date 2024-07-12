@@ -49,7 +49,7 @@ export const POST = async (req, res) => {
   }
 }
 
-export const GET = async request => {
+export const GET = async () => {
   try {
     const branchs = await prisma.branch.findMany({
       include: {
@@ -58,7 +58,8 @@ export const GET = async request => {
     })
 
     const response = branchs.map(branch => ({
-      ...branch
+      ...branch,
+      location: branch.location.markName
     }))
 
     return NextResponse.json(response)

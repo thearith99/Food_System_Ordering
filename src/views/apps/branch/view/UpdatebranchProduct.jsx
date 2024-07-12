@@ -1,9 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-
-import Image from 'next/image'
-
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
@@ -14,23 +11,26 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Divider from '@mui/material/Divider'
 import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
 
 import CustomTextField from '@core/components/mui/TextField'
 
-const UpdateBranch = ({ branch }) => {
+const UpdateBranch = ({ branchProduct }) => {
   const [open, setOpen] = useState(false)
   const [error, setError] = useState('')
   const [data, setData] = useState({})
   const [products, setproducts] = useState([])
   const [branchs, setbranchs] = useState([])
-
+  const Available = 'Available'
+  const Unavailable = 'Unavailable'
   useEffect(() => {
-    fetchproducts(), fetchbranchs()
+    fetchbranchs()
+    fetchproducts()
   }, [])
 
   const fetchproducts = async () => {
     try {
-      const response = await axios.get('/api/products')
+      const response = await axios.get('/api/branchProduct') // Adjust the URL as needed
       setproducts(response.data)
     } catch (error) {
       console.error('Error fetching products:', error)
@@ -45,8 +45,8 @@ const UpdateBranch = ({ branch }) => {
     }
   }
   useEffect(() => {
-    setData(branch)
-  }, [branch])
+    setData(branchProduct)
+  }, [branchProduct])
 
   const handleReset = () => {
     setOpen(false)
@@ -68,7 +68,7 @@ const UpdateBranch = ({ branch }) => {
     formDataObj.append('branchId', data.branchId)
 
     try {
-      const res = await fetch(`/api/branch/${data.id}`, {
+      const res = await fetch(`/api/branchProduct/${data.id}`, {
         method: 'PUT',
         body: formDataObj
       })
@@ -80,14 +80,14 @@ const UpdateBranch = ({ branch }) => {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: 'Branch updated successfully!'
+          text: 'Branch Product updated successfully!'
         }).then(() => {
           window.location.reload() // Refresh the page
         })
       }
     } catch (error) {
       console.error('Error updating Branch:', error)
-      setError('Failed to update Branch. Please try again.')
+      setError('Failed to update Branch Product. Please try again.')
     }
   }
 
@@ -104,7 +104,7 @@ const UpdateBranch = ({ branch }) => {
       >
         <div>
           <div className='flex items-center justify-between plb-5 pli-6'>
-            <Typography variant='h5'>Update Branch</Typography>
+            <Typography variant='h5'>Update Branch Product</Typography>
             <IconButton onClick={handleReset}>
               <i className='tabler-x text-textPrimary' />
             </IconButton>
@@ -128,7 +128,7 @@ const UpdateBranch = ({ branch }) => {
               >
                 {products.map(product => (
                   <MenuItem key={product.id} value={product.id}>
-                    {product.name}
+                    {product.product}
                   </MenuItem>
                 ))}
               </CustomTextField>
@@ -174,17 +174,23 @@ const UpdateBranch = ({ branch }) => {
                   })
                 }
               />
-              <CustomTextField
-                label='Price'
-                fullWidth
-                value={data?.status}
-                onChange={e =>
-                  setData({
-                    ...data,
-                    status: e.target.value
-                  })
-                }
-              />
+              <FormControl fullWidth>
+                <CustomTextField
+                  labelId='product-label'
+                  value={data?.status}
+                  label='Status'
+                  select
+                  onChange={e =>
+                    setData({
+                      ...data,
+                      status: e.target.value
+                    })
+                  }
+                >
+                  <MenuItem value={Available}>{Available}</MenuItem>
+                  <MenuItem value={Unavailable}>{Unavailable}</MenuItem>
+                </CustomTextField>
+              </FormControl>
               {/* Error message */}
               {error && (
                 <Typography variant='body2' color='error'>

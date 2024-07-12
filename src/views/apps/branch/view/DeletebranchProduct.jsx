@@ -40,7 +40,7 @@ const DeletebranchProduct = ({ branchProduct }) => {
         })
       }
     } catch (error) {
-      console.error('Error deleting branch vProduct', error)
+      console.error('Error deleting branch Product', error)
       setError('Failed to delete branch Product. Please try again.')
     }
   }

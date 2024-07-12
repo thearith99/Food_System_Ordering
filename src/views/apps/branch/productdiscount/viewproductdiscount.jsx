@@ -4,8 +4,9 @@
 import { useEffect, useState, useMemo } from 'react'
 
 // Next Imports
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
+import { getLocalizedUrl } from '@/utils/i18n'
+import axios from 'axios'
 
 // MUI Imports
 import Card from '@mui/material/Card'
@@ -13,7 +14,6 @@ import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import Checkbox from '@mui/material/Checkbox'
-import IconButton from '@mui/material/IconButton'
 import { styled } from '@mui/material/styles'
 import TablePagination from '@mui/material/TablePagination'
 import MenuItem from '@mui/material/MenuItem'
@@ -35,13 +35,11 @@ import {
 } from '@tanstack/react-table'
 
 // Component Imports
-import OptionMenu from '@core/components/option-menu'
-import TablePaginationComponent from '@components/TablePaginationComponent'
 import CustomTextField from '@core/components/mui/TextField'
-
-// Util Imports
-import { getInitials } from '@/utils/getInitials'
-import { getLocalizedUrl } from '@/utils/i18n'
+import TablePaginationComponent from '@components/TablePaginationComponent'
+import AddProductDiscount from './Addproductdiscount' // Ensure this is the correct import path
+import DeleteProductDiscount from './Deleteproductdiscount'
+import UpdateProductDiscount from './UpdateProductDiscount'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -84,126 +82,94 @@ const DebouncedInput = ({ value: initialValue, onChange, debounce = 500, ...prop
 // Column Definitions
 const columnHelper = createColumnHelper()
 
-const UserListTable = ({ tableData }) => {
+const ListCategory = () => {
   // States
+  const { id } = useParams()
+  const [addProductDiscountOpen, setAddProductDiscountOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-
-  const [data, setData] = useState(...[tableData])
+  const [products, setProduct] = useState([])
+  const [data, setData] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
-
-  const [locations, setLocations] = useState([])
-
+  const locale = useParams().lang
   useEffect(() => {
-    getLocation()
-  }, [])
-
-  const getLocation = async () => {
-    try {
-      const response = await fetch('/api/location')
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch locations')
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('/api/ProductDiscount') // Adjust the URL as needed
+        console.log('Fetched products:', response.data)
+        setProduct(response.data)
+      } catch (error) {
+        console.error('Error fetching products:', error)
       }
-
-      const jsonData = await response.json()
-
-      setLocations(jsonData)
-    } catch (error) {
-      console.error('Error fetching locations:', error)
     }
-  }
-
-  const getLocationName = locationId => {
-    const location = locations.find(loc => loc.id === locationId)
-
-
-return location ? location.markName : 'Unknown'
-  }
-
-
-  // Hooks
-  const { lang: locale } = useParams()
-
-  const columns = useMemo(
-    () => [
-      {
-        id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            {...{
-              checked: table.getIsAllRowsSelected(),
-              indeterminate: table.getIsSomeRowsSelected(),
-              onChange: table.getToggleAllRowsSelectedHandler()
-            }}
-          />
-        ),
-        cell: ({ row }) => (
-          <Checkbox
-            {...{
-              checked: row.getIsSelected(),
-              disabled: !row.getCanSelect(),
-              indeterminate: row.getIsSomeSelected(),
-              onChange: row.getToggleSelectedHandler()
-            }}
-          />
-        )
-      },
-      columnHelper.accessor('orderNumber', {
-        header: 'Order Number',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-4'>
-            <div className='flex flex-col'>
-              <Typography color='text.primary' className='font-medium'>
-                {row.original.orderNumber}
-              </Typography>
-            </div>
+    fetchProducts()
+  }, [])
+  useEffect(() => {
+    setData(products.filter(product => String(product.branchId) === String(id)))
+  }, [products, id])
+  const columns = useMemo(() => [
+    {
+      id: 'select',
+      header: ({ table }) => (
+        <Checkbox
+          {...{
+            checked: table.getIsAllRowsSelected(),
+            indeterminate: table.getIsSomeRowsSelected(),
+            onChange: table.getToggleAllRowsSelectedHandler()
+          }}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          {...{
+            checked: row.getIsSelected(),
+            disabled: !row.getCanSelect(),
+            indeterminate: row.getIsSomeSelected(),
+            onChange: row.getToggleSelectedHandler()
+          }}
+        />
+      )
+    },
+    columnHelper.accessor('image', {
+      header: 'Image',
+      cell: ({ row }) => (
+        <img src={`http://localhost:3000/images/${row.original.img}.jpg`} alt='' width='50' height='50' />
+      )
+    }),
+    columnHelper.accessor('product', {
+      header: 'Product Name',
+      cell: ({ row }) => (
+        <div className='flex items-center gap-4'>
+          <div className='flex flex-col'>
+            <Typography color='text.primary' className='font-medium'>
+              {row.original.product}
+            </Typography>
           </div>
-        )
-      }),
-      columnHelper.accessor('locationId', {
-        header: 'Location',
-        cell: ({ row }) => (
-          <Typography className='capitalize' color='text.primary'>
-            {getLocationName(row.original.locationId)}
-          </Typography>
-        )
-      }),
-      columnHelper.accessor('createdAt', {
-        header: 'Created At',
-        cell: ({ row }) => (
-          <Typography className='capitalize' color='text.primary'>
-            {row.original.createdAt}
-          </Typography>
-        )
-      }),
-      columnHelper.accessor('updatedAt', {
-        header: 'Updated At',
-        cell: ({ row }) => <Typography>{row.original.updatedAt}</Typography>
-      }),
-      columnHelper.accessor('status', {
-        header: 'Status',
-        cell: ({ row }) => <Typography>{row.original.status}</Typography>
-      }),
-      columnHelper.accessor('action', {
-        header: 'Action',
-        cell: () => (
-          <div className='flex items-center'>
-            <IconButton>
-              <i className='tabler-trash text-[22px] text-textSecondary' />
-            </IconButton>
-            <IconButton>
-              <Link href={getLocalizedUrl('apps/user/view', locale)} className='flex'>
-                <i className='tabler-eye text-[22px] text-textSecondary' />
-              </Link>
-            </IconButton>
+        </div>
+      )
+    }),
+    columnHelper.accessor('discount', {
+      header: 'Discount %',
+      cell: ({ row }) => (
+        <div className='flex items-center gap-4'>
+          <div className='flex flex-col'>
+            <Typography color='text.primary' className='font-medium'>
+              {row.original.discount}%
+            </Typography>
           </div>
-        ),
-        enableSorting: false
-      })
-    ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [locations]
-  )
+        </div>
+      )
+    }),
+    columnHelper.accessor('action', {
+      header: 'Action',
+      cell: ({ row }) => (
+        <div className='flex items-center'>
+          <DeleteProductDiscount product={row.original} />
+          <UpdateProductDiscount product={row.original} BranchId={id} />
+        </div>
+      ),
+      enableSorting: false
+    })
+  ])
 
   const table = useReactTable({
     data: data,
@@ -220,7 +186,7 @@ return location ? location.markName : 'Unknown'
         pageSize: 10
       }
     },
-    enableRowSelection: true, //enable row selection for all rows
+    enableRowSelection: true, // enable row selection for all rows
     // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     globalFilterFn: fuzzyFilter,
     onRowSelectionChange: setRowSelection,
@@ -237,7 +203,17 @@ return location ? location.markName : 'Unknown'
   return (
     <>
       <Card>
-        <CardHeader title='List Order' className='pbe-4' />
+        <CardHeader title='List Discount Food' className='pbe-4' />
+        <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
+          <Button
+            variant='contained'
+            startIcon={<i className='tabler-arrow' />}
+            href={getLocalizedUrl(`apps/branching/view/${id}`, locale)}
+            className='is-full sm:is-auto'
+          >
+            Back
+          </Button>
+        </div>
         <div className='flex justify-between flex-col items-start md:flex-row md:items-center p-6 border-bs gap-4'>
           <CustomTextField
             select
@@ -253,9 +229,17 @@ return location ? location.markName : 'Unknown'
             <DebouncedInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}
-              placeholder='Search Order'
+              placeholder='Search Product'
               className='is-full sm:is-auto'
             />
+            <Button
+              variant='contained'
+              startIcon={<i className='tabler-plus' />}
+              onClick={() => setAddProductDiscountOpen(!addProductDiscountOpen)}
+              className='is-full sm:is-auto'
+            >
+              Add New Product Discount
+            </Button>
           </div>
         </div>
         <div className='overflow-x-auto'>
@@ -323,8 +307,13 @@ return location ? location.markName : 'Unknown'
           }}
         />
       </Card>
+      <AddProductDiscount
+        open={addProductDiscountOpen}
+        handleClose={() => setAddProductDiscountOpen(!addProductDiscountOpen)}
+        BranchId={id}
+      />{' '}
     </>
   )
 }
 
-export default UserListTable
+export default ListCategory

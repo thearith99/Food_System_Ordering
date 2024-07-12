@@ -22,7 +22,6 @@ const ListLocation = () => {
       }
 
       const data = await res.json()
-
       setLocationData(data)
     } catch (error) {
       setError(error.message)

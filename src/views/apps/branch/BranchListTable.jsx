@@ -40,10 +40,10 @@ const ProductTable = ({ branchId, products }) => {
             filteredProducts.map(product => (
               <TableRow key={product.id}>
                 <TableCell>{product.id}</TableCell>
-                <TableCell>{product.product.name}</TableCell>
+                <TableCell>{product.product}</TableCell>
                 <TableCell>
                   <img
-                    src={`http://localhost:3000/images/${product.product.image}.jpg`}
+                    src={`http://localhost:3000/images/${product.image}.jpg`}
                     alt={product.product.name}
                     width='50'
                     height='50'
@@ -121,7 +121,7 @@ const BranchList = () => {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 <img
                   src={branch.imgSrc}
-                  alt={branch.name}
+                  alt={branch.id}
                   style={{
                     backgroundColor: 'black',
                     width: '50px',
@@ -129,8 +129,8 @@ const BranchList = () => {
                     marginRight: '10px'
                   }}
                 />
-                <span>{branch.name}</span>
               </div>
+              <div className='flex items-center'>{branch.name}</div>
               <div className='flex items-center'>
                 <DeleteBranch branch={branch} />
                 <UpdateBranch branch={branch} />

@@ -109,7 +109,6 @@ const LocationListTable = () => {
       }
 
       const jsonData = await response.json()
-
       setData(jsonData)
       setLoading(false)
     } catch (error) {
@@ -204,6 +203,14 @@ const LocationListTable = () => {
     ],
     [loading]
   )
+
+  const getLocationName = locationId => {
+    const location = locations.find(loc => loc.id === locationId)
+
+
+return location ? location.markName : 'Unknown'
+  }
+
 
   const table = useReactTable({
     data: data,

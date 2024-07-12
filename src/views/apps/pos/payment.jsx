@@ -86,6 +86,18 @@ const Payment = () => {
     }
   }, [selectedUserName, addusers]);
 
+  useEffect(() => {
+    console.log('addusers:', addusers);
+
+    if (addusers) {
+      console.log('Selected user:', addusers.name);
+      setSelectedUserName(addusers.name);
+    } else {
+      console.log('User not found');
+      setSelectedUserName('');
+    }
+  }, [selectedUserName, addusers]);
+
   const removeFromCart = index => {
     const newCards = cards.filter((_, i) => i !== index);
 

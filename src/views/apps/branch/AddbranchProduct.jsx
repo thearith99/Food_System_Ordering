@@ -13,8 +13,6 @@ import IconButton from '@mui/material/IconButton'
 import MenuItem from '@mui/material/MenuItem'
 import Typography from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
-import Select from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 
 // Component Imports
@@ -23,6 +21,9 @@ import CustomTextField from '@core/components/mui/TextField'
 // Vars
 
 const AddUserDrawer = ({ open, handleClose }) => {
+  const Available = 'Available'
+  const Unavailable = 'Unavailable'
+
   const [price, setPrice] = useState('')
   const [status, setStatus] = useState('')
 
@@ -199,7 +200,18 @@ const AddUserDrawer = ({ open, handleClose }) => {
             </CustomTextField>
           </FormControl>
           <CustomTextField label='Price' fullWidth value={price} onChange={e => setPrice(e.target.value)} />
-          <CustomTextField label='Status' fullWidth value={status} onChange={e => setStatus(e.target.value)} />
+          <FormControl fullWidth>
+            <CustomTextField
+              labelId='product-label'
+              value={status}
+              label='Status'
+              select
+              onChange={e => setStatus(e.target.value)}
+            >
+              <MenuItem value={Available}>{Available}</MenuItem>
+              <MenuItem value={Unavailable}>{Unavailable}</MenuItem>
+            </CustomTextField>
+          </FormControl>
           <div className='flex items-center gap-4'>
             <Button variant='contained' type='submit'>
               Submit
